@@ -5,13 +5,14 @@ import OBSWebSocket from "obs-websocket-js";
 const obs = new OBSWebSocket();
 
 const Home = () => {
-    const [scenes, setScenes] = useState(null)
+    const [scenes, setScenes] = useState([])
 
     const connectObs =  () => {
         obs.connect({address: 'localhost:4444', password: '123456'}).then(() => {
             obs.send('GetSceneList')
             .then( data => {
                 console.log('sceneList', data)
+                setScenes(data.scenes);
             })
         })
         // await obs.connect('ws://localhost:4444', '123456')
@@ -22,6 +23,7 @@ const Home = () => {
     }
 
     const getSceneList = () => {
+        console.log('scenes', scenes)
     }
 
     return (
