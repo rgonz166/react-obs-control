@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ChakraProvider, Flex } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/toast";
 import Home from "./Pages/Home"
 import Settings from "./Pages/Settings"
 import Navbar from "./Components/Navbar"
@@ -11,7 +12,7 @@ import Version from './Components/Version';
 const obs = new OBSWebSocket();
 
 const App = () => {
-  
+  const toast = useToast();
   const [scenes, setScenes] = useState([])
   const [sources, setSources] = useState([])
   const [obsConnected, setObsConnected] = useState(false)
@@ -19,7 +20,7 @@ const App = () => {
   const [ obsPassword, setOBSPassword ] = useState('')
 
     const connectObs =  () => {
-        obs.connect({address: 'localhost:4444', password: '123456'}).then(() => {
+        obs.connect({address: `localhost:${obsPort}`, password: obsPassword}).then(() => {
             setObsConnected(true);
             obs.send('GetSceneList')
             .then( data => {
@@ -28,10 +29,24 @@ const App = () => {
                   setSources(data.scenes[0].sources)
                 }
             })
+            toast({
+              title: `OBS Connected`,
+              description: 'OBS Connection has been successfully established',
+              status: 'success',
+              duration: 7000,
+              isClosable: true
+            })
         }).catch(rejected => {
             setObsConnected(false)
             setScenes([]);
             setSources([]);
+            toast({
+              title: `OBS Connection Unsuccessful`,
+              description: 'OBS Connection has not been successfully established, verify port and password have been entered correctly in settings.',
+              status: 'error',
+              duration: 15000,
+              isClosable: true
+            })
             console.error('rejected', rejected)
         })
         // await obs.connect('ws://localhost:4444', '123456')
@@ -42,6 +57,13 @@ const App = () => {
         setScenes([]);
         setSources([]);
         obs.disconnect();
+        toast({
+          title: `OBS Disconnected`,
+          description: 'OBS Connection has been successfully disconnected',
+          status: 'success',
+          duration: 7000,
+          isClosable: true
+        })
     }
 
     const getSceneList = () => {
