@@ -45,11 +45,11 @@ const App = () => {
 
     return (
       <>
-        <ChakraProvider>
+        <Router>
+          <ChakraProvider>
             <Flex>
               <Navbar />
             </Flex>
-          <Router>
 
             <Routes>
               <Route path="/" element={
@@ -64,8 +64,8 @@ const App = () => {
               <Route path="/Settings" element={<Settings />} />
               <Route  />
             </Routes>
-          </Router>
-        </ChakraProvider>
+          </ChakraProvider>
+        </Router>
       </>
     )
   
