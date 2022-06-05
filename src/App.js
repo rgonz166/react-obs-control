@@ -14,6 +14,8 @@ const App = () => {
   const [scenes, setScenes] = useState([])
   const [sources, setSources] = useState([])
   const [obsConnected, setObsConnected] = useState(false)
+  const [ obsPort, setOBSPort ] = useState('4444')
+  const [ obsPassword, setOBSPassword ] = useState('')
 
     const connectObs =  () => {
         obs.connect({address: 'localhost:4444', password: '123456'}).then(() => {
@@ -49,6 +51,12 @@ const App = () => {
         console.log('sources', sources)
     }
 
+    const getOBSPort = () => {
+        console.log('port:', obsPort)
+    }
+
+
+
     return (
       <>
         <Router>
@@ -65,9 +73,17 @@ const App = () => {
                   disconnectObs={disconnectObs}
                   getSceneList={getSceneList}
                   getSourcesList={getSourcesList}
+                  getOBSPort={getOBSPort}
                 />
               } />
-              <Route path="/Settings" element={<Settings />} />
+              <Route path="/Settings" element={
+                <Settings
+                  obsPort={obsPort}
+                  obsPassword={obsPassword}
+                  setOBSPort={setOBSPort}
+                  setOBSPassword={setOBSPassword}
+                />
+              } />
               <Route  />
             </Routes>
           </ChakraProvider>
