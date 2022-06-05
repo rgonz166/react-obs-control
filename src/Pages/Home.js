@@ -1,6 +1,5 @@
 import React, { useState } from "react"
-import { Box, Button, Flex, Center, VStack, Heading, HStack } from "@chakra-ui/react"
-import { ColorModeSwitcher } from "../Components/ColorModeSwitcher"
+import { Button,Center, VStack, Heading, HStack } from "@chakra-ui/react";
 import OBSWebSocket from "obs-websocket-js";
 
 const obs = new OBSWebSocket();
@@ -27,7 +26,7 @@ const Home = () => {
 
     return (
        <>
-        <Center>    
+        <Center h="50vh">    
             <VStack spacing="5">
                 <Heading size="3xl">👋 Hello 👋</Heading> 
                 <HStack  spacing="10">
