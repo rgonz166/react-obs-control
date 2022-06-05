@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Button,Center, VStack, Heading, HStack, Text } from "@chakra-ui/react";
+import { Button,Center, VStack, Heading, HStack, Text, Tooltip } from "@chakra-ui/react";
 import OBSWebSocket from "obs-websocket-js";
 
 const obs = new OBSWebSocket();
@@ -32,7 +32,9 @@ const Home = () => {
                 <Text>This app is used to toggle OBS sources using various Twitch services.</Text>
                 <Text>Created by: pintarider, rubbertoe64</Text>
                 <HStack  spacing="10">
-                    <Button onClick={async () => { connectObs() }}>Connect OBS</Button>
+                    <Tooltip hasArrow label=" Verify all proxy settings are correct and connect to your obs client">
+                        <Button onClick={async () => { connectObs() }}>Connect OBS</Button>
+                    </Tooltip>
                     <Button onClick={() => { disconnectObs() }}>Disconnect OBS</Button>
                 </HStack>
                 <Button onClick={() => { getSceneList() }}>Get Scenes</Button>
