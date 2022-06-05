@@ -1,6 +1,5 @@
 import React, { useState } from "react"
-import { Box, Button, Flex } from "@chakra-ui/react"
-import { ColorModeSwitcher } from "../Components/ColorModeSwitcher"
+import { Button, Flex } from "@chakra-ui/react"
 import OBSWebSocket from "obs-websocket-js";
 
 const obs = new OBSWebSocket();
