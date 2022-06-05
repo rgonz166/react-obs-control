@@ -27,6 +27,8 @@ const App = () => {
             })
         }).catch(rejected => {
             setObsConnected(false)
+            setScenes([]);
+            setSources([]);
             console.error('rejected', rejected)
         })
         // await obs.connect('ws://localhost:4444', '123456')
@@ -34,6 +36,8 @@ const App = () => {
 
     const disconnectObs = () => {
         setObsConnected(false);
+        setScenes([]);
+        setSources([]);
         obs.disconnect();
     }
 
