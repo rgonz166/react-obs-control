@@ -20,8 +20,10 @@ const App = () => {
             setObsConnected(true);
             obs.send('GetSceneList')
             .then( data => {
-                console.log('data', data)
                 setScenes(data.scenes);
+                if (data.scenes && data.scenes.length > 0) {
+                  setSources(data.scenes[0].sources)
+                }
             })
         }).catch(rejected => {
             setObsConnected(false)
