@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ButtonGroup, Button, HStack, Box, Flex, Heading, Spacer } from "@chakra-ui/react"
 import { ColorModeSwitcher } from "../Components/ColorModeSwitcher"
 

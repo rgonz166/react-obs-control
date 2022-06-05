@@ -10,19 +10,19 @@ class App extends Component {
   render() {
     return (
       <>
-        <ChakraProvider>
+        <Router>
+          <ChakraProvider>
             <Flex>
               <Navbar />
             </Flex>
-          <Router>
 
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/Settings" element={<Settings />} />
               <Route  />
             </Routes>
-          </Router>
-        </ChakraProvider>
+          </ChakraProvider>
+        </Router>
       </>
     )
   };
