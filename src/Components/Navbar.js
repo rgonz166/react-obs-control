@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ButtonGroup, Button, HStack, Box, Flex, Heading, Spacer } from "@chakra-ui/react"
+import { ButtonGroup, Button, HStack, Box, Flex, Heading, Spacer, Tooltip } from "@chakra-ui/react"
 import { ColorModeSwitcher } from "../Components/ColorModeSwitcher"
 
 
@@ -23,6 +23,21 @@ const Navbar = () => {
                                 Homepage
                             </Button>
                         </Link>
+                        <Link to='/ChannelPoints'>
+                            <Button>
+                                Channel Points
+                            </Button>
+                        </Link>
+                        <Link to='/Bits'>
+                            <Button>
+                                Bits
+                            </Button>
+                        </Link>
+                        <Link to='/Subscription'>
+                            <Button>
+                                Subscriptions
+                            </Button>
+                        </Link>
 
                         <Link to='/Settings'>
                             <Button>
@@ -32,10 +47,11 @@ const Navbar = () => {
 
                 </ButtonGroup>
                 </Flex>
-
-                <Box>
-                    <ColorModeSwitcher justifySelf="flex-end" />
-                </Box>
+                <Tooltip hasArrow label="Toggle Light/Dark Mode">
+                    <Box>
+                        <ColorModeSwitcher justifySelf="flex-end" />                    
+                    </Box>
+                </Tooltip>
 
              </Flex>
             </HStack>
