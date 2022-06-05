@@ -82,12 +82,11 @@ const App = () => {
 
     return (
       <>
-        <Router>
+        <Router basename="/react-obs-control">
           <ChakraProvider>
             <Flex>
               <Navbar />
             </Flex>
-
             <Routes>
               <Route path="/" element={
                 <Home
@@ -99,7 +98,7 @@ const App = () => {
                   getOBSPort={getOBSPort}
                 />
               } />
-              <Route path="/Settings" element={
+              <Route exact path="/Settings" element={
                 <Settings
                   obsPort={obsPort}
                   obsPassword={obsPassword}
