@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Box, Button, Flex } from "@chakra-ui/react"
+import { Box, Button, Flex, Center, VStack, Heading, HStack } from "@chakra-ui/react"
 import { ColorModeSwitcher } from "../Components/ColorModeSwitcher"
 import OBSWebSocket from "obs-websocket-js";
 
@@ -26,12 +26,19 @@ const Home = () => {
     }
 
     return (
-        <Flex>
-            <h1>Hello World</h1> 
-            <Button onClick={async () => { connectObs() }}>connect</Button>
-            <Button onClick={() => { disconnectObs() }}>disconnect</Button>
-            <Button onClick={() => { getSceneList() }}>get scenes</Button>
-        </Flex>
+       <>
+        <Center>    
+            <VStack spacing="5">
+                <Heading size="3xl">👋 Hello 👋</Heading> 
+                <HStack  spacing="10">
+                    <Button onClick={async () => { connectObs() }}>Connect OBS</Button>
+                    <Button onClick={() => { disconnectObs() }}>Disconnect OBS</Button>
+                </HStack>
+                <Button onClick={() => { getSceneList() }}>Get Scenes</Button>
+            </VStack> 
+        </Center>
+   
+       </>
     )
 }
 
