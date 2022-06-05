@@ -5,6 +5,7 @@ import Home from "./Pages/Home"
 import Settings from "./Pages/Settings"
 import Navbar from "./Components/Navbar"
 import OBSWebSocket from "obs-websocket-js";
+import Version from './Components/Version';
 
 
 const obs = new OBSWebSocket();
@@ -88,6 +89,7 @@ const App = () => {
             </Routes>
           </ChakraProvider>
         </Router>
+        <Version />
       </>
     )
   
