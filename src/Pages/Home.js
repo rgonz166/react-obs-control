@@ -30,7 +30,7 @@ const Home = () => {
             <VStack spacing="3">
                 <Heading size="3xl">👋 Hello 👋</Heading> 
                 <Text>This app is used to toggle OBS sources using various Twitch services.</Text>
-                <Text>Created by: pintarider</Text>
+                <Text>Created by: pintarider, rubbertoe64</Text>
                 <HStack  spacing="10">
                     <Button onClick={async () => { connectObs() }}>Connect OBS</Button>
                     <Button onClick={() => { disconnectObs() }}>Disconnect OBS</Button>
