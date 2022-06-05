@@ -1,22 +1,31 @@
 import React, { Component } from "react";
-import { w3cwebsocket as W3CWebSocket } from "websocket";
-
-const client = new W3CWebSocket('ws://localhost:4444');
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ChakraProvider, Flex } from "@chakra-ui/react";
+import Home from "./Pages/Home"
+import Settings from "./Pages/Settings"
+import Navbar from "./Components/Navbar"
 
 class App extends Component {
 
-  componentDidMount() {
-    client.onopen = () => {
-      console.log('Websocket Client Connected')
-    }
-  }
-
   render() {
     return (
-      <div>
-        <h3>Hello</h3>
-      </div>
-    )};
+      <>
+        <ChakraProvider>
+            <Flex>
+              <Navbar />
+            </Flex>
+          <Router>
+
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/Settings" element={<Settings />} />
+              <Route  />
+            </Routes>
+          </Router>
+        </ChakraProvider>
+      </>
+    )
+  };
   
 }
 

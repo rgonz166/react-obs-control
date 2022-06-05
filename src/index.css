@@ -11,3 +11,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.top-right {
+  position: fixed;
+  right: 0;
+  top: 0;
+}
