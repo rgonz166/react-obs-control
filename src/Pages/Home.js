@@ -1,7 +1,7 @@
 import React from "react"
 import { Button,Center, VStack, Heading, HStack, Text, Tooltip } from "@chakra-ui/react";
 
-const Home = ({ obsConnected, connectObs, disconnectObs, getSceneList, getSourcesList}) => {
+const Home = ({ obsConnected, connectObs, disconnectObs, getSceneList, getSourcesList, getOBSPort}) => {
     
 
     return (
@@ -20,6 +20,7 @@ const Home = ({ obsConnected, connectObs, disconnectObs, getSceneList, getSource
                     }
                     <Button onClick={() => { getSceneList() }}>Get Scenes</Button>
                     <Button onClick={() => { getSourcesList() }}>Get Sources</Button>
+                    <Button onClick={() => { getOBSPort() }}>Get Pord</Button>
                 </HStack>
             </VStack> 
         </Center>
