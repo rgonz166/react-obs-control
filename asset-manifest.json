@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/react-obs-control/static/css/main.d48db4d6.css",
+    "main.js": "/react-obs-control/static/js/main.d56231bd.js",
+    "index.html": "/react-obs-control/index.html",
+    "main.d48db4d6.css.map": "/react-obs-control/static/css/main.d48db4d6.css.map",
+    "main.d56231bd.js.map": "/react-obs-control/static/js/main.d56231bd.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d48db4d6.css",
+    "static/js/main.d56231bd.js"
+  ]
+}
