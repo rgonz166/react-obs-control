@@ -1,30 +1,8 @@
-import React, { useState } from "react"
+import React from "react"
 import { Button,Center, VStack, Heading, HStack, Text } from "@chakra-ui/react";
-import OBSWebSocket from "obs-websocket-js";
 
-const obs = new OBSWebSocket();
-
-const Home = () => {
-    const [scenes, setScenes] = useState([])
-
-    const connectObs =  () => {
-        obs.connect({address: 'localhost:4444', password: '123456'}).then(() => {
-            obs.send('GetSceneList')
-            .then( data => {
-                console.log('sceneList', data)
-                setScenes(data.scenes);
-            })
-        })
-        // await obs.connect('ws://localhost:4444', '123456')
-    }
-
-    const disconnectObs = () => {
-        obs.disconnect();
-    }
-
-    const getSceneList = () => {
-        console.log('scenes', scenes)
-    }
+const Home = ({ obsConnected, connectObs, disconnectObs, getSceneList, getSourcesList}) => {
+    
 
     return (
        <>
@@ -34,10 +12,13 @@ const Home = () => {
                 <Text>This app is used to toggle OBS sources using various Twitch services.</Text>
                 <Text>Created by: pintarider, rubbertoe64</Text>
                 <HStack  spacing="10">
-                    <Button onClick={async () => { connectObs() }}>Connect OBS</Button>
-                    <Button onClick={() => { disconnectObs() }}>Disconnect OBS</Button>
+                    {obsConnected ? 
+                        <Button onClick={() => { disconnectObs() }}>Disconnect OBS</Button> : 
+                        <Button onClick={async () => { connectObs() }}>Connect OBS</Button>
+                    }
+                    <Button onClick={() => { getSceneList() }}>Get Scenes</Button>
+                    <Button onClick={() => { getSourcesList() }}>Get Sources</Button>
                 </HStack>
-                <Button onClick={() => { getSceneList() }}>Get Scenes</Button>
             </VStack> 
         </Center>
    
