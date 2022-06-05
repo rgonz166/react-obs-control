@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Button,Center, VStack, Heading, HStack } from "@chakra-ui/react";
+import { Button,Center, VStack, Heading, HStack, Text } from "@chakra-ui/react";
 import OBSWebSocket from "obs-websocket-js";
 
 const obs = new OBSWebSocket();
@@ -27,8 +27,10 @@ const Home = () => {
     return (
        <>
         <Center h="50vh">    
-            <VStack spacing="5">
+            <VStack spacing="3">
                 <Heading size="3xl">👋 Hello 👋</Heading> 
+                <Text>This app is used to toggle OBS sources using various Twitch services.</Text>
+                <Text>Created by: pintarider</Text>
                 <HStack  spacing="10">
                     <Button onClick={async () => { connectObs() }}>Connect OBS</Button>
                     <Button onClick={() => { disconnectObs() }}>Disconnect OBS</Button>
