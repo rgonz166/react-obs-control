@@ -5,6 +5,7 @@ import { useToast } from "@chakra-ui/toast";
 import Home from "./Pages/Home"
 import Settings from "./Pages/Settings"
 import ChannelPoints from "./Pages/ChannelPoints";
+import Bits from "./Pages/Bits";
 import Navbar from "./Components/Navbar"
 import OBSWebSocket from "obs-websocket-js";
 import Version from './Components/Version';
@@ -121,6 +122,7 @@ const App = () => {
                   getOBSPort={getOBSPort}
                 />
               } />
+
               <Route exact path="/Settings" element={
                 <Settings
                   obsPort={obsPort}
@@ -129,8 +131,20 @@ const App = () => {
                   setOBSPassword={setOBSPassword}
                 />
               } />
+
               <Route exact path="/ChannelPoints" element={
               <ChannelPoints 
+                  scenes={scenes}
+                  sources={sources}
+                  obsConnected={obsConnected}
+                  handleSceneSelection={handleSceneSelection}
+                  handleSourceSelection={handleSourceSelection}
+                  
+              />
+              } />
+
+              <Route exact path="/Bits" element={
+              <Bits 
                   scenes={scenes}
                   sources={sources}
                   obsConnected={obsConnected}
