@@ -29,7 +29,7 @@ const Navbar = () => {
                                 </Button>
                             </Link>
                             <Link to='/Bits'>
-                                <Button isDisabled>
+                                <Button>
                                     Bits
                                 </Button>
                             </Link>
