@@ -24,7 +24,7 @@ const Navbar = () => {
                                 </Button>
                             </Link>
                             <Link to='/ChannelPoints'>
-                                <Button isDisabled>
+                                <Button>
                                     Channel Points
                                 </Button>
                             </Link>

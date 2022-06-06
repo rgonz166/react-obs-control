@@ -4,9 +4,11 @@ import { ChakraProvider, Flex } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
 import Home from "./Pages/Home"
 import Settings from "./Pages/Settings"
+import ChannelPoints from "./Pages/ChannelPoints";
 import Navbar from "./Components/Navbar"
 import OBSWebSocket from "obs-websocket-js";
 import Version from './Components/Version';
+import { setSelectionRange } from "@testing-library/user-event/dist/utils";
 
 
 const obs = new OBSWebSocket();
@@ -17,7 +19,10 @@ const App = () => {
   const [sources, setSources] = useState([])
   const [obsConnected, setObsConnected] = useState(false)
   const [ obsPort, setOBSPort ] = useState('4444')
-  const [ obsPassword, setOBSPassword ] = useState('')
+  const [ obsPassword, setOBSPassword ] = useState('123456')
+  const [ sceneSelected, setSceneSelected ] = useState('')
+  const [ sourceSelected, setSourceSelected ] = useState('')
+  
 
     const connectObs =  () => {
         obs.connect({address: `localhost:${obsPort}`, password: obsPassword}).then(() => {
@@ -25,9 +30,9 @@ const App = () => {
             obs.send('GetSceneList')
             .then( data => {
                 setScenes(data.scenes);
-                if (data.scenes && data.scenes.length > 0) {
-                  setSources(data.scenes[0].sources)
-                }
+                // if (data.scenes && data.scenes.length > 0) {
+                //   setSources(data.scenes[0].sources)
+                // }
             })
             toast({
               title: `OBS Connected`,
@@ -78,6 +83,24 @@ const App = () => {
         console.log('port:', obsPort)
     }
 
+    const handleSceneSelection = (scene) => {
+      if(!scene) {
+        setSceneSelected('')
+        setSources([])
+      } else {
+        setSceneSelected(scene)
+        const selectedScene =  scenes.find((s) => s.name === scene)
+        console.log(selectedScene)
+        setSources(selectedScene.sources)
+      }
+    }
+
+    const handleSourceSelection = (source) => {
+      console.log('source:',source)
+        setSourceSelected(source)
+        console.log('sourceSelected:',sourceSelected)
+    }
+
 
 
     return (
@@ -106,7 +129,16 @@ const App = () => {
                   setOBSPassword={setOBSPassword}
                 />
               } />
-              <Route  />
+              <Route exact path="/ChannelPoints" element={
+              <ChannelPoints 
+                  scenes={scenes}
+                  sources={sources}
+                  obsConnected={obsConnected}
+                  handleSceneSelection={handleSceneSelection}
+                  handleSourceSelection={handleSourceSelection}
+                  
+              />
+              } />
             </Routes>
           </ChakraProvider>
         </Router>
