@@ -7,20 +7,25 @@ import Settings from "./Pages/Settings"
 import ChannelPoints from "./Pages/ChannelPoints";
 import Bits from "./Pages/Bits";
 import Navbar from "./Components/Navbar"
+import TwitchAuth from "./Pages/TwitchAuth";
 import OBSWebSocket from "obs-websocket-js";
 import Version from './Components/Version';
-import { setSelectionRange } from "@testing-library/user-event/dist/utils";
-
 
 const obs = new OBSWebSocket();
 
 const App = () => {
+ 
   const toast = useToast();
   const [scenes, setScenes] = useState([])
   const [sources, setSources] = useState([])
   const [obsConnected, setObsConnected] = useState(false)
   const [ obsPort, setOBSPort ] = useState('4444')
   const [ obsPassword, setOBSPassword ] = useState('123456')
+  const [ token, setToken ] = useState(() => {
+    const saved = localStorage.getItem('twitchToken');
+    const initialValue = JSON.parse(saved);
+    return initialValue || '';
+  });
   const [ sceneSelected, setSceneSelected ] = useState('')
   const [ sourceSelected, setSourceSelected ] = useState('')
   
@@ -55,7 +60,6 @@ const App = () => {
             })
             console.error('rejected', rejected)
         })
-        // await obs.connect('ws://localhost:4444', '123456')
     }
 
     const disconnectObs = () => {
@@ -74,14 +78,15 @@ const App = () => {
 
     const getSceneList = () => {
         console.log('scenes', scenes)
+        
     }
 
     const getSourcesList = () => {
         console.log('sources', sources)
     }
 
-    const getOBSPort = () => {
-        console.log('port:', obsPort)
+    const getTwitch = () => {
+        console.log('token:', token)
     }
 
     const handleSceneSelection = (scene) => {
@@ -91,6 +96,7 @@ const App = () => {
       } else {
         setSceneSelected(scene)
         const selectedScene =  scenes.find((s) => s.name === scene)
+        console.log('sceneSelected', sceneSelected)
         console.log(selectedScene)
         setSources(selectedScene.sources)
       }
@@ -119,7 +125,7 @@ const App = () => {
                   disconnectObs={disconnectObs}
                   getSceneList={getSceneList}
                   getSourcesList={getSourcesList}
-                  getOBSPort={getOBSPort}
+                  getTwitch={getTwitch}
                 />
               } />
 
@@ -131,6 +137,13 @@ const App = () => {
                   setOBSPassword={setOBSPassword}
                 />
               } />
+              <Route path="/auth" element={
+                <TwitchAuth 
+                  token={token}
+                  setToken={setToken}
+                />
+              } />
+
 
               <Route exact path="/ChannelPoints" element={
               <ChannelPoints 
