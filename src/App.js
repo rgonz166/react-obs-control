@@ -5,19 +5,25 @@ import { useToast } from "@chakra-ui/toast";
 import Home from "./Pages/Home"
 import Settings from "./Pages/Settings"
 import Navbar from "./Components/Navbar"
+import TwitchAuth from "./Pages/TwitchAuth";
 import OBSWebSocket from "obs-websocket-js";
 import Version from './Components/Version';
-
 
 const obs = new OBSWebSocket();
 
 const App = () => {
+ 
   const toast = useToast();
   const [scenes, setScenes] = useState([])
   const [sources, setSources] = useState([])
   const [obsConnected, setObsConnected] = useState(false)
   const [ obsPort, setOBSPort ] = useState('4444')
-  const [ obsPassword, setOBSPassword ] = useState('')
+  const [ obsPassword, setOBSPassword ] = useState('123456')
+  const [ token, setToken ] = useState(() => {
+    const saved = localStorage.getItem('twitchToken');
+    const initialValue = JSON.parse(saved);
+    return initialValue || '';
+  });
 
     const connectObs =  () => {
         obs.connect({address: `localhost:${obsPort}`, password: obsPassword}).then(() => {
@@ -49,7 +55,6 @@ const App = () => {
             })
             console.error('rejected', rejected)
         })
-        // await obs.connect('ws://localhost:4444', '123456')
     }
 
     const disconnectObs = () => {
@@ -68,14 +73,15 @@ const App = () => {
 
     const getSceneList = () => {
         console.log('scenes', scenes)
+        
     }
 
     const getSourcesList = () => {
         console.log('sources', sources)
     }
 
-    const getOBSPort = () => {
-        console.log('port:', obsPort)
+    const getTwitch = () => {
+        console.log('token:', token)
     }
 
 
@@ -95,7 +101,7 @@ const App = () => {
                   disconnectObs={disconnectObs}
                   getSceneList={getSceneList}
                   getSourcesList={getSourcesList}
-                  getOBSPort={getOBSPort}
+                  getTwitch={getTwitch}
                 />
               } />
               <Route exact path="/Settings" element={
@@ -106,7 +112,13 @@ const App = () => {
                   setOBSPassword={setOBSPassword}
                 />
               } />
-              <Route  />
+              <Route path="/auth" element={
+                <TwitchAuth 
+                  token={token}
+                  setToken={setToken}
+                />
+              } />
+
             </Routes>
           </ChakraProvider>
         </Router>
