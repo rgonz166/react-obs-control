@@ -4,6 +4,8 @@ import { ChakraProvider, Flex } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
 import Home from "./Pages/Home"
 import Settings from "./Pages/Settings"
+import ChannelPoints from "./Pages/ChannelPoints";
+import Bits from "./Pages/Bits";
 import Navbar from "./Components/Navbar"
 import TwitchAuth from "./Pages/TwitchAuth";
 import OBSWebSocket from "obs-websocket-js";
@@ -24,6 +26,9 @@ const App = () => {
     const initialValue = JSON.parse(saved);
     return initialValue || '';
   });
+  const [ sceneSelected, setSceneSelected ] = useState('')
+  const [ sourceSelected, setSourceSelected ] = useState('')
+  
 
     const connectObs =  () => {
         obs.connect({address: `localhost:${obsPort}`, password: obsPassword}).then(() => {
@@ -31,9 +36,9 @@ const App = () => {
             obs.send('GetSceneList')
             .then( data => {
                 setScenes(data.scenes);
-                if (data.scenes && data.scenes.length > 0) {
-                  setSources(data.scenes[0].sources)
-                }
+                // if (data.scenes && data.scenes.length > 0) {
+                //   setSources(data.scenes[0].sources)
+                // }
             })
             toast({
               title: `OBS Connected`,
@@ -84,6 +89,25 @@ const App = () => {
         console.log('token:', token)
     }
 
+    const handleSceneSelection = (scene) => {
+      if(!scene) {
+        setSceneSelected('')
+        setSources([])
+      } else {
+        setSceneSelected(scene)
+        const selectedScene =  scenes.find((s) => s.name === scene)
+        console.log('sceneSelected', sceneSelected)
+        console.log(selectedScene)
+        setSources(selectedScene.sources)
+      }
+    }
+
+    const handleSourceSelection = (source) => {
+      console.log('source:',source)
+        setSourceSelected(source)
+        console.log('sourceSelected:',sourceSelected)
+    }
+
 
 
     return (
@@ -104,6 +128,7 @@ const App = () => {
                   getTwitch={getTwitch}
                 />
               } />
+
               <Route exact path="/Settings" element={
                 <Settings
                   obsPort={obsPort}
@@ -119,6 +144,28 @@ const App = () => {
                 />
               } />
 
+
+              <Route exact path="/ChannelPoints" element={
+              <ChannelPoints 
+                  scenes={scenes}
+                  sources={sources}
+                  obsConnected={obsConnected}
+                  handleSceneSelection={handleSceneSelection}
+                  handleSourceSelection={handleSourceSelection}
+                  
+              />
+              } />
+
+              <Route exact path="/Bits" element={
+              <Bits 
+                  scenes={scenes}
+                  sources={sources}
+                  obsConnected={obsConnected}
+                  handleSceneSelection={handleSceneSelection}
+                  handleSourceSelection={handleSourceSelection}
+                  
+              />
+              } />
             </Routes>
           </ChakraProvider>
         </Router>

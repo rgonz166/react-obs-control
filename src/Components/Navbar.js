@@ -24,12 +24,12 @@ const Navbar = () => {
                                 </Button>
                             </Link>
                             <Link to='/ChannelPoints'>
-                                <Button isDisabled>
+                                <Button>
                                     Channel Points
                                 </Button>
                             </Link>
                             <Link to='/Bits'>
-                                <Button isDisabled>
+                                <Button>
                                     Bits
                                 </Button>
                             </Link>
