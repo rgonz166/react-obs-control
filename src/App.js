@@ -56,13 +56,28 @@ const App = () => {
       })
     }
 
+    ComfyJS.onChat = (user, message, flags, self, extra) => {
+      console.log('user', user);
+      console.log('message', message);
+      console.log('flags', flags);
+      console.log('self', self);
+      console.log('extra', extra);
+    }
+
     ComfyJS.onError = (err) => {
       console.error('err', err)
+      toast({
+        title: 'Twitch Error',
+        description: err,
+        status: 'error',
+        duration: 10000,
+        isClosable: true
+      })
     }
 
     // ComfyJS.onChat()
 
-  }, []);
+  }, [toast]);
 
   /**
    * Connects to Twitch Event services only when twitch username and token is set
@@ -70,6 +85,14 @@ const App = () => {
   const connectTwitchEvents = () => {
     if (twitchUsername && twitchUsername !== '' && token) {
       ComfyJS.Init(twitchUsername, `oauth:${token}`, twitchUsername)
+    } else {
+      toast({
+        title: 'Missing Authentication',
+        description: 'Please verify twitch username is entered and twitch has been authenticated in Settings',
+        status: 'warning',
+        duration: 10000,
+        isClosable: true
+      })
     }
   }
 
