@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/react-obs-control/static/css/main.d48db4d6.css",
-    "main.js": "/react-obs-control/static/js/main.1e3ca34a.js",
+    "main.js": "/react-obs-control/static/js/main.d90168cc.js",
     "index.html": "/react-obs-control/index.html",
     "main.d48db4d6.css.map": "/react-obs-control/static/css/main.d48db4d6.css.map",
-    "main.1e3ca34a.js.map": "/react-obs-control/static/js/main.1e3ca34a.js.map"
+    "main.d90168cc.js.map": "/react-obs-control/static/js/main.d90168cc.js.map"
   },
   "entrypoints": [
     "static/css/main.d48db4d6.css",
-    "static/js/main.1e3ca34a.js"
+    "static/js/main.d90168cc.js"
   ]
 }
