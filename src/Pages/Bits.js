@@ -1,5 +1,5 @@
 import React from 'react';
-import {  Heading, VStack, Text, Select, Input, HStack,  } from '@chakra-ui/react';
+import {  Heading, VStack, Text, Input, HStack,  } from '@chakra-ui/react';
 import DropDown from '../Components/DropDowns';
 
 const Bits = ({scenes, sources, obsConnected, handleSceneSelection, handleSourceSelection}) => {

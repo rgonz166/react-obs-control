@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { ChakraProvider, Flex } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
 import Home from "./Pages/Home"
@@ -112,7 +112,7 @@ const App = () => {
 
     return (
       <>
-        <Router basename="/react-obs-control">
+        <Router>
           <ChakraProvider>
             <Flex>
               <Navbar />
