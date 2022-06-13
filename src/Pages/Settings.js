@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Center, Heading, Input, Text, VStack, Divider } from "@chakra-ui/react"
+import { Button, Center, Heading, Input, Text, VStack, Divider, Tooltip } from "@chakra-ui/react"
 
 const Settings = ({ obsPort, obsPassword, setOBSPort, setOBSPassword }) => {
     const clientId = '7tpesuf4fwvaihbdotf2ge6khkl75o';
@@ -32,7 +32,9 @@ const Settings = ({ obsPort, obsPassword, setOBSPort, setOBSPassword }) => {
                             <Divider orientation='vertical' />
                         </Center>
                         <VStack>
+                        <Tooltip hasArrow label="Authenticates Twitch and returns token to allow listening to twitch events like Subscriptions, Bits, Follows and others...">
                             <Button bgColor={'#6441a5'} onClick={() => window.location.href = twitchLink}>Twitch Auth</Button>
+                        </Tooltip>
                         </VStack>
                     </Center>
                 </VStack>
