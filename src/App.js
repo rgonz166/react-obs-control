@@ -19,6 +19,7 @@ const App = () => {
   const toast = useToast();
   const [scenes, setScenes] = useState([])
   const [sources, setSources] = useState([])
+  const [twitchConnected, setTwitchConnected] = useState(false)
   const [obsConnected, setObsConnected] = useState(false)
   const [ twitchUsername, setTwitchUsername] = useState(() => {
     const saved = localStorage.getItem('twitchUsername');
@@ -44,6 +45,16 @@ const App = () => {
   const [ sourceSelected, setSourceSelected ] = useState('')
   
   useEffect(() => {
+    ComfyJS.onConnected = () => {
+      console.log('twitch connected')
+      setTwitchConnected(true)
+    }
+
+    ComfyJS.onError = (err) => {
+      console.error('err', err)
+    }
+
+    // ComfyJS.onChat()
 
   }, []);
 
@@ -51,8 +62,16 @@ const App = () => {
    * Connects to Twitch Event services only when twitch username and token is set
    */
   const connectTwitchEvents = () => {
-    // if ()
-    // ComfyJS.Init()
+    if (twitchUsername && twitchUsername !== '' && token) {
+      console.log('u', twitchUsername)
+      console.log('t', token)
+      ComfyJS.Init(twitchUsername, `oauth:${token}`, twitchUsername)
+    }
+  }
+
+  const disconnectTwitchEvents = () => {
+    ComfyJS.Disconnect();
+    setTwitchConnected(false);
   }
   
   /**
@@ -153,6 +172,9 @@ const App = () => {
                   getSceneList={getSceneList}
                   getSourcesList={getSourcesList}
                   getTwitch={getTwitch}
+                  connectTwitchEvents={connectTwitchEvents}
+                  disconnectTwitchEvents={disconnectTwitchEvents}
+                  twitchConnected={twitchConnected}
                 />
               } />
 
