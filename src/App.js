@@ -46,8 +46,14 @@ const App = () => {
   
   useEffect(() => {
     ComfyJS.onConnected = () => {
-      console.log('twitch connected')
       setTwitchConnected(true)
+      toast({
+        title: `Twitch Connected`,
+        description: 'Twitch Connection has been successfully established',
+        status: 'success',
+        duration: 7000,
+        isClosable: true
+      })
     }
 
     ComfyJS.onError = (err) => {
@@ -63,8 +69,6 @@ const App = () => {
    */
   const connectTwitchEvents = () => {
     if (twitchUsername && twitchUsername !== '' && token) {
-      console.log('u', twitchUsername)
-      console.log('t', token)
       ComfyJS.Init(twitchUsername, `oauth:${token}`, twitchUsername)
     }
   }
@@ -72,6 +76,13 @@ const App = () => {
   const disconnectTwitchEvents = () => {
     ComfyJS.Disconnect();
     setTwitchConnected(false);
+    toast({
+      title: `Twitch Disconnected`,
+      description: 'Twitch Connection has been successfully disconnected.',
+      status: 'success',
+      duration: 7000,
+      isClosable: true
+    })
   }
   
   /**
