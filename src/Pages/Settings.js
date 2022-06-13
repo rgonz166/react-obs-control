@@ -32,7 +32,7 @@ const Settings = ({ obsPort, obsPassword, setOBSPort, setOBSPassword }) => {
                             <Divider orientation='vertical' />
                         </Center>
                         <VStack>
-                            <Button bgColor={'#6441a5'} onClick={() => window.location.href = twitchLink}>Authenticate Twtich</Button>
+                            <Button bgColor={'#6441a5'} onClick={() => window.location.href = twitchLink}>Twitch Auth</Button>
                         </VStack>
                     </Center>
                 </VStack>
