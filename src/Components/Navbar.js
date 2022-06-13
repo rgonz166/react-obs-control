@@ -12,7 +12,9 @@ const Navbar = () => {
             <Box shadow='md' w='100%' p={4} bg="#20293a" color='white'>
                 <HStack>
                     <Flex w="100%">
-                        <Heading pl={20}>OBS Control</Heading>
+                        <Link to='/'>
+                            <Heading pl={20}>OBS Control</Heading>
+                        </Link>
 
                         <Spacer></Spacer>
                         <Flex display={['none', 'none', 'flex', 'flex']}>
@@ -20,7 +22,7 @@ const Navbar = () => {
                         
                             <Link to='/'>
                                 <Button>
-                                    Homepage
+                                    Home
                                 </Button>
                             </Link>
                             <Link to='/ChannelPoints'>
