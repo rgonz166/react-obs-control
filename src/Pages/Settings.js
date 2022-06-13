@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Center, Heading, Input, Text, VStack, Divider, Box, Tooltip } from "@chakra-ui/react"
+import { Button, Center, Heading, Input, Text, VStack, Divider, Box, Tooltip, InputGroup, InputRightElement } from "@chakra-ui/react"
 import { Link } from "react-router-dom";
 
 const Settings = ({ twitchUsername, obsPort, obsPassword, setTwitchUsername, setOBSPort, setOBSPassword, toast }) => {
@@ -11,6 +11,7 @@ const Settings = ({ twitchUsername, obsPort, obsPassword, setTwitchUsername, set
     const [localUsername, setLocalUsername] = useState(twitchUsername);
     const [localPort, setLocalPort] = useState(obsPort);
     const [localPassword, setLocalPassword] = useState(obsPassword);
+    const [showPassword, setShowPassword] = useState(false);
 
     const settingsSaved = () => {
 
@@ -49,7 +50,14 @@ const Settings = ({ twitchUsername, obsPort, obsPassword, setTwitchUsername, set
                             <Center>
                                 <Text fontSize="2xl" style={{fontWeight: "bold"}}>OBS Password</Text>
                             </Center>
-                            <Input type="text" value={localPassword} onChange={event => setLocalPassword(event.target.value)}/>
+                            <InputGroup>
+                                <Input type={showPassword ? 'text' : 'password'} value={localPassword} onChange={event => setLocalPassword(event.target.value)}/>
+                                <InputRightElement width='4.5rem'>
+                                    <Button onClick={() => setShowPassword(!showPassword)}>
+                                        {showPassword ? 'Hide' : 'Show'}
+                                    </Button>
+                                </InputRightElement>
+                            </InputGroup>
                         </VStack>
                         <Center height='100px' padding={'20px'}>
                             <Divider orientation='vertical' />
