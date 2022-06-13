@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { ChakraProvider, Flex } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
@@ -10,6 +10,7 @@ import Navbar from "./Components/Navbar"
 import TwitchAuth from "./Pages/TwitchAuth";
 import OBSWebSocket from "obs-websocket-js";
 import Version from './Components/Version';
+import ComfyJS from "comfy.js";
 
 const obs = new OBSWebSocket();
 
@@ -19,8 +20,21 @@ const App = () => {
   const [scenes, setScenes] = useState([])
   const [sources, setSources] = useState([])
   const [obsConnected, setObsConnected] = useState(false)
-  const [ obsPort, setOBSPort ] = useState('4444')
-  const [ obsPassword, setOBSPassword ] = useState('123456')
+  const [ twitchUsername, setTwitchUsername] = useState(() => {
+    const saved = localStorage.getItem('twitchUsername');
+    const initialValue = JSON.parse(saved);
+    return initialValue || '';
+  });
+  const [ obsPort, setOBSPort ] = useState(() => {
+    const saved = localStorage.getItem('obsPort');
+    const initialValue = JSON.parse(saved);
+    return initialValue || '4444';
+  })
+  const [ obsPassword, setOBSPassword ] = useState(() => {
+    const saved = localStorage.getItem('obsPassword');
+    const initialValue = JSON.parse(saved);
+    return initialValue || '';
+  })
   const [ token, setToken ] = useState(() => {
     const saved = localStorage.getItem('twitchToken');
     const initialValue = JSON.parse(saved);
@@ -29,84 +43,97 @@ const App = () => {
   const [ sceneSelected, setSceneSelected ] = useState('')
   const [ sourceSelected, setSourceSelected ] = useState('')
   
+  useEffect(() => {
 
-    const connectObs =  () => {
-        obs.connect({address: `localhost:${obsPort}`, password: obsPassword}).then(() => {
-            setObsConnected(true);
-            obs.send('GetSceneList')
-            .then( data => {
-                setScenes(data.scenes);
-                // if (data.scenes && data.scenes.length > 0) {
-                //   setSources(data.scenes[0].sources)
-                // }
-            })
-            toast({
-              title: `OBS Connected`,
-              description: 'OBS Connection has been successfully established',
-              status: 'success',
-              duration: 7000,
-              isClosable: true
-            })
-        }).catch(rejected => {
-            setObsConnected(false)
-            setScenes([]);
-            setSources([]);
-            toast({
-              title: `OBS Connection Unsuccessful`,
-              description: 'OBS Connection has not been successfully established, verify port and password have been entered correctly in settings.',
-              status: 'error',
-              duration: 15000,
-              isClosable: true
-            })
-            console.error('rejected', rejected)
-        })
-    }
+  }, []);
 
-    const disconnectObs = () => {
-        setObsConnected(false);
-        setScenes([]);
-        setSources([]);
-        obs.disconnect();
-        toast({
-          title: `OBS Disconnected`,
-          description: 'OBS Connection has been successfully disconnected',
-          status: 'success',
-          duration: 7000,
-          isClosable: true
-        })
-    }
+  /**
+   * Connects to Twitch Event services only when twitch username and token is set
+   */
+  const connectTwitchEvents = () => {
+    // if ()
+    // ComfyJS.Init()
+  }
+  
+  /**
+   * Connect OBS Websocket and sets scenes and sources
+   */
+  const connectObs =  () => {
+      obs.connect({address: `localhost:${obsPort}`, password: obsPassword}).then(() => {
+          setObsConnected(true);
+          obs.send('GetSceneList')
+          .then( data => {
+              setScenes(data.scenes);
+              // if (data.scenes && data.scenes.length > 0) {
+              //   setSources(data.scenes[0].sources)
+              // }
+          })
+          toast({
+            title: `OBS Connected`,
+            description: 'OBS Connection has been successfully established',
+            status: 'success',
+            duration: 7000,
+            isClosable: true
+          })
+      }).catch(rejected => {
+          setObsConnected(false)
+          setScenes([]);
+          setSources([]);
+          toast({
+            title: `OBS Connection Unsuccessful`,
+            description: 'OBS Connection has not been successfully established, verify port and password have been entered correctly in settings.',
+            status: 'error',
+            duration: 15000,
+            isClosable: true
+          })
+          console.error('rejected', rejected)
+      })
+  }
 
-    const getSceneList = () => {
-        console.log('scenes', scenes)
-        
-    }
+  const disconnectObs = () => {
+      setObsConnected(false);
+      setScenes([]);
+      setSources([]);
+      obs.disconnect();
+      toast({
+        title: `OBS Disconnected`,
+        description: 'OBS Connection has been successfully disconnected',
+        status: 'success',
+        duration: 7000,
+        isClosable: true
+      })
+  }
 
-    const getSourcesList = () => {
-        console.log('sources', sources)
-    }
+  const getSceneList = () => {
+      console.log('scenes', scenes)
+  }
 
-    const getTwitch = () => {
-        console.log('token:', token)
-    }
+  const getSourcesList = () => {
+      console.log('sources', sources)
+  }
 
-    const handleSceneSelection = (scene) => {
-      if(!scene) {
-        setSceneSelected('')
-        setSources([])
-      } else {
-        setSceneSelected(scene)
-        const selectedScene =  scenes.find((s) => s.name === scene)
-        console.log('sceneSelected', sceneSelected)
-        console.log(selectedScene)
-        setSources(selectedScene.sources)
-      }
-    }
+  const getTwitch = () => {
+      console.log('token:', token)
+  }
 
-    const handleSourceSelection = (source) => {
-      console.log('source:',source)
-        setSourceSelected(source)
-        console.log('sourceSelected:',sourceSelected)
+  const handleSceneSelection = (scene) => {
+    if(!scene) {
+      setSceneSelected('')
+      setSources([])
+    } else {
+      setSceneSelected(scene)
+      const selectedScene =  scenes.find((s) => s.name === scene)
+      console.log('sceneSelected', sceneSelected)
+      console.log(selectedScene)
+      setSources(selectedScene.sources)
     }
+  }
+
+  const handleSourceSelection = (source) => {
+    console.log('source:',source)
+      setSourceSelected(source)
+      console.log('sourceSelected:',sourceSelected)
+  }
 
 
 
@@ -131,12 +158,13 @@ const App = () => {
 
               <Route exact path="/Settings" element={
                 <Settings
+                  twitchUsername={twitchUsername}
                   obsPort={obsPort}
                   obsPassword={obsPassword}
+                  setTwitchUsername={setTwitchUsername}
                   setOBSPort={setOBSPort}
-                  setOBSPassword={setOBSPassword}
-                  toast={toast}
-                />
+                  setOBSPassword={setOBSPassword} 
+                  toast={toast}                />
               } />
               <Route path="/auth" element={
                 <TwitchAuth 
