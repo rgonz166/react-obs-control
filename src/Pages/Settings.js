@@ -4,7 +4,7 @@ import { Button, Center, Heading, Input, Text, VStack, Divider } from "@chakra-u
 const Settings = ({ obsPort, obsPassword, setOBSPort, setOBSPassword }) => {
     const clientId = '7tpesuf4fwvaihbdotf2ge6khkl75o';
     const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://rgonz166.github.io'
-    const redirectUrl = baseUrl + '/react-obs-control/auth/'
+    const redirectUrl = baseUrl + '/react-obs-control#/auth/'
     const scopes = 'channel:manage:redemptions channel:read:redemptions channel:read:hype_train channel:read:subscriptions moderation:read moderation:read user:edit user:read:email chat:edit chat:read';
     const twitchLink = `https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=${clientId}&force_verify=true&redirect_uri=${redirectUrl}&scope=${scopes}`;
 
