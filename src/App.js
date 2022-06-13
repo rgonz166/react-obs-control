@@ -135,6 +135,7 @@ const App = () => {
                   obsPassword={obsPassword}
                   setOBSPort={setOBSPort}
                   setOBSPassword={setOBSPassword}
+                  toast={toast}
                 />
               } />
               <Route path="/auth" element={
