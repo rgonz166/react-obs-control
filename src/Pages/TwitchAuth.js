@@ -30,6 +30,7 @@ const TwitchAuth = ({token, setToken}) => {
         } else {
             setError(false)
             const currentToken = hash.split('&')[0].split('=')[1];
+            console.log('currentToken', currentToken)
             setToken(currentToken)
         }
     }
