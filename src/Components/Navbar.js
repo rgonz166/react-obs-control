@@ -36,7 +36,7 @@ const Navbar = () => {
                                 </Button>
                             </Link>
                             <Link to='/Subscription'>
-                                <Button isDisabled>
+                                <Button>
                                     Subscriptions
                                 </Button>
                             </Link>
