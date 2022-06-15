@@ -35,7 +35,7 @@ const Navbar = () => {
                                     Bits
                                 </Button>
                             </Link>
-                            <Link to='/Subscription'>
+                            <Link to='/Subscriptions'>
                                 <Button>
                                     Subscriptions
                                 </Button>

@@ -213,7 +213,7 @@ const App = () => {
                 />
               } />
 
-              <Route exact path="/Settings" element={
+              <Route path="/Settings" element={
                 <Settings
                   twitchUsername={twitchUsername}
                   obsPort={obsPort}
@@ -231,7 +231,7 @@ const App = () => {
               } />
 
 
-              <Route exact path="/ChannelPoints" element={
+              <Route path="/ChannelPoints" element={
               <ChannelPoints 
                   scenes={scenes}
                   sources={sources}
@@ -242,7 +242,7 @@ const App = () => {
               />
               } />
 
-              <Route exact path="/Bits" element={
+              <Route path="/Bits" element={
               <Bits 
                   scenes={scenes}
                   sources={sources}
@@ -253,7 +253,7 @@ const App = () => {
               />
               } />
 
-              <Route exact path="/Subscription" element={
+              <Route path="/Subscriptions" element={
               <Subs 
                   scenes={scenes}
                   sources={sources}
