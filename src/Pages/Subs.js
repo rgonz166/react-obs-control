@@ -1,17 +1,14 @@
-import React from 'react';
-import {  Heading, VStack, Text, Input, HStack } from '@chakra-ui/react';
-import DropDown from '../Components/DropDowns';
+import React from "react";
+import { Heading, VStack, Text, Input, HStack } from "@chakra-ui/react";
+import DropDown from "../Components/DropDowns";
 
-const Bits = ({scenes, sources, obsConnected, handleSceneSelection, handleSourceSelection}) => {
-
-
-
-    return (
+const Subs = ({scenes, sources, obsConnected, handleSceneSelection, handleSourceSelection}) => {
+    return(
         <>
         <form>
             <VStack paddingTop='10vh'>
-                <Heading>Bit Rewards</Heading>
-                    <Text fontSize='2xl'>Set Bit Amounts</Text>
+                <Heading>Sub Rewards</Heading>
+                    <Text fontSize='2xl'>Set Sub Amounts</Text>
                     <HStack>
                         <VStack>
                             <Text fontSize='2xl'>Max Value</Text>
@@ -35,4 +32,4 @@ const Bits = ({scenes, sources, obsConnected, handleSceneSelection, handleSource
     )
 }
 
-export default Bits;
+export default Subs

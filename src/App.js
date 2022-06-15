@@ -6,6 +6,7 @@ import Home from "./Pages/Home"
 import Settings from "./Pages/Settings"
 import ChannelPoints from "./Pages/ChannelPoints";
 import Bits from "./Pages/Bits";
+import Subs from "./Pages/Subs";
 import Navbar from "./Components/Navbar"
 import TwitchAuth from "./Pages/TwitchAuth";
 import OBSWebSocket from "obs-websocket-js";
@@ -159,6 +160,17 @@ const App = () => {
 
               <Route exact path="/Bits" element={
               <Bits 
+                  scenes={scenes}
+                  sources={sources}
+                  obsConnected={obsConnected}
+                  handleSceneSelection={handleSceneSelection}
+                  handleSourceSelection={handleSourceSelection}
+                  
+              />
+              } />
+
+              <Route exact path="/Subscription" element={
+              <Subs 
                   scenes={scenes}
                   sources={sources}
                   obsConnected={obsConnected}
