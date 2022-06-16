@@ -22,9 +22,14 @@ const Home = ({
                             <Button onClick={async () => { connectObs() }}>Connect OBS</Button>
                         </Tooltip>
                     }
-                    <Button onClick={() => { getSceneList() }}>Get Scenes</Button>
-                    <Button onClick={() => { getSourcesList() }}>Get Sources</Button>
-                    <Button onClick={() => { getTwitch() }}>Get Twitch</Button>
+                    {
+                        process.env.NODE_ENV === 'development' &&
+                            <div>
+                                <Button onClick={() => { getSceneList() }}>Get Scenes</Button>
+                                <Button onClick={() => { getSourcesList() }}>Get Sources</Button>
+                                <Button onClick={() => { getTwitch() }}>Get Twitch</Button>
+                            </div>
+                    }
                     {twitchConnected ? 
                         <Button onClick={() => { disconnectTwitchEvents() }} bgColor={'#6441a5'}>Disconnect Twitch</Button>
                         :
