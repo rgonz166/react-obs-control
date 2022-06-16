@@ -14,11 +14,8 @@ import { TwitchContext } from "Contexts/TwitchContext";
 const App = () => {
 
   const {
-    twitchConnected, setTwitchConnected,
     twitchUsername, setTwitchUsername,
     token, setToken,
-    connectTwitchEvents, disconnectTwitchEvents,
-    getTwitch
   } = useContext(TwitchContext)
 
     return (
@@ -30,12 +27,7 @@ const App = () => {
             </Flex>
             <Routes>
               <Route path="/" element={
-                <Home
-                  getTwitch={getTwitch}
-                  connectTwitchEvents={connectTwitchEvents}
-                  disconnectTwitchEvents={disconnectTwitchEvents}
-                  twitchConnected={twitchConnected}
-                />
+                <Home />
               } />
 
               <Route path="/Settings" element={
