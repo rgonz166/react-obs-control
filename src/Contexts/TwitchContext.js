@@ -116,40 +116,38 @@ export function TwitchProvider ({children}) {
     });
 
     // Add Functions below
-
-    
-  /**
-   * Connects to Twitch Event services only when twitch username and token is set
-   */
-  const connectTwitchEvents = () => {
-    if (twitchUsername && twitchUsername !== '' && token) {
-      ComfyJS.Init(twitchUsername, `oauth:${token}`, twitchUsername)
-    } else {
-      toast({
-        title: 'Missing Authentication',
-        description: 'Please verify twitch username is entered and twitch has been authenticated in Settings',
-        status: 'warning',
-        duration: 10000,
-        isClosable: true
-      })
+    /**
+     * Connects to Twitch Event services only when twitch username and token is set
+     */
+    const connectTwitchEvents = () => {
+        if (twitchUsername && twitchUsername !== '' && token) {
+        ComfyJS.Init(twitchUsername, `oauth:${token}`, twitchUsername)
+        } else {
+        toast({
+            title: 'Missing Authentication',
+            description: 'Please verify twitch username is entered and twitch has been authenticated in Settings',
+            status: 'warning',
+            duration: 10000,
+            isClosable: true
+        })
+        }
     }
-  }
 
-  const disconnectTwitchEvents = () => {
-    ComfyJS.Disconnect();
-    setTwitchConnected(false);
-    toast({
-      title: `Twitch Disconnected`,
-      description: 'Twitch Connection has been successfully disconnected.',
-      status: 'success',
-      duration: 7000,
-      isClosable: true
-    })
-  }
+    const disconnectTwitchEvents = () => {
+        ComfyJS.Disconnect();
+        setTwitchConnected(false);
+        toast({
+        title: `Twitch Disconnected`,
+        description: 'Twitch Connection has been successfully disconnected.',
+        status: 'success',
+        duration: 7000,
+        isClosable: true
+        })
+    }
 
-  const getTwitch = () => {
-      console.log('token:', token)
-  }
+    const getTwitch = () => {
+        console.log('token:', token)
+    }
 
 
 
