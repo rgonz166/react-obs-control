@@ -6,6 +6,7 @@ import App from './App';
 import { ObsProvider } from 'Contexts/ObsContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+theme.config.initialColorMode = 'dark'
 root.render(
     <ChakraProvider theme={theme}>
         <ObsProvider>
