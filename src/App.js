@@ -20,9 +20,7 @@ const App = () => {
     obsConnected,
     obsPort, setOBSPort,
     obsPassword, setOBSPassword,
-    connectObs, disconnectObs,
     handleSceneSelection, handleSourceSelection,
-    getSceneList, getSourcesList
   } = useContext(ObsContext);
   const toast = useToast();
   const [twitchConnected, setTwitchConnected] = useState(false)
@@ -174,11 +172,6 @@ const App = () => {
             <Routes>
               <Route path="/" element={
                 <Home
-                  obsConnected={obsConnected}
-                  connectObs={connectObs}
-                  disconnectObs={disconnectObs}
-                  getSceneList={getSceneList}
-                  getSourcesList={getSourcesList}
                   getTwitch={getTwitch}
                   connectTwitchEvents={connectTwitchEvents}
                   disconnectTwitchEvents={disconnectTwitchEvents}
