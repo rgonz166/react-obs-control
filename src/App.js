@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ChakraProvider, Flex } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
@@ -11,15 +11,8 @@ import Navbar from "./Components/Navbar"
 import TwitchAuth from "./Pages/TwitchAuth";
 import Version from './Components/Version';
 import ComfyJS from "comfy.js";
-import { ObsContext } from "Contexts/ObsContext";
 
 const App = () => {
-  const {
-    scenes,
-    sources,
-    obsConnected,
-    handleSceneSelection, handleSourceSelection,
-  } = useContext(ObsContext);
   const toast = useToast();
   const [twitchConnected, setTwitchConnected] = useState(false)
   
