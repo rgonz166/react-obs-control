@@ -58,33 +58,33 @@ const Navbar = () => {
                          variant='outline'
 
                         />
-                        <MenuList>
+                        <MenuList p={'5px 13px'}>
                             <Link to='/'>
-                                <MenuItem >
-                                    <Button w={'100%'}>Home</Button>
+                                <MenuItem as={Button} margin={'10px 0'}>
+                                    Home
                                 </MenuItem>
                             </Link>
                             <Link to='/ChannelPoints'>
-                                <MenuItem >
-                                    <Button w={'100%'}>ChannelPoints</Button>
+                                <MenuItem as={Button} margin={'10px 0'} >
+                                    ChannelPoints
                                 </MenuItem>
                             </Link>
                             <Link to='/Bits'>
-                                <MenuItem >
-                                    <Button w={'100%'}>Bits</Button>
+                                <MenuItem as={Button} margin={'10px 0'} >
+                                    Bits
                                 </MenuItem>
                             </Link>
                             <Link to='/Subscriptions'>
-                                <MenuItem >
-                                    <Button w={'100%'}>Subscriptions</Button>
+                                <MenuItem as={Button} margin={'10px 0'} >
+                                    Subscriptions
                                 </MenuItem>
                             </Link>
                             <Link to='/Settings'>
-                                <MenuItem >
-                                    <Button w={'100%'}>Settings</Button>
+                                <MenuItem as={Button} margin={'10px 0'} >
+                                    Settings
                                 </MenuItem>
                             </Link>
-                    </MenuList>
+                        </MenuList>
                     </Menu>
                         
                     </Flex>
