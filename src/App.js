@@ -192,13 +192,7 @@ const App = () => {
               } />
 
               <Route path="/ChannelPoints" element={
-                <ChannelPoints 
-                    scenes={scenes}
-                    sources={sources}
-                    obsConnected={obsConnected}
-                    handleSceneSelection={handleSceneSelection}
-                    handleSourceSelection={handleSourceSelection}
-                />
+                <ChannelPoints />
               } />
 
               <Route path="/Bits" element={

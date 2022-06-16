@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { VStack, Center, Text, Input, Select,  } from "@chakra-ui/react";
+import { ObsContext } from "Contexts/ObsContext";
 
-const DropDown = ({scenes, sources, obsConnected, handleSceneSelection, handleSourceSelection}) => {
-
+const DropDown = () => {
+    const {
+        scenes, sources, obsConnected, 
+        handleSceneSelection, handleSourceSelection
+    } = useContext(ObsContext)
 
     return(
         <Center>
