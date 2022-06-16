@@ -4,6 +4,7 @@
   "homepage": "https://rgonz166.github.io/react-obs-control",
   "private": true,
   "dependencies": {
+    "@chakra-ui/icons": "^2.0.2",
     "@chakra-ui/react": "^2.1.2",
     "@chakra-ui/toast": "^2.0.5",
     "@emotion/react": "^11.9.0",
