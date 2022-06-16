@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ChakraProvider, Flex } from "@chakra-ui/react";
 import Home from "./Pages/Home"
@@ -9,14 +9,8 @@ import Subs from "./Pages/Subs";
 import Navbar from "./Components/Navbar"
 import TwitchAuth from "./Pages/TwitchAuth";
 import Version from './Components/Version';
-import { TwitchContext } from "Contexts/TwitchContext";
 
 const App = () => {
-
-  const {
-    twitchUsername, setTwitchUsername,
-    token, setToken,
-  } = useContext(TwitchContext)
 
     return (
       <>
@@ -35,10 +29,7 @@ const App = () => {
               } />
 
               <Route path="/auth" element={
-                <TwitchAuth 
-                  token={token}
-                  setToken={setToken}
-                />
+                <TwitchAuth />
               } />
 
               <Route path="/ChannelPoints" element={
@@ -58,7 +49,6 @@ const App = () => {
         <Version />
       </>
     )
-  
 }
 
 export default App;

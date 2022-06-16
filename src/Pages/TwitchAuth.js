@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { TwitchContext } from 'Contexts/TwitchContext';
+import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 
-const TwitchAuth = ({token, setToken}) => {
+const TwitchAuth = () => {
+
+    const {token, setToken} = useContext(TwitchContext)
+
     const [error, setError] = useState(false);
     const navigate = useNavigate();
     const { hash } = useLocation();
