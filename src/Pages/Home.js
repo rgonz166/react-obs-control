@@ -1,17 +1,20 @@
 import React, { useContext } from "react"
 import { Button,Center, VStack, Heading, HStack, Text, Tooltip } from "@chakra-ui/react";
 import { ObsContext } from "Contexts/ObsContext";
+import { TwitchContext } from "Contexts/TwitchContext";
 
-const Home = ({ 
-    getTwitch, 
-    connectTwitchEvents, disconnectTwitchEvents,
-    twitchConnected
-}) => {
+const Home = () => {
     const {
         obsConnected, 
         connectObs, disconnectObs,
         getSceneList, getSourcesList
     } = useContext(ObsContext)
+
+    const {
+        getTwitch, 
+        connectTwitchEvents, disconnectTwitchEvents,
+        twitchConnected
+    } = useContext(TwitchContext);
 
     return (
        <>
