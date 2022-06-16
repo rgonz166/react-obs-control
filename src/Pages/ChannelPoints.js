@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {  Heading, VStack, Text, Select,  } from '@chakra-ui/react';
 import DropDown from '../Components/DropDowns';
+import { ObsContext } from 'Contexts/ObsContext';
 
 
 
-const ChannelPoints = ({scenes, sources, obsConnected, handleSceneSelection, handleSourceSelection}) => {
+const ChannelPoints = () => {
 
+    const { obsConnected } = useContext(ObsContext)
 
     return (
         <>
@@ -16,13 +18,7 @@ const ChannelPoints = ({scenes, sources, obsConnected, handleSceneSelection, han
                     <Select w='20%' placeholder={obsConnected ? 'Select Reward' : 'OBS Not Connected'}>
                         <option>shloompy</option>
                     </Select>
-                <DropDown 
-                 scenes={scenes}
-                 sources={sources}
-                 obsConnected={obsConnected}
-                 handleSceneSelection={handleSceneSelection}
-                 handleSourceSelection={handleSourceSelection}
-                />
+                <DropDown />
             </VStack>
         </form>
         </>

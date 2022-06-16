@@ -9,41 +9,25 @@ import Bits from "./Pages/Bits";
 import Subs from "./Pages/Subs";
 import Navbar from "./Components/Navbar"
 import TwitchAuth from "./Pages/TwitchAuth";
-import OBSWebSocket from "obs-websocket-js";
 import Version from './Components/Version';
 import ComfyJS from "comfy.js";
 
-const obs = new OBSWebSocket();
-
 const App = () => {
- 
   const toast = useToast();
-  const [scenes, setScenes] = useState([])
-  const [sources, setSources] = useState([])
   const [twitchConnected, setTwitchConnected] = useState(false)
-  const [obsConnected, setObsConnected] = useState(false)
+  
   const [ twitchUsername, setTwitchUsername] = useState(() => {
     const saved = localStorage.getItem('twitchUsername');
     const initialValue = JSON.parse(saved);
     return initialValue || '';
   });
-  const [ obsPort, setOBSPort ] = useState(() => {
-    const saved = localStorage.getItem('obsPort');
-    const initialValue = JSON.parse(saved);
-    return initialValue || '4444';
-  })
-  const [ obsPassword, setOBSPassword ] = useState(() => {
-    const saved = localStorage.getItem('obsPassword');
-    const initialValue = JSON.parse(saved);
-    return initialValue || '';
-  })
+  
   const [ token, setToken ] = useState(() => {
     const saved = localStorage.getItem('twitchToken');
     const initialValue = JSON.parse(saved);
     return initialValue || '';
   });
-  const [ sceneSelected, setSceneSelected ] = useState('')
-  const [ sourceSelected, setSourceSelected ] = useState('')
+  
   
   useEffect(() => {
     ComfyJS.onConnected = () => {
@@ -164,88 +148,10 @@ const App = () => {
       isClosable: true
     })
   }
-  
-  /**
-   * Connect OBS Websocket and sets scenes and sources
-   */
-  const connectObs =  () => {
-      obs.connect({address: `localhost:${obsPort}`, password: obsPassword}).then(() => {
-          setObsConnected(true);
-          obs.send('GetSceneList')
-          .then( data => {
-              setScenes(data.scenes);
-              // if (data.scenes && data.scenes.length > 0) {
-              //   setSources(data.scenes[0].sources)
-              // }
-          })
-          toast({
-            title: `OBS Connected`,
-            description: 'OBS Connection has been successfully established',
-            status: 'success',
-            duration: 7000,
-            isClosable: true
-          })
-      }).catch(rejected => {
-          setObsConnected(false)
-          setScenes([]);
-          setSources([]);
-          toast({
-            title: `OBS Connection Unsuccessful`,
-            description: 'OBS Connection has not been successfully established, verify port and password have been entered correctly in settings.',
-            status: 'error',
-            duration: 15000,
-            isClosable: true
-          })
-          console.error('rejected', rejected)
-      })
-  }
-
-  const disconnectObs = () => {
-      setObsConnected(false);
-      setScenes([]);
-      setSources([]);
-      obs.disconnect();
-      toast({
-        title: `OBS Disconnected`,
-        description: 'OBS Connection has been successfully disconnected',
-        status: 'success',
-        duration: 7000,
-        isClosable: true
-      })
-  }
-
-  const getSceneList = () => {
-      console.log('scenes', scenes)
-  }
-
-  const getSourcesList = () => {
-      console.log('sources', sources)
-  }
 
   const getTwitch = () => {
       console.log('token:', token)
   }
-
-  const handleSceneSelection = (scene) => {
-    if(!scene) {
-      setSceneSelected('')
-      setSources([])
-    } else {
-      setSceneSelected(scene)
-      const selectedScene =  scenes.find((s) => s.name === scene)
-      console.log('sceneSelected', sceneSelected)
-      console.log(selectedScene)
-      setSources(selectedScene.sources)
-    }
-  }
-
-  const handleSourceSelection = (source) => {
-    console.log('source:',source)
-      setSourceSelected(source)
-      console.log('sourceSelected:',sourceSelected)
-  }
-
-
 
     return (
       <>
@@ -257,11 +163,6 @@ const App = () => {
             <Routes>
               <Route path="/" element={
                 <Home
-                  obsConnected={obsConnected}
-                  connectObs={connectObs}
-                  disconnectObs={disconnectObs}
-                  getSceneList={getSceneList}
-                  getSourcesList={getSourcesList}
                   getTwitch={getTwitch}
                   connectTwitchEvents={connectTwitchEvents}
                   disconnectTwitchEvents={disconnectTwitchEvents}
@@ -272,13 +173,10 @@ const App = () => {
               <Route path="/Settings" element={
                 <Settings
                   twitchUsername={twitchUsername}
-                  obsPort={obsPort}
-                  obsPassword={obsPassword}
                   setTwitchUsername={setTwitchUsername}
-                  setOBSPort={setOBSPort}
-                  setOBSPassword={setOBSPassword} 
-                  toast={toast}                />
+                />
               } />
+
               <Route path="/auth" element={
                 <TwitchAuth 
                   token={token}
@@ -286,38 +184,16 @@ const App = () => {
                 />
               } />
 
-
               <Route path="/ChannelPoints" element={
-              <ChannelPoints 
-                  scenes={scenes}
-                  sources={sources}
-                  obsConnected={obsConnected}
-                  handleSceneSelection={handleSceneSelection}
-                  handleSourceSelection={handleSourceSelection}
-                  
-              />
+                <ChannelPoints />
               } />
 
               <Route path="/Bits" element={
-              <Bits 
-                  scenes={scenes}
-                  sources={sources}
-                  obsConnected={obsConnected}
-                  handleSceneSelection={handleSceneSelection}
-                  handleSourceSelection={handleSourceSelection}
-                  
-              />
+                <Bits />
               } />
 
               <Route path="/Subscriptions" element={
-              <Subs 
-                  scenes={scenes}
-                  sources={sources}
-                  obsConnected={obsConnected}
-                  handleSceneSelection={handleSceneSelection}
-                  handleSourceSelection={handleSourceSelection}
-                  
-              />
+                <Subs />
               } />
             </Routes>
           </ChakraProvider>
