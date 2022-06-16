@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ButtonGroup, Button, HStack, Box, Flex, Heading, Spacer, Tooltip, IconButton, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react"
 import { HamburgerIcon } from "@chakra-ui/icons";
-import { ColorModeSwitcher } from "../Components/ColorModeSwitcher"
 
 
 const Navbar = () => {
@@ -87,11 +86,7 @@ const Navbar = () => {
                             </Link>
                     </MenuList>
                     </Menu>
-                        <Tooltip hasArrow label="Toggle Light/Dark Mode">
-                            <Box>
-                                <ColorModeSwitcher justifySelf="flex-end" />                    
-                            </Box>
-                        </Tooltip>
+                        
                     </Flex>
                 </HStack>
             </Box>
