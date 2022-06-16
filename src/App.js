@@ -18,8 +18,6 @@ const App = () => {
     scenes,
     sources,
     obsConnected,
-    obsPort, setOBSPort,
-    obsPassword, setOBSPassword,
     handleSceneSelection, handleSourceSelection,
   } = useContext(ObsContext);
   const toast = useToast();
@@ -182,12 +180,8 @@ const App = () => {
               <Route path="/Settings" element={
                 <Settings
                   twitchUsername={twitchUsername}
-                  obsPort={obsPort}
-                  obsPassword={obsPassword}
                   setTwitchUsername={setTwitchUsername}
-                  setOBSPort={setOBSPort}
-                  setOBSPassword={setOBSPassword} 
-                  toast={toast}                />
+                />
               } />
 
               <Route path="/auth" element={
