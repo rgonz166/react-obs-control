@@ -2,8 +2,7 @@ import React from 'react';
 import {  Heading, VStack, Text, Input, HStack } from '@chakra-ui/react';
 import DropDown from '../Components/DropDowns';
 
-const Bits = ({scenes, sources, obsConnected, handleSceneSelection, handleSourceSelection}) => {
-
+const Bits = () => {
 
 
     return (
@@ -22,13 +21,7 @@ const Bits = ({scenes, sources, obsConnected, handleSceneSelection, handleSource
                             <Input type='text' placeholder='Min Value'></Input>
                         </VStack>
                     </HStack>
-                <DropDown 
-                 scenes={scenes}
-                 sources={sources}
-                 obsConnected={obsConnected}
-                 handleSceneSelection={handleSceneSelection}
-                 handleSourceSelection={handleSourceSelection}
-                />
+                <DropDown />
             </VStack>
         </form>
         </>

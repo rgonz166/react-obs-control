@@ -196,13 +196,7 @@ const App = () => {
               } />
 
               <Route path="/Bits" element={
-                <Bits 
-                    scenes={scenes}
-                    sources={sources}
-                    obsConnected={obsConnected}
-                    handleSceneSelection={handleSceneSelection}
-                    handleSourceSelection={handleSourceSelection}
-                />
+                <Bits />
               } />
 
               <Route path="/Subscriptions" element={
