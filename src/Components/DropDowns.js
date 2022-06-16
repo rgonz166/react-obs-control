@@ -4,7 +4,7 @@ import { ObsContext } from "Contexts/ObsContext";
 
 const DropDown = () => {
     const {
-        scenes, sources, obsConnected, 
+        scenes, sources, obsConnected, sceneSelected, sourceSelected, 
         handleSceneSelection, handleSourceSelection
     } = useContext(ObsContext)
 
@@ -14,7 +14,7 @@ const DropDown = () => {
 
                       
                         <Text fontSize='2xl'>OBS Scenes:</Text>
-                        <Select onChange={(e) => handleSceneSelection(e.target.value)} placeholder={obsConnected ? 'Select a Scene' : 'OBS Not Connected'}>
+                        <Select value={sceneSelected} onChange={(e) => handleSceneSelection(e.target.value)} placeholder={obsConnected ? 'Select a Scene' : 'OBS Not Connected'}>
                             {scenes.map((scene) => {
                                 return(
                                     <option key={scene.name} value={scene.name}>{scene.name}</option>
@@ -23,7 +23,7 @@ const DropDown = () => {
                         </Select>
 
                         <Text fontSize='2xl'>OBS Sources:</Text>
-                        <Select onChange={(e) => handleSourceSelection(e.target.value)} placeholder={obsConnected ? 'Select a Source' : 'OBS Not Connected'}>
+                        <Select value={sourceSelected} onChange={(e) => handleSourceSelection(e.target.value)} placeholder={obsConnected ? 'Select a Source' : 'OBS Not Connected'}>
                             {sources.map((source) => {
                                 return (
                                     <option key={source.name} value={source.name}>{source.name}</option>
