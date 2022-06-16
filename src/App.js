@@ -31,10 +31,7 @@ const App = () => {
               } />
 
               <Route path="/Settings" element={
-                <Settings
-                  twitchUsername={twitchUsername}
-                  setTwitchUsername={setTwitchUsername}
-                />
+                <Settings />
               } />
 
               <Route path="/auth" element={

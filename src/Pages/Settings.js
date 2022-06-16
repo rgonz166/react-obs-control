@@ -1,16 +1,20 @@
 import React, { useState, useContext } from "react";
 import { Button, Center, Heading, Input, Text, VStack, Divider, Box, Tooltip, InputGroup, InputRightElement } from "@chakra-ui/react"
-import { Link } from "react-router-dom";
 import { ObsContext } from "Contexts/ObsContext";
 import { useToast } from "@chakra-ui/toast";
+import { TwitchContext } from "Contexts/TwitchContext";
 
-const Settings = ({ twitchUsername, setTwitchUsername }) => {
+const Settings = () => {
     const toast = useToast();
 
     const {
         obsPort, obsPassword,
         setOBSPort, setOBSPassword,
-    } = useContext(ObsContext)
+    } = useContext(ObsContext);
+
+    const {
+        twitchUsername, setTwitchUsername
+    } = useContext(TwitchContext)
 
     const clientId = '7tpesuf4fwvaihbdotf2ge6khkl75o';
     const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://rgonz166.github.io'
