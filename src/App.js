@@ -200,13 +200,7 @@ const App = () => {
               } />
 
               <Route path="/Subscriptions" element={
-                <Subs 
-                    scenes={scenes}
-                    sources={sources}
-                    obsConnected={obsConnected}
-                    handleSceneSelection={handleSceneSelection}
-                    handleSourceSelection={handleSourceSelection}
-                />
+                <Subs />
               } />
             </Routes>
           </ChakraProvider>
