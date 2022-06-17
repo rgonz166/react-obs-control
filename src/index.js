@@ -10,10 +10,10 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 theme.config.initialColorMode = 'dark'
 root.render(
     <ChakraProvider theme={theme}>
-        <ObsProvider>
-            <TwitchProvider>
+        <TwitchProvider>
+            <ObsProvider>
                 <App />
-            </TwitchProvider>
-        </ObsProvider>
+            </ObsProvider>
+        </TwitchProvider>
     </ChakraProvider>
 );
