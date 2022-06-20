@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import OBSWebSocket from "obs-websocket-js";
 import { useToast } from "@chakra-ui/toast";
+import { useEffect } from "react";
 
 
 export const ObsContext = React.createContext(null);
 
 export function ObsProvider ({children}) {
-    const obs = new OBSWebSocket();
     const toast = useToast();
 
 
     // Add states below
+    const [obs, setObs] = useState(null);
     const [scenes, setScenes] = useState([])
     const [sources, setSources] = useState([])
     const [obsConnected, setObsConnected] = useState(false)
@@ -26,6 +27,26 @@ export function ObsProvider ({children}) {
     })
     const [ sceneSelected, setSceneSelected ] = useState('')
     const [ sourceSelected, setSourceSelected ] = useState('')
+
+    // Add useEffect below
+    useEffect(() => {
+        if (obs) {
+            obs.on('SourceCreated', data => {
+                console.log('sourceCreated', data)
+            })
+            obs.on('ScenesChanged', data => {
+                // When scene order changed
+                console.log('sceneOrderChange', data)
+            })
+            obs.on('SwitchScenes', data => {
+                console.log('scenesSwitched', data)
+            })
+        } else {
+            setObs(new OBSWebSocket());
+        }
+        
+
+    }, [obs])
 
     // Add Functions below
 
@@ -51,27 +72,29 @@ export function ObsProvider ({children}) {
             setScenes([]);
             setSources([]);
             toast({
-            title: `OBS Connection Unsuccessful`,
-            description: 'OBS Connection has not been successfully established, verify port and password have been entered correctly in settings.',
-            status: 'error',
-            duration: 15000,
-            isClosable: true
+                title: `OBS Connection Unsuccessful`,
+                description: 'OBS Connection has not been successfully established, verify port and password have been entered correctly in settings.',
+                status: 'error',
+                duration: 15000,
+                isClosable: true
             })
             console.error('rejected', rejected)
         })
+
+        
     }
 
     const disconnectObs = () => {
+        obs.disconnect();
         setObsConnected(false);
         setScenes([]);
         setSources([]);
-        obs.disconnect();
         toast({
-        title: `OBS Disconnected`,
-        description: 'OBS Connection has been successfully disconnected',
-        status: 'success',
-        duration: 7000,
-        isClosable: true
+            title: `OBS Disconnected`,
+            description: 'OBS Connection has been successfully disconnected',
+            status: 'success',
+            duration: 7000,
+            isClosable: true
         })
     }
 
@@ -96,10 +119,35 @@ export function ObsProvider ({children}) {
 
     const getSceneList = () => {
         console.log('scenes', scenes)
+        return scenes;
     }
   
     const getSourcesList = () => {
         console.log('sources', sources)
+        return sources;
+    }
+
+    // OBS Trigger Commands
+    const startRecording = () => {
+        console.log('startRecording')
+        obs.sendCallback('StartRecording', (err) => {
+            if (err) console.error(err)
+        });
+    }
+
+    const stopRecording = () => {
+        obs.sendCallback('StopRecording', (err) => {
+            if (err) console.error(err);
+        });
+    }
+
+    const toggleSource = (source, toggled) => {
+        obs.sendCallback('SetSceneItemRender', {
+            source: source,
+            render: toggled
+        }, (err, res) => {
+        if (err) console.error(err);
+        })
     }
 
     return (
@@ -116,7 +164,9 @@ export function ObsProvider ({children}) {
                     sourceSelected, setSourceSelected,
                     connectObs, disconnectObs,
                     handleSceneSelection, handleSourceSelection,
-                    getSceneList, getSourcesList
+                    getSceneList, getSourcesList,
+                    startRecording, stopRecording,
+                    toggleSource
                 }
             }
         >
