@@ -41,18 +41,6 @@ export function ObsProvider ({children}) {
             obs.on('SwitchScenes', data => {
                 console.log('scenesSwitched', data)
             })
-    
-            obs.on('AuthenticationSuccess', data => {
-                console.log('authenticated', data)
-            })
-    
-            obs.on('ConnectionOpened', data => {
-                console.log('connectedOpened', data)
-            })
-    
-            obs.on('ConnectionClosed', data => {
-                console.log('connectionClosed', data)
-            })
         } else {
             setObs(new OBSWebSocket());
         }
