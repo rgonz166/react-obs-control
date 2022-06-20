@@ -7,38 +7,11 @@ import { useEffect } from "react";
 export const ObsContext = React.createContext(null);
 
 export function ObsProvider ({children}) {
-    const obs = new OBSWebSocket();
     const toast = useToast();
-
-    // Add useEffect below
-    useEffect(() => {
-        obs.on('SourceCreated', data => {
-            console.log('sourceCreated', data)
-        })
-        obs.on('ScenesChanged', data => {
-            // When scene order changed
-            console.log('sceneOrderChange', data)
-        })
-        obs.on('SwitchScenes', data => {
-            console.log('scenesSwitched', data)
-        })
-
-        obs.on('AuthenticationSuccess', data => {
-            console.log('authenticated', data)
-        })
-
-        obs.on('ConnectionOpened', data => {
-            console.log('connectedOpened', data)
-        })
-
-        obs.on('ConnectionClosed', data => {
-            console.log('connectionClosed', data)
-        })
-
-    }, [])
 
 
     // Add states below
+    const [obs, setObs] = useState(null);
     const [scenes, setScenes] = useState([])
     const [sources, setSources] = useState([])
     const [obsConnected, setObsConnected] = useState(false)
@@ -54,6 +27,38 @@ export function ObsProvider ({children}) {
     })
     const [ sceneSelected, setSceneSelected ] = useState('')
     const [ sourceSelected, setSourceSelected ] = useState('')
+
+    // Add useEffect below
+    useEffect(() => {
+        if (obs) {
+            obs.on('SourceCreated', data => {
+                console.log('sourceCreated', data)
+            })
+            obs.on('ScenesChanged', data => {
+                // When scene order changed
+                console.log('sceneOrderChange', data)
+            })
+            obs.on('SwitchScenes', data => {
+                console.log('scenesSwitched', data)
+            })
+    
+            obs.on('AuthenticationSuccess', data => {
+                console.log('authenticated', data)
+            })
+    
+            obs.on('ConnectionOpened', data => {
+                console.log('connectedOpened', data)
+            })
+    
+            obs.on('ConnectionClosed', data => {
+                console.log('connectionClosed', data)
+            })
+        } else {
+            setObs(new OBSWebSocket());
+        }
+        
+
+    }, [obs])
 
     // Add Functions below
 
