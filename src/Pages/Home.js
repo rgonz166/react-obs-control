@@ -7,7 +7,9 @@ const Home = () => {
     const {
         obsConnected, 
         connectObs, disconnectObs,
-        getSceneList, getSourcesList
+        getSceneList, getSourcesList,
+        startRecording, stopRecording,
+        toggleSource
     } = useContext(ObsContext)
 
     const {
@@ -34,8 +36,9 @@ const Home = () => {
                         process.env.NODE_ENV === 'development' &&
                             <div>
                                 <Button onClick={() => { getSceneList() }}>Get Scenes</Button>
-                                <Button onClick={() => { getSourcesList() }}>Get Sources</Button>
-                                <Button onClick={() => { getTwitch() }}>Get Twitch</Button>
+                                <Button onClick={() => { toggleSource('Text (GDI+)', false) }}>Toggle Source</Button>
+                                <Button onClick={() => { startRecording() }}>Start Recording</Button>
+                                <Button onClick={() => { stopRecording() }}>Stop Recording</Button>
                             </div>
                     }
                     {twitchConnected ? 
