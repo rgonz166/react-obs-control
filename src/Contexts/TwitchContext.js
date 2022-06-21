@@ -7,6 +7,7 @@ export const TwitchContext = React.createContext(null);
 
 export function TwitchProvider ({children}) {
     const toast = useToast();
+    const clientId = '7tpesuf4fwvaihbdotf2ge6khkl75o';
 
     // Add useEffect below
     useEffect(() => {
@@ -121,7 +122,7 @@ export function TwitchProvider ({children}) {
      */
     const connectTwitchEvents = () => {
         if (twitchUsername && twitchUsername !== '' && token) {
-        ComfyJS.Init(twitchUsername, `oauth:${token}`, twitchUsername)
+        ComfyJS.Init(twitchUsername, token, twitchUsername)
         } else {
         toast({
             title: 'Missing Authentication',
@@ -149,6 +150,11 @@ export function TwitchProvider ({children}) {
         console.log('token:', token)
     }
 
+    const getPointRewards = async() => {
+      const rewards = await ComfyJS.GetChannelRewards( clientId, false );
+      console.log(rewards)
+    }
+
 
 
     return (
@@ -160,7 +166,8 @@ export function TwitchProvider ({children}) {
                     twitchUsername, setTwitchUsername,
                     token, setToken,
                     connectTwitchEvents, disconnectTwitchEvents,
-                    getTwitch
+                    getTwitch, clientId,
+                    getPointRewards
                 }
             }
         >
