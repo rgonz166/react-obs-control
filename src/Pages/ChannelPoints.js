@@ -1,13 +1,16 @@
 import React, { useContext } from 'react';
-import {  Heading, VStack, Text, Select,  } from '@chakra-ui/react';
+import {  Heading, VStack, Text, Select, Button,  } from '@chakra-ui/react';
 import DropDown from '../Components/DropDowns';
 import { ObsContext } from 'Contexts/ObsContext';
+import { TwitchContext } from 'Contexts/TwitchContext';
+
 
 
 
 const ChannelPoints = () => {
 
     const { obsConnected } = useContext(ObsContext)
+    const { getPointRewards } = useContext(TwitchContext)
 
     return (
         <>
@@ -19,6 +22,7 @@ const ChannelPoints = () => {
                         <option>shloompy</option>
                     </Select>
                 <DropDown />
+                <Button onClick={ () => getPointRewards()}>Refresh Rewards</Button>
             </VStack>
         </form>
         </>
