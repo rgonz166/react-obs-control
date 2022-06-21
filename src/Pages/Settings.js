@@ -13,10 +13,10 @@ const Settings = () => {
     } = useContext(ObsContext);
 
     const {
-        twitchUsername, setTwitchUsername
+        twitchUsername, setTwitchUsername, clientId
     } = useContext(TwitchContext)
 
-    const clientId = '7tpesuf4fwvaihbdotf2ge6khkl75o';
+   
     const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://rgonz166.github.io'
     const redirectUrl = baseUrl + '/react-obs-control/auth/'
     const scopes = 'channel:manage:redemptions channel:read:redemptions channel:read:hype_train channel:read:subscriptions moderation:read moderation:read user:edit user:read:email chat:edit chat:read';
