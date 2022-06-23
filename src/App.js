@@ -9,6 +9,7 @@ import Subs from "./Pages/Subs";
 import Navbar from "./Components/Navbar"
 import TwitchAuth from "./Pages/TwitchAuth";
 import Version from './Components/Version';
+import EventToggleHandler from "Components/EventToggleHandler";
 
 const App = () => {
 
@@ -46,6 +47,7 @@ const App = () => {
             </Routes>
           </ChakraProvider>
         </Router>
+        <EventToggleHandler />
         <Version />
       </>
     )
