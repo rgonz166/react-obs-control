@@ -7,13 +7,12 @@ const Home = () => {
     const {
         obsConnected, 
         connectObs, disconnectObs,
-        getSceneList, getSourcesList,
+        getSceneList,
         startRecording, stopRecording,
         toggleSource
     } = useContext(ObsContext)
 
-    const {
-        getTwitch, 
+    const { 
         connectTwitchEvents, disconnectTwitchEvents,
         twitchConnected
     } = useContext(TwitchContext);
