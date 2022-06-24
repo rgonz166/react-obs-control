@@ -10,7 +10,7 @@ const Home = () => {
         getSceneList,
         startRecording, stopRecording,
         startStreaming, stopStreaming,
-        toggleSource
+        toggleSource, obsTwitchMap
     } = useContext(ObsContext)
 
     const { 
@@ -39,8 +39,9 @@ const Home = () => {
                                 <Button onClick={() => { toggleSource('Text (GDI+)', false) }}>Toggle Source</Button>
                                 <Button onClick={() => { startRecording() }}>Start Recording</Button>
                                 <Button onClick={() => { stopRecording() }}>Stop Recording</Button>
-                                <Button onClick={() => { startStreaming(2000) }}>Start Streaming</Button>
+                                <Button onClick={() => { startStreaming(5000) }}>Start Streaming</Button>
                                 <Button onClick={() => { stopStreaming() }}>Stop Streaming</Button>
+                                <Button onClick={() => { console.log(obsTwitchMap) }}>Get Map</Button>
                             </div>
                     }
                     {twitchConnected ? 
