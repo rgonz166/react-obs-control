@@ -12,6 +12,7 @@ export function TwitchProvider ({children}) {
     // Add useEffect below
     useEffect(() => {
         ComfyJS.onConnected = () => {
+          getPointRewards();
           setTwitchConnected(true)
           toast({
             title: `Twitch Connected`,
@@ -44,6 +45,8 @@ export function TwitchProvider ({children}) {
       const initialValue = JSON.parse(saved);
       return initialValue || '';
     });
+
+    const [ twitchRewards, setTwitchRewards ] = useState([])
     
     const [ token, setToken ] = useState(() => {
       const saved = localStorage.getItem('twitchToken');
@@ -87,7 +90,9 @@ export function TwitchProvider ({children}) {
 
     const getPointRewards = async() => {
       const rewards = await ComfyJS.GetChannelRewards( clientId, false );
-      console.log(rewards)
+      const sortedRewards = rewards.sort((a, b) => a.cost > b.cost ? 1 : -1)
+      setTwitchRewards(sortedRewards)
+      console.log(sortedRewards)
     }
 
 
@@ -103,7 +108,8 @@ export function TwitchProvider ({children}) {
                   token, setToken,
                   connectTwitchEvents, disconnectTwitchEvents,
                   getTwitch, clientId,
-                  getPointRewards
+                  getPointRewards, twitchRewards,
+                  setTwitchRewards
                 }
             }
         >
