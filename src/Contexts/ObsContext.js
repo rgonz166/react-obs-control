@@ -39,7 +39,7 @@ import { useEffect } from "react";
  * startRecording, stopRecording: function,
  * startStreaming: startStreaming, stopStreaming: function,
  * toggleSource: toggleSource, changeScene: changeScene,
- * obsTwitchMap, setObsTwitchMapAndLocal: setObsTwitchMapAndLocal
+ * obsTwitchMap: setObsTwitchMapType, setObsTwitchMapAndLocal: setObsTwitchMapAndLocal
  * }>}
  * 
  */
