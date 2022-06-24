@@ -4,6 +4,13 @@ import { useToast } from "@chakra-ui/toast";
 import { useEffect } from "react";
 
 /**
+ * @typedef {Object} setObsTwitchMapType
+ * @property {Array} bits
+ * @property {Array} channelPoints
+ * @property {Array} subscriptions
+ */
+
+/**
  * @callback toggleSource
  * @param {string} source the source that will be toggled off/on
  * @param {boolean} toggled the value true/false to toggle source
@@ -11,6 +18,12 @@ import { useEffect } from "react";
  * @callback changeScene
  * @param {string} scene scene to be changed
  * 
+ * @callback setObsTwitchMapAndLocal
+ * @param {setObsTwitchMapType} data
+ * 
+ * @callback startStreaming
+ * @param {number} timeOffset
+ *
  * 
  * @type {React.Context<{
  * scenes: Array<string>, setScenes: function, 
@@ -23,8 +36,10 @@ import { useEffect } from "react";
  * connectObs: Function, disconnectObs: Function,
  * handleSceneSelection, handleSourceSelection,
  * getSceneList, getSourcesList,
- * startRecording: function, stopRecording: function,
- * toggleSource: toggleSource, changeScene: changeScene
+ * startRecording, stopRecording: function,
+ * startStreaming: startStreaming, stopStreaming: function,
+ * toggleSource: toggleSource, changeScene: changeScene,
+ * obsTwitchMap, setObsTwitchMapAndLocal: setObsTwitchMapAndLocal
  * }>}
  * 
  */
@@ -32,7 +47,6 @@ export const ObsContext = React.createContext(null);
 
 export function ObsProvider ({children}) {
     const toast = useToast();
-
 
     // Add states below
     /**
@@ -61,6 +75,16 @@ export function ObsProvider ({children}) {
     })
     const [ sceneSelected, setSceneSelected ] = useState('')
     const [ sourceSelected, setSourceSelected ] = useState('')
+    const [ obsTwitchMap, setObsTwitchMap] = useState(() => {
+        const saved = localStorage.getItem('obsTwitchMap');
+        const initialValue = JSON.parse(saved);
+        // TODO Add extra twitch events here
+        return initialValue || {
+            'bits': [],
+            'channelPoints': [],
+            'subscriptions': []
+        }
+    })
 
     // Add useEffect below
     useEffect(() => {
@@ -83,6 +107,10 @@ export function ObsProvider ({children}) {
     }, [obs])
 
     // Add Functions below
+    const setObsTwitchMapAndLocal = (data) => {
+        setObsTwitchMap(data);
+        localStorage.setItem('obsTwitchMap', JSON.stringify(data))
+    }
 
     /**
    * Connect OBS Websocket and sets scenes and sources
@@ -174,6 +202,34 @@ export function ObsProvider ({children}) {
             if (err) console.error(err);
         });
     }
+    
+
+    const startStreaming = (timeOffset) => {
+        setTimeout(() => {
+            obs.sendCallback('GetStreamSettings', (err, res) => {
+                if (err) console.error(err);
+                const streamOptions = res;
+                obs.sendCallback('StartStreaming', {
+                    stream: {
+                        type: streamOptions.type,
+                        settings: streamOptions.settings
+                    }
+                }, (err, res) => {
+                    if (err) console.error(err)
+                    console.log('startStreaming')
+                })
+            })
+
+        }, timeOffset)
+    }
+    
+
+    const stopStreaming = () => {
+        obs.sendCallback('StopStreaming', (err) => {
+            if (err) console.error(err);
+        });
+    }
+
 
     const toggleSource = (source, toggled) => {
         obs.sendCallback('SetSceneItemRender', {
@@ -183,7 +239,6 @@ export function ObsProvider ({children}) {
         if (err) console.error(err);
         })
     }
-
 
     const changeScene = (scene) => {
         obs.sendCallback('SetCurrentScene', {
@@ -209,7 +264,9 @@ export function ObsProvider ({children}) {
                     handleSceneSelection, handleSourceSelection,
                     getSceneList, getSourcesList,
                     startRecording, stopRecording,
-                    toggleSource, changeScene
+                    startStreaming, stopStreaming,
+                    toggleSource, changeScene,
+                    obsTwitchMap, setObsTwitchMapAndLocal
                 }
             }
         >
