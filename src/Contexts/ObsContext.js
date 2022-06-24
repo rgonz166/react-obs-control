@@ -3,7 +3,31 @@ import OBSWebSocket from "obs-websocket-js";
 import { useToast } from "@chakra-ui/toast";
 import { useEffect } from "react";
 
-
+/**
+ * @callback toggleSource
+ * @param {string} source the source that will be toggled off/on
+ * @param {boolean} toggled the value true/false to toggle source
+ * 
+ * @callback changeScene
+ * @param {string} scene scene to be changed
+ * 
+ * 
+ * @type {React.Context<{
+ * scenes: Array<string>, setScenes: function, 
+ * sources: Array<string>, setSources,
+ * obsConnected: boolean, setObsConnected,
+ * obsPort: string, setOBSPort,
+ * obsPassword: string, setOBSPassword,
+ * sceneSelected: string, setSceneSelected,
+ * sourceSelected: string, setSourceSelected,
+ * connectObs: Function, disconnectObs: Function,
+ * handleSceneSelection, handleSourceSelection,
+ * getSceneList, getSourcesList,
+ * startRecording: function, stopRecording: function,
+ * toggleSource: toggleSource, changeScene: changeScene
+ * }>}
+ * 
+ */
 export const ObsContext = React.createContext(null);
 
 export function ObsProvider ({children}) {
@@ -11,6 +35,16 @@ export function ObsProvider ({children}) {
 
 
     // Add states below
+    /**
+     * @typedef {OBSWebSocket} obs — documentation for obs
+     * @description Additional doc
+     */
+    /**
+     * @typedef {Function} LoadingStateSetter — documentation for setIsLoading
+     */
+    /**
+     * @type {[obs, LoadingStateSetter]} Loading
+     */
     const [obs, setObs] = useState(null);
     const [scenes, setScenes] = useState([])
     const [sources, setSources] = useState([])
@@ -150,6 +184,15 @@ export function ObsProvider ({children}) {
         })
     }
 
+
+    const changeScene = (scene) => {
+        obs.sendCallback('SetCurrentScene', {
+            "scene-name": scene
+        }, (err, res) => {
+            if (err) console.error(err)
+        })
+    }
+
     return (
         <ObsContext.Provider 
         // variables and functions that will be used globally
@@ -166,7 +209,7 @@ export function ObsProvider ({children}) {
                     handleSceneSelection, handleSourceSelection,
                     getSceneList, getSourcesList,
                     startRecording, stopRecording,
-                    toggleSource
+                    toggleSource, changeScene
                 }
             }
         >
