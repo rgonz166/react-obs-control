@@ -1,8 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useToast } from '@chakra-ui/toast';
-import ComfyJS from "comfy.js";
+import ComfyJS, {ComfyJSInstance} from "comfy.js";
 
-
+/**
+ * @type {React.Context<{
+ * ComfyJS: ComfyJSInstance,
+ * twitchConnected: boolean, setTwitchConnected,
+ * twitchUsername: string, setTwitchUsername,
+ * token: string, setToken,
+ * connectTwitchEvents, disconnectTwitchEvents,
+ * getTwitch, clientId: string,
+ * getPointRewards: Function, twitchRewards: Array,
+ * setTwitchRewards
+ * }>}
+ */
 export const TwitchContext = React.createContext(null);
 
 export function TwitchProvider ({children}) {
