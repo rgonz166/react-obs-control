@@ -4,10 +4,41 @@ import { useToast } from "@chakra-ui/toast";
 import { useEffect } from "react";
 
 /**
+ * @typedef {'Scene' | 'Source' | 'Filter' | 'Start Streaming' | 'Stop Streaming' | 'Start Recording' | 'Stop Recording'} obsTogglingType
+ */
+
+/**
+ * @typedef {Object} obsToggling
+ * @property {obsTogglingType} type
+ */
+
+/**
+ * @typedef {Object} bits
+ * @property {number} minBits
+ * @property {number} maxBits
+ * @property {Array<obsToggling>} obsToggling 
+ */
+
+/**
+ * @typedef {Object} channelPoints
+ * @property {string} rewardId
+ * @property {string} rewardName
+ * @property {number} cost
+ * @property {Array<obsToggling>} obsToggling 
+ */
+
+/**
+ * @typedef {Object} subscriptions
+ * @property {number} minSubs
+ * @property {number} maxSubs
+ * @property {Array<obsToggling>} obsToggling 
+ */
+
+/**
  * @typedef {Object} setObsTwitchMapType
- * @property {Array} bits
- * @property {Array} channelPoints
- * @property {Array} subscriptions
+ * @property {Array<bits>} bits
+ * @property {Array<channelPoints>} channelPoints
+ * @property {Array<subscriptions>} subscriptions
  */
 
 /**
