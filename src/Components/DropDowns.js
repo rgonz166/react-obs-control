@@ -45,7 +45,7 @@ const DropDown = ({type}) => {
                                     <Center>
                                         <Text fontSize='2xl'>OBS Filters</Text>
                                     </Center>
-                                    {filters.length === 0 
+                                    {(filters.length === 0 && obsConnected)
                                     ? 
                                     <Center>
                                         <Box>No Filters</Box>
