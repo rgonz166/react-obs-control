@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import { VStack, Center, Text, Input, Select,  } from "@chakra-ui/react";
+import { VStack, Center, Text, Input, Select, Box,  } from "@chakra-ui/react";
 import { ObsContext } from "Contexts/ObsContext";
 
-const DropDown = () => {
+const DropDown = ({type}) => {
     const {
         scenes, sources, obsConnected, sceneSelected, sourceSelected, 
         handleSceneSelection, handleSourceSelection
@@ -21,24 +21,35 @@ const DropDown = () => {
                                 )
                             })}
                         </Select>
+                        {
+                            type !== 'scene'
+                            && (
+                                <Box>
+                                    <Text fontSize='2xl'>OBS Sources:</Text>
+                                    <Select value={sourceSelected} onChange={(e) => handleSourceSelection(e.target.value)} placeholder={obsConnected ? 'Select a Source' : 'OBS Not Connected'}>
+                                        {sources.map((source) => {
+                                            return (
+                                                <option key={source.name} value={source.name}>{source.name}</option>
+                                            )
+                                        })}
+                                    </Select>
+                                </Box>
+                            )
+                        }
 
-                        <Text fontSize='2xl'>OBS Sources:</Text>
-                        <Select value={sourceSelected} onChange={(e) => handleSourceSelection(e.target.value)} placeholder={obsConnected ? 'Select a Source' : 'OBS Not Connected'}>
-                            {sources.map((source) => {
-                                return (
-                                    <option key={source.name} value={source.name}>{source.name}</option>
-                                )
-                            })}
-                        </Select>
                     </VStack>  
 
-
-                    <VStack>
-                        <Text fontSize='2xl'>Timed?</Text>
-                        <Input type='text' placeholder='0'></Input>
-                        <Text fontSize='2xl'>Group</Text>
-                        <Input placeholder='Text' type='text'></Input>
-                    </VStack>
+                    {
+                        type !== 'scene' 
+                        && (
+                            <VStack>
+                                <Text fontSize='2xl'>Timed?</Text>
+                                <Input type='text' placeholder='0'></Input>
+                                <Text fontSize='2xl'>Group</Text>
+                                <Input placeholder='Text' type='text'></Input>
+                            </VStack>
+                        )
+                    }
                     
                 </Center>
     )
