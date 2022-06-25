@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
-import {  Heading, VStack, Text, Select, Button, Center, HStack,  } from '@chakra-ui/react';
-import DropDown from '../Components/DropDowns';
+import {  Heading, VStack, Text, Select, Button, Center, HStack } from '@chakra-ui/react';
 import { TwitchContext } from 'Contexts/TwitchContext';
 import { ObsContext } from 'Contexts/ObsContext';
+import ObsOptions from 'Components/ObsOptions';
 
 
 
@@ -47,7 +47,6 @@ const ChannelPoints = () => {
 
     return (
         <>
-        <form>
             <VStack paddingTop='10vh'>
                 <Heading>Channel Points</Heading>
                     <Text fontSize='2xl'>Rewards List:</Text>
@@ -61,7 +60,7 @@ const ChannelPoints = () => {
                         })}
                     </Select>
                     </Center>
-                <DropDown />
+                <ObsOptions />
             </VStack>
             <Center>
                 <HStack paddingTop={'10px'}>
@@ -70,7 +69,6 @@ const ChannelPoints = () => {
                     <Button onClick={ () => getPointRewards()}>Refresh Rewards</Button>
                 </HStack>
             </Center>
-        </form>
         </>
     )
 }
