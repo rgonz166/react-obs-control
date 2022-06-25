@@ -23,6 +23,12 @@ import { useEffect } from "react";
  * 
  * @callback startStreaming
  * @param {number} timeOffset
+ * 
+ * @callback handleTabChange
+ * @param {number} index
+ * 
+ * @callback handleSaveDisabled
+ * @returns {boolean} disabled
  *
  * 
  * @type {React.Context<{
@@ -40,6 +46,8 @@ import { useEffect } from "react";
  * startStreaming: startStreaming, stopStreaming: function,
  * toggleSource: toggleSource, changeScene: changeScene,
  * obsTwitchMap: setObsTwitchMapType, setObsTwitchMapAndLocal: setObsTwitchMapAndLocal
+ * tabIndex: number, handleTabChange: handleTabChange
+ * handleSaveDisabled: handleSaveDisabled
  * }>}
  * 
  */
@@ -85,6 +93,12 @@ export function ObsProvider ({children}) {
             'subscriptions': []
         }
     })
+
+    const [tabIndex, setTabIndex] = useState(0);
+    const handleTabChange = (index) => {
+        console.log('index', index)
+        setTabIndex(index);
+    }
 
     // Add useEffect below
     useEffect(() => {
@@ -246,6 +260,21 @@ export function ObsProvider ({children}) {
         })
     }
 
+    const handleSaveDisabled = () => {
+        let disabled = false;
+        switch(tabIndex) {
+            // Cascading testing
+            // TODO: Add case for filter selected
+            // case 2:
+            //     disabled = filterSelected === '';
+            case 1: 
+                disabled = sourceSelected === '' || disabled;
+            case 0:
+                disabled = sceneSelected === '' || disabled;
+        }
+        return disabled;
+    }
+
     return (
         <ObsContext.Provider 
         // variables and functions that will be used globally
@@ -264,7 +293,9 @@ export function ObsProvider ({children}) {
                     startRecording, stopRecording,
                     startStreaming, stopStreaming,
                     toggleSource, changeScene,
-                    obsTwitchMap, setObsTwitchMapAndLocal
+                    obsTwitchMap, setObsTwitchMapAndLocal,
+                    tabIndex, handleTabChange,
+                    handleSaveDisabled
                 }
             }
         >

@@ -8,7 +8,7 @@ import ObsOptions from 'Components/ObsOptions';
 
 
 const ChannelPoints = () => {
-    const {obsTwitchMap, setObsTwitchMapAndLocal} = useContext(ObsContext)
+    const {obsTwitchMap, setObsTwitchMapAndLocal, handleSaveDisabled} = useContext(ObsContext)
     const { getPointRewards, twitchRewards, twitchConnected } = useContext(TwitchContext)
 
     const [selectedReward, setSelectedReward] = useState(null);
@@ -65,7 +65,7 @@ const ChannelPoints = () => {
             <Center>
                 <HStack paddingTop={'10px'}>
                     {/* TODO Disable button if reward is null or other properties */}
-                    <Button onClick={ () => addChannelPoints()}>Add to List</Button>
+                    <Button disabled={handleSaveDisabled()} onClick={ () => addChannelPoints()}>Add to List</Button>
                     <Button onClick={ () => getPointRewards()}>Refresh Rewards</Button>
                 </HStack>
             </Center>
