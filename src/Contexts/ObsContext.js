@@ -26,8 +26,8 @@ import { useEffect } from "react";
  *
  * 
  * @type {React.Context<{
- * scenes: Array<string>, setScenes: function, 
- * sources: Array<string>, setSources,
+ * scenes: Array, setScenes: function, 
+ * sources: Array, setSources,
  * obsConnected: boolean, setObsConnected,
  * obsPort: string, setOBSPort,
  * obsPassword: string, setOBSPassword,
@@ -174,9 +174,7 @@ export function ObsProvider ({children}) {
     }
     
     const handleSourceSelection = (source) => {
-        console.log('source:',source)
         setSourceSelected(source)
-        console.log('sourceSelected:',sourceSelected)
     }
 
     const getSceneList = () => {
