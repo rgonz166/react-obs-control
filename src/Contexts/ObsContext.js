@@ -28,14 +28,16 @@ import { useEffect } from "react";
  * @type {React.Context<{
  * scenes: Array, setScenes: function, 
  * sources: Array, setSources,
+ * filters: Array, setFilters,
  * obsConnected: boolean, setObsConnected,
  * obsPort: string, setOBSPort,
  * obsPassword: string, setOBSPassword,
  * sceneSelected: string, setSceneSelected,
  * sourceSelected: string, setSourceSelected,
+ * filterSelected: string, setFilterSelected
  * connectObs: Function, disconnectObs: Function,
- * handleSceneSelection, handleSourceSelection,
- * getSceneList, getSourcesList,
+ * handleSceneSelection, handleSourceSelection, handleFilterSelection
+ * getSceneList, getSourcesList, getFiltersList
  * startRecording, stopRecording: function,
  * startStreaming: startStreaming, stopStreaming: function,
  * toggleSource: toggleSource, changeScene: changeScene,
@@ -62,6 +64,7 @@ export function ObsProvider ({children}) {
     const [obs, setObs] = useState(null);
     const [scenes, setScenes] = useState([])
     const [sources, setSources] = useState([])
+    const [filters, setFilters] = useState([])
     const [obsConnected, setObsConnected] = useState(false)
     const [ obsPort, setOBSPort ] = useState(() => {
         const saved = localStorage.getItem('obsPort');
@@ -75,6 +78,7 @@ export function ObsProvider ({children}) {
     })
     const [ sceneSelected, setSceneSelected ] = useState('')
     const [ sourceSelected, setSourceSelected ] = useState('')
+    const [ filterSelected, setFilterSelected ] = useState('')
     const [ obsTwitchMap, setObsTwitchMap] = useState(() => {
         const saved = localStorage.getItem('obsTwitchMap');
         const initialValue = JSON.parse(saved);
@@ -175,6 +179,11 @@ export function ObsProvider ({children}) {
     
     const handleSourceSelection = (source) => {
         setSourceSelected(source)
+        getFilterBySource(source)
+    }
+
+    const handleFilterSelection = (filter) => {
+        setFilterSelected(filter)
     }
 
     const getSceneList = () => {
@@ -186,6 +195,22 @@ export function ObsProvider ({children}) {
         console.log('sources', sources)
         return sources;
     }
+
+    const getFiltersList = () => {
+        console.log('filters', filters)
+        return filters
+    }
+
+    const getFilterBySource = (source) => {
+        obs.sendCallback('GetSourceFilters', {
+            sourceName: source
+        }, (err, res) => {
+            if(err) console.error(err)
+            console.log('filters', res)
+            setFilters(res.filters)
+            setFilterSelected('')
+        })
+    } 
 
     // OBS Trigger Commands
     const startRecording = () => {
@@ -253,14 +278,18 @@ export function ObsProvider ({children}) {
                 {
                     scenes, setScenes, 
                     sources, setSources,
+                    filters, setFilters,
                     obsConnected, setObsConnected,
                     obsPort, setOBSPort,
                     obsPassword, setOBSPassword,
                     sceneSelected, setSceneSelected,
                     sourceSelected, setSourceSelected,
+                    filterSelected, setFilterSelected,
                     connectObs, disconnectObs,
                     handleSceneSelection, handleSourceSelection,
+                    handleFilterSelection,
                     getSceneList, getSourcesList,
+                    getFiltersList,
                     startRecording, stopRecording,
                     startStreaming, stopStreaming,
                     toggleSource, changeScene,

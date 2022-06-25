@@ -4,8 +4,8 @@ import { ObsContext } from "Contexts/ObsContext";
 
 const DropDown = ({type}) => {
     const {
-        scenes, sources, obsConnected, sceneSelected, sourceSelected, 
-        handleSceneSelection, handleSourceSelection
+        scenes, sources, filters,  obsConnected, sceneSelected, sourceSelected, filterSelected,
+        handleSceneSelection, handleSourceSelection, handleFilterSelection
     } = useContext(ObsContext)
 
     return(
@@ -13,7 +13,7 @@ const DropDown = ({type}) => {
                     <VStack paddingRight={5}>
 
                       
-                        <Text fontSize='2xl'>OBS Scenes:</Text>
+                        <Text fontSize='2xl'>OBS Scenes</Text>
                         <Select value={sceneSelected} onChange={(e) => handleSceneSelection(e.target.value)} placeholder={obsConnected ? 'Select a Scene' : 'OBS Not Connected'}>
                             {scenes.map((scene) => {
                                 return(
@@ -22,10 +22,12 @@ const DropDown = ({type}) => {
                             })}
                         </Select>
                         {
-                            type !== 'scene'
+                            (type === 'source' || type === 'filter')
                             && (
                                 <Box>
-                                    <Text fontSize='2xl'>OBS Sources:</Text>
+                                    <Center>
+                                        <Text fontSize='2xl'>OBS Sources</Text>
+                                    </Center>
                                     <Select value={sourceSelected} onChange={(e) => handleSourceSelection(e.target.value)} placeholder={obsConnected ? 'Select a Source' : 'OBS Not Connected'}>
                                         {sources.map((source) => {
                                             return (
@@ -36,11 +38,36 @@ const DropDown = ({type}) => {
                                 </Box>
                             )
                         }
+                        {
+                            type === 'filter'
+                            && (
+                                <Box>
+                                    <Center>
+                                        <Text fontSize='2xl'>OBS Filters</Text>
+                                    </Center>
+                                    {(filters.length === 0 && obsConnected)
+                                    ? 
+                                    <Center>
+                                        <Box>No Filters</Box>
+                                    </Center>
+                                    : 
+                                    <Select value={filterSelected} onChange={(e) => handleFilterSelection(e.target.value)} placeholder={obsConnected ? 'Select a Filter' : 'OBS Not Connected'}>
+                                        {filters.map((filter) => {
+                                            return (
+                                                <option key={filter.name} value={filter.name}>{filter.name}</option>
+                                            )
+                                        })}
+                                    </Select>
+                                    }
+                                    
+                                </Box>
+                            )
+                        }
 
                     </VStack>  
 
                     {
-                        type !== 'scene' 
+                        type === 'source' 
                         && (
                             <VStack>
                                 <Text fontSize='2xl'>Timed?</Text>
