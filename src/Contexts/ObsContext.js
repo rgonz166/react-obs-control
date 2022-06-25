@@ -26,8 +26,8 @@ import { useEffect } from "react";
  *
  * 
  * @type {React.Context<{
- * scenes: Array<string>, setScenes: function, 
- * sources: Array<string>, setSources,
+ * scenes: Array, setScenes: function, 
+ * sources: Array, setSources,
  * obsConnected: boolean, setObsConnected,
  * obsPort: string, setOBSPort,
  * obsPassword: string, setOBSPassword,
@@ -39,7 +39,7 @@ import { useEffect } from "react";
  * startRecording, stopRecording: function,
  * startStreaming: startStreaming, stopStreaming: function,
  * toggleSource: toggleSource, changeScene: changeScene,
- * obsTwitchMap, setObsTwitchMapAndLocal: setObsTwitchMapAndLocal
+ * obsTwitchMap: setObsTwitchMapType, setObsTwitchMapAndLocal: setObsTwitchMapAndLocal
  * }>}
  * 
  */
@@ -174,9 +174,7 @@ export function ObsProvider ({children}) {
     }
     
     const handleSourceSelection = (source) => {
-        console.log('source:',source)
         setSourceSelected(source)
-        console.log('sourceSelected:',sourceSelected)
     }
 
     const getSceneList = () => {

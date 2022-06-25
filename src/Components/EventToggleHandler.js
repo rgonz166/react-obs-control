@@ -5,7 +5,7 @@ const { useContext, useEffect } = require("react");
 
 const EventToggleHandler = () => {
     const {
-        startRecording, stopRecording, changeScene, toggleSource
+        startRecording, stopRecording, changeScene, toggleSource, obsTwitchMap
     } = useContext(ObsContext);
 
     const {
