@@ -155,6 +155,7 @@ export function ObsProvider ({children}) {
         setObsConnected(false);
         setScenes([]);
         setSources([]);
+        setFilters([]);
         toast({
             title: `OBS Disconnected`,
             description: 'OBS Connection has been successfully disconnected',
