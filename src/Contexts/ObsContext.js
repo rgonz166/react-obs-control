@@ -366,6 +366,9 @@ export function ObsProvider ({children}) {
                     sourceName: sourceSelected,
                     sourceType: sourceSelectedComplete.type
                 }
+                if (sourceSelectedComplete.type === 'group') {
+                    tempData['sourceGroup'] = sourceSelectedComplete.groupChildren
+                }
                 break;
             case 2:
                 tempData = {
