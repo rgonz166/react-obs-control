@@ -142,7 +142,7 @@ export function ObsProvider ({children}) {
     const [ obsTwitchMap, setObsTwitchMap] = useState(() => {
         const saved = localStorage.getItem('obsTwitchMap');
         const initialValue = JSON.parse(saved);
-        // TODO Add extra twitch events here
+        // * Add extra twitch events here
         return initialValue || {
             'bits': [],
             'channelPoints': [],

@@ -38,14 +38,12 @@ const ChannelPoints = () => {
             currentMap.channelPoints.push(initialMapItem)
         } else {
             // If reward id exists, add to things to toggle
-            // TODO: Check if obsToggling type is already added and depending on type, check specific field are already in array (e.g. sourceName, sceneName...)
-            // const obsToggleTypeIndex = currentMap.channelPoints[rewardIndex].obsToggling.indexOf(r => r.type === (selectedTabType) )
             const obsToggleIndex = getObsTogglingIndex(reward.obsToggling);
             if (obsToggleIndex === -1) {
                 // If none are found then add to array
                 reward.obsToggling.push(setObsToggleData())
             } else {
-                //TODO otherwise update the index with the properties
+                // Update the data at the index
                 reward.obsToggling[obsToggleIndex] = setObsToggleData();
             }
             
