@@ -1,5 +1,5 @@
 import React from 'react';
-import {  Heading, VStack, Text, Input, HStack, NumberInput } from '@chakra-ui/react';
+import { Heading, VStack, Text, HStack } from '@chakra-ui/react';
 import ObsOptions from 'Components/ObsOptions';
 import InputNumber from 'Components/InputNumber';
 import { useState } from 'react';
