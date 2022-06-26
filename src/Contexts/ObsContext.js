@@ -367,6 +367,7 @@ export function ObsProvider ({children}) {
                     sourceType: sourceSelectedComplete.type
                 }
                 if (sourceSelectedComplete.type === 'group') {
+                    // TODO: Add rarity object for each child
                     tempData['sourceGroup'] = sourceSelectedComplete.groupChildren
                 }
                 break;
