@@ -6,7 +6,7 @@ import { TwitchContext } from "Contexts/TwitchContext";
 const Home = () => {
     const {
         scenes,
-        obsConnected, 
+        obsConnected, sourceSelectedComplete,
         connectObs, disconnectObs,
         startRecording, stopRecording,
         startStreaming, stopStreaming,
@@ -36,6 +36,7 @@ const Home = () => {
                         process.env.NODE_ENV === 'development' &&
                             <div>
                                 <Button onClick={() => console.log('scenes', scenes)}>Get Scenes</Button>
+                                <Button onClick={() => console.log('source', sourceSelectedComplete)}>Get Source</Button>
                                 <Button onClick={() => { toggleSource('Text (GDI+)', false) }}>Toggle Source</Button>
                                 <Button onClick={() => { startRecording() }}>Start Recording</Button>
                                 <Button onClick={() => { stopRecording() }}>Stop Recording</Button>
