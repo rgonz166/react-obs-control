@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import OBSWebSocket from "obs-websocket-js";
 import { useToast } from "@chakra-ui/toast";
 import { useEffect } from "react";
-import { filter } from "@chakra-ui/react";
 
 /**
  * @typedef {'Scene' | 'Source' | 'Filter' | 'Start Streaming' | 'Stop Streaming' | 'Start Recording' | 'Stop Recording'} obsTogglingType
@@ -14,9 +13,13 @@ import { filter } from "@chakra-ui/react";
  * @property {obsTogglingType} type
  * @property {string} [sceneName]
  * @property {string} [sourceName]
+ * @property {string} [sourceType]
+ * @property {number} [sourceTime]
+ * @property {Array} [sourceGroup]
  * @property {string} [filterName]
  * @property {boolean} [isRandom]
  * @property {boolean} [isRarity] will the source have rarity
+ * @property {number} [rarity] will the source have rarity
  * @property {number} [timed]
  */
 
@@ -87,6 +90,7 @@ import { filter } from "@chakra-ui/react";
  * obsPassword: string, setOBSPassword,
  * sceneSelected: string, setSceneSelected,
  * sourceSelected: string, setSourceSelected,
+ * sourceSelectedComplete,
  * filterSelected: string, setFilterSelected
  * connectObs: Function, disconnectObs: Function,
  * handleSceneSelection, handleSourceSelection, handleFilterSelection
@@ -133,6 +137,7 @@ export function ObsProvider ({children}) {
     })
     const [ sceneSelected, setSceneSelected ] = useState('')
     const [ sourceSelected, setSourceSelected ] = useState('')
+    const [ sourceSelectedComplete, setSourceSelectedComplete ] = useState(null)
     const [ filterSelected, setFilterSelected ] = useState('')
     const [ obsTwitchMap, setObsTwitchMap] = useState(() => {
         const saved = localStorage.getItem('obsTwitchMap');
@@ -218,6 +223,11 @@ export function ObsProvider ({children}) {
         setScenes([]);
         setSources([]);
         setFilters([]);
+        setSceneSelected('')
+        setSourceSelected('')
+        setSourceSelectedComplete(null)
+        setFilterSelected('')
+
         toast({
             title: `OBS Disconnected`,
             description: 'OBS Connection has been successfully disconnected',
@@ -241,8 +251,10 @@ export function ObsProvider ({children}) {
     }
     
     const handleSourceSelection = (source) => {
-        setSourceSelected(source)
-        getFilterBySource(source)
+        console.log('source', source.value);
+        setSourceSelected(source.value)
+        setSourceSelectedComplete(JSON.parse(source.selectedOptions[0].dataset.source));
+        getFilterBySource(source.value)
     }
 
     const handleFilterSelection = (filter) => {
@@ -351,7 +363,8 @@ export function ObsProvider ({children}) {
                 tempData = {
                     type: 'Source',
                     sceneName: sceneSelected,
-                    sourceName: sourceSelected
+                    sourceName: sourceSelected,
+                    sourceType: sourceSelectedComplete.type
                 }
                 break;
             case 2:
@@ -415,6 +428,7 @@ export function ObsProvider ({children}) {
                     obsPassword, setOBSPassword,
                     sceneSelected, setSceneSelected,
                     sourceSelected, setSourceSelected,
+                    sourceSelectedComplete,
                     filterSelected, setFilterSelected,
                     connectObs, disconnectObs,
                     handleSceneSelection, handleSourceSelection,
