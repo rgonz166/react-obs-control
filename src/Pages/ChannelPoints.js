@@ -13,8 +13,16 @@ const ChannelPoints = () => {
 
     const [selectedReward, setSelectedReward] = useState(null);
 
+    const handleRewardChange = (e) => {
+        if (e.target.value === '') {
+            setSelectedReward(null)
+        }else {
+            setSelectedReward(JSON.parse(e.target.selectedOptions[0].dataset.reward))
+        }
+    }
+
+
     const addChannelPoints = () => {
-        console.log('selectedReward', selectedReward);
         const currentMap = obsTwitchMap;
 
         // Check if its the first time being added
@@ -53,7 +61,7 @@ const ChannelPoints = () => {
                     <Text fontSize='2xl'>Rewards List:</Text>
                     <Center>
 
-                    <Select placeholder={twitchConnected ? 'Select Reward' : 'Twitch Not Connected'} onChange={(e) => setSelectedReward(JSON.parse(e.target.selectedOptions[0].dataset.reward))}>
+                    <Select placeholder={twitchConnected ? 'Select Reward' : 'Twitch Not Connected'} onChange={handleRewardChange}>
                         {twitchRewards.map((reward) => {
                             return(
                                 <option data-reward={JSON.stringify(reward)} key={reward.id} value={reward.id}>{reward.title} ({reward.cost})</option>
@@ -66,7 +74,7 @@ const ChannelPoints = () => {
             <Center>
                 <HStack paddingTop={'10px'}>
                     {/* TODO Disable button if reward is null or other properties */}
-                    <Button disabled={handleSaveDisabled()} onClick={ () => addChannelPoints()}>Add to List</Button>
+                    <Button disabled={handleSaveDisabled() || selectedReward === null} onClick={ () => addChannelPoints()}>Add to List</Button>
                     <Button onClick={ () => getPointRewards()}>Refresh Rewards</Button>
                 </HStack>
             </Center>
