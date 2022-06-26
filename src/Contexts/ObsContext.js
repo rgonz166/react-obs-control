@@ -253,7 +253,7 @@ export function ObsProvider ({children}) {
     const handleSourceSelection = (source) => {
         console.log('source', source.value);
         setSourceSelected(source.value)
-        setSourceSelectedComplete(JSON.parse(source.selectedOptions[0].dataset.source));
+        setSourceSelectedComplete(source.value ? JSON.parse(source.selectedOptions[0].dataset.source) : null);
         getFilterBySource(source.value)
     }
 
@@ -262,14 +262,20 @@ export function ObsProvider ({children}) {
     }
 
     const getFilterBySource = (source) => {
-        obs.sendCallback('GetSourceFilters', {
-            sourceName: source
-        }, (err, res) => {
-            if(err) console.error(err)
-            console.log('filters', res)
-            setFilters(res.filters)
+        console.log('sourceFilter', source)
+        if (source) {
+            obs.sendCallback('GetSourceFilters', {
+                sourceName: source
+            }, (err, res) => {
+                if(err) console.error(err)
+                console.log('filters', res)
+                setFilters(res.filters)
+                setFilterSelected('')
+            })
+        } else {
+            setFilters([])
             setFilterSelected('')
-        })
+        }
     } 
 
     const handleSaveDisabled = () => {
@@ -285,6 +291,8 @@ export function ObsProvider ({children}) {
                 disabled = sceneSelected === '' || disabled;
                 break;
             default: 
+                console.log('other tabs', tabIndex)
+                disabled = true;
                 break;
         }
         return disabled;
