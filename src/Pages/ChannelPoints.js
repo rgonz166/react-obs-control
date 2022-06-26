@@ -73,7 +73,6 @@ const ChannelPoints = () => {
             </VStack>
             <Center>
                 <HStack paddingTop={'10px'}>
-                    {/* TODO Disable button if reward is null or other properties */}
                     <Button disabled={handleSaveDisabled() || selectedReward === null} onClick={ () => addChannelPoints()}>Add to List</Button>
                     <Button onClick={ () => getPointRewards()}>Refresh Rewards</Button>
                 </HStack>
