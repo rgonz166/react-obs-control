@@ -1,6 +1,6 @@
 /* eslint-disable no-fallthrough */
 import React, { useState } from "react";
-import OBSWebSocket from "obs-websocket-js";
+import OBSWebSocket, {SceneItem} from "obs-websocket-js";
 import { useToast } from "@chakra-ui/toast";
 import { useEffect } from "react";
 
@@ -14,9 +14,11 @@ import { useEffect } from "react";
  * @property {string} [sceneName]
  * @property {string} [sourceName]
  * @property {string} [sourceType]
+ * @property {boolean} [sourceRender]
  * @property {number} [sourceTime]
  * @property {Array} [sourceGroup]
  * @property {string} [filterName]
+ * @property {boolean} [filterRender]
  * @property {boolean} [isRandom]
  * @property {boolean} [isRarity] will the source have rarity
  * @property {number} [rarity] will the source have rarity
@@ -79,6 +81,9 @@ import { useEffect } from "react";
  * @param {Array<obsToggling>} value 
  * @returns number
  *
+ * @callback handleObsToggling
+ * @param {obsToggling} toggle
+ * @returns obsToggling
  *
  * 
  * @type {React.Context<{
@@ -90,7 +95,7 @@ import { useEffect } from "react";
  * obsPassword: string, setOBSPassword,
  * sceneSelected: string, setSceneSelected,
  * sourceSelected: string, setSourceSelected,
- * sourceSelectedComplete,
+ * sourceSelectedComplete: SceneItem,
  * filterSelected: string, setFilterSelected
  * connectObs: Function, disconnectObs: Function,
  * handleSceneSelection, handleSourceSelection, handleFilterSelection
@@ -100,7 +105,7 @@ import { useEffect } from "react";
  * obsTwitchMap: setObsTwitchMapType, setObsTwitchMapAndLocal: setObsTwitchMapAndLocal
  * tabIndex: number, handleTabChange: handleTabChange
  * handleSaveDisabled: handleSaveDisabled, setObsToggleData: setObsToggleData,
- * getObsTogglingIndex: getObsTogglingIndex
+ * getObsTogglingIndex: getObsTogglingIndex, handleObsToggling: handleObsToggling
  * }>}
  * 
  */
@@ -137,6 +142,7 @@ export function ObsProvider ({children}) {
     })
     const [ sceneSelected, setSceneSelected ] = useState('')
     const [ sourceSelected, setSourceSelected ] = useState('')
+    /**@type {[SceneItem, Function]} */
     const [ sourceSelectedComplete, setSourceSelectedComplete ] = useState(null)
     const [ filterSelected, setFilterSelected ] = useState('')
     const [ obsTwitchMap, setObsTwitchMap] = useState(() => {
@@ -339,6 +345,12 @@ export function ObsProvider ({children}) {
         });
     }
 
+    const toggleScene = (scene) => {
+        obs.sendCallback('SetCurrentScene', {"scene-name": scene}, (err, res) => {
+            if (err) console.error(err);
+        })
+    }
+
 
     const toggleSource = (source, toggled) => {
         obs.sendCallback('SetSceneItemRender', {
@@ -346,6 +358,16 @@ export function ObsProvider ({children}) {
             render: toggled
         }, (err, res) => {
         if (err) console.error(err);
+        })
+    }
+
+    const toggleFilter = (source, filter, toggle) => {
+        obs.sendCallback('SetSourceFilterVisibility', {
+            sourceName: source,
+            filterName: filter,
+            filterEnabled: toggle
+        }, (err, res) => {
+            if (err) console.error(err);
         })
     }
 
@@ -372,7 +394,8 @@ export function ObsProvider ({children}) {
                     type: 'Source',
                     sceneName: sceneSelected,
                     sourceName: sourceSelected,
-                    sourceType: sourceSelectedComplete.type
+                    sourceType: sourceSelectedComplete.type,
+                    sourceRender: sourceSelectedComplete.render
                 }
                 if (sourceSelectedComplete.type === 'group') {
                     // TODO: Add rarity object for each child
@@ -427,6 +450,40 @@ export function ObsProvider ({children}) {
         return selectedIndex;
     }
 
+
+    /** @type handleObsToggling */
+    const handleObsToggling = (toggle) => {
+        
+        switch(toggle.type) {
+            case "Scene":
+                toggleScene(toggle.sceneName)
+                break;
+            case "Source":
+                toggleSource(toggle.sourceName, !toggle.sourceRender)
+                toggle.sourceRender = !toggle.sourceRender;
+                break;
+            case "Filter":
+                toggleFilter(toggle.sourceName, toggle.filterName, !toggle.filterRender)
+                toggle.filterRender = !toggle.filterRender;
+                break;
+            case "Start Recording":
+                startRecording();
+                break;
+            case "Stop Recording":
+                stopRecording();
+                break;
+            case "Start Streaming":
+                startStreaming(5000);
+                break;
+            case "Stop Streaming":
+                stopStreaming()
+                break;
+            default:
+                break
+        }
+        return toggle;
+    }
+
     return (
         <ObsContext.Provider 
         // variables and functions that will be used globally
@@ -451,7 +508,7 @@ export function ObsProvider ({children}) {
                     obsTwitchMap, setObsTwitchMapAndLocal,
                     tabIndex, handleTabChange,
                     handleSaveDisabled, setObsToggleData,
-                    getObsTogglingIndex
+                    getObsTogglingIndex, handleObsToggling
                 }
             }
         >

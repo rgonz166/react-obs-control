@@ -5,7 +5,7 @@ const { useContext, useEffect } = require("react");
 
 const EventToggleHandler = () => {
     const {
-        startRecording, stopRecording, changeScene, toggleSource, obsTwitchMap
+        startRecording, stopRecording, changeScene, toggleSource, obsTwitchMap, handleObsToggling
     } = useContext(ObsContext);
 
     const {
@@ -50,17 +50,10 @@ const EventToggleHandler = () => {
           console.log('cost', cost)
           console.log('message', message);
           console.log('extra', extra);
-          if (extra.reward.id === '40769920-90c1-499c-800d-1ce508165413') {
-            console.log('this specific reward')
-          }
-          if (extra.reward.id === 'aa8729ca-47b6-4801-97c0-3cfbee9d1553') {
-            console.log('start recording')
-            startRecording();
-          }
-          if (extra.reward.id === '284798c8-2051-4af5-a51f-81133dfa1a7c') {
-            console.log('stop recording')
-            stopRecording();
-          }
+          const currentReward = obsTwitchMap.channelPoints.find(f => f.id === extra.reward.id);
+          currentReward.obsToggling.map(toggle => {
+            handleObsToggling(toggle)
+          })
         }
     
         ComfyJS.onResub = (user, message, streakMonths, cumulativeMonths, subTierInfo, extra) => {
