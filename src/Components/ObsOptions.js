@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { ObsContext } from "Contexts/ObsContext"
+import { useContext } from "react"
 
 const { Tabs, TabList, Tab, TabPanels, TabPanel } = require("@chakra-ui/react")
 const React = require("react")
@@ -7,12 +8,7 @@ const { default: DropDown } = require("./DropDowns")
 
 const ObsOptions = () => {
 
-    const [tabIndex, setTabIndex] = useState(0);
-
-    const handleTabChange = (index) => {
-        console.log('index', index)
-        setTabIndex(index);
-    }
+    const {tabIndex, handleTabChange} = useContext(ObsContext)
 
     return (
         <Tabs

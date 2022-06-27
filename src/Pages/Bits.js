@@ -1,9 +1,13 @@
 import React from 'react';
-import {  Heading, VStack, Text, Input, HStack } from '@chakra-ui/react';
-import DropDown from '../Components/DropDowns';
+import { Heading, VStack, Text, HStack } from '@chakra-ui/react';
+import ObsOptions from 'Components/ObsOptions';
+import InputNumber from 'Components/InputNumber';
+import { useState } from 'react';
 
 const Bits = () => {
 
+    const [minBits, setMinBits] = useState(0);
+    const [maxBits, setMaxBits] = useState(0);
 
     return (
         <>
@@ -14,14 +18,14 @@ const Bits = () => {
                     <HStack>
                         <VStack>
                             <Text fontSize='2xl'>Max Value</Text>
-                            <Input type='text' placeholder='Min Value'></Input>
+                            <InputNumber defaultVal={minBits} min={0} handleValue={setMinBits} />
                         </VStack>
                         <VStack>
                             <Text fontSize='2xl'>Max Value</Text>
-                            <Input type='text' placeholder='Min Value'></Input>
+                            <InputNumber defaultVal={maxBits} min={0} handleValue={setMaxBits} />
                         </VStack>
                     </HStack>
-                <DropDown />
+                    <ObsOptions />
             </VStack>
         </form>
         </>

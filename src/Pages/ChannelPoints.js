@@ -8,41 +8,48 @@ import ObsOptions from 'Components/ObsOptions';
 
 
 const ChannelPoints = () => {
-    const {obsTwitchMap, setObsTwitchMapAndLocal} = useContext(ObsContext)
+    const {obsTwitchMap, setObsTwitchMapAndLocal, handleSaveDisabled, setObsToggleData, getObsTogglingIndex} = useContext(ObsContext)
     const { getPointRewards, twitchRewards, twitchConnected } = useContext(TwitchContext)
 
     const [selectedReward, setSelectedReward] = useState(null);
 
+    const handleRewardChange = (e) => {
+        if (e.target.value === '') {
+            setSelectedReward(null)
+        }else {
+            setSelectedReward(JSON.parse(e.target.selectedOptions[0].dataset.reward))
+        }
+    }
+
+
     const addChannelPoints = () => {
-        console.log('selectedReward', selectedReward);
         const currentMap = obsTwitchMap;
+
         // Check if its the first time being added
-        const rewardIndex = currentMap.channelPoints.indexOf(f => f.id === selectedReward.id);
-        if (rewardIndex === -1) {
-            currentMap.channelPoints.push({
+        const reward = currentMap.channelPoints.find(f => f.id === selectedReward.id);
+        if (!reward) {
+            let initialMapItem = {
                 id: selectedReward.id,
                 name: selectedReward.title,
                 cost: selectedReward.cost,
-                obsToggling: [
-                    {
-                        type: 'first time',
-                    }
-                ]
-            })
-            console.log('currentMap', currentMap);
-            setObsTwitchMapAndLocal(currentMap);
+                obsToggling: [setObsToggleData()]
+            };
+
+            currentMap.channelPoints.push(initialMapItem)
         } else {
             // If reward id exists, add to things to toggle
-            // TODO: Check if obsToggling type is already added and depending on type, check specific field are already in array (e.g. sourceName, sceneName...)
-            // const obsToggleTypeIndex = currentMap.channelPoints[rewardIndex].obsToggling.indexOf(r => r.type === (selectedTabType) )
-
-            // If none are found then add to array
-            currentMap.channelPoints[rewardIndex].obsToggling.push({
-                type: 'second time'
-            })
-            //TODO otherwise update the index with the properties
-
+            const obsToggleIndex = getObsTogglingIndex(reward.obsToggling);
+            if (obsToggleIndex === -1) {
+                // If none are found then add to array
+                reward.obsToggling.push(setObsToggleData())
+            } else {
+                // Update the data at the index
+                reward.obsToggling[obsToggleIndex] = setObsToggleData();
+            }
+            
+            
         }
+        setObsTwitchMapAndLocal(currentMap);
     }
 
     return (
@@ -52,7 +59,7 @@ const ChannelPoints = () => {
                     <Text fontSize='2xl'>Rewards List:</Text>
                     <Center>
 
-                    <Select placeholder={twitchConnected ? 'Select Reward' : 'Twitch Not Connected'} onChange={(e) => setSelectedReward(JSON.parse(e.target.selectedOptions[0].dataset.reward))}>
+                    <Select placeholder={twitchConnected ? 'Select Reward' : 'Twitch Not Connected'} onChange={handleRewardChange}>
                         {twitchRewards.map((reward) => {
                             return(
                                 <option data-reward={JSON.stringify(reward)} key={reward.id} value={reward.id}>{reward.title} ({reward.cost})</option>
@@ -64,8 +71,7 @@ const ChannelPoints = () => {
             </VStack>
             <Center>
                 <HStack paddingTop={'10px'}>
-                    {/* TODO Disable button if reward is null or other properties */}
-                    <Button onClick={ () => addChannelPoints()}>Add to List</Button>
+                    <Button disabled={handleSaveDisabled() || selectedReward === null} onClick={ () => addChannelPoints()}>Add to List</Button>
                     <Button onClick={ () => getPointRewards()}>Refresh Rewards</Button>
                 </HStack>
             </Center>
