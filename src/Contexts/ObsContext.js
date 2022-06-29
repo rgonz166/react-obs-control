@@ -26,6 +26,14 @@ import { useEffect } from "react";
  */
 
 /**
+ * @typedef {Object} QueueData
+ * @property {string} QueueData.reward
+ * @property {string[]} rewardArray
+ * @property {boolean} isGroup
+ * @property {boolean} flag
+ */
+
+/**
  * @typedef {Object} bits
  * @property {number} minBits
  * @property {number} maxBits
@@ -161,6 +169,9 @@ export function ObsProvider ({children}) {
         console.log('index', index)
         setTabIndex(index);
     }
+
+    /** @type {[Map<string, QueueData>, Function]} */
+    const [queueMap, setQueueMap] = useState(new Map());
 
     // Add useEffect below
     useEffect(() => {
@@ -482,6 +493,40 @@ export function ObsProvider ({children}) {
                 break
         }
         return toggle;
+    }
+
+    // Queue system
+    /**
+     * 
+     * @param {string} mapKey Key of source or group name to store for queue map
+     * @param {string} source The source that will be toggled
+     * @param {boolean} isGroup Check if type is group
+     * @param {string} user User that activated the toggle and stored in array
+     */
+     const checkQueueStatus = (mapKey, source, isGroup, user) => {
+        if (queueMap.has(mapKey)) {
+
+        } else {
+            queueMap.set(mapKey, {reward: source, rewardArray: [user], isGroup: isGroup, flag: false});
+            const currentActiveReward = queueMap.get(mapKey);
+            setQueueMap(queueMap);
+            toggleSourceQueue(currentActiveReward);
+        }
+    }
+
+    /**
+     * 
+     * @param {QueueData} queue 
+     */
+    const toggleSourceQueue = (queue) => {
+        if (!queue.flag) {
+            timedToggleSource()
+        }
+    }
+
+    const timedToggleSource = () => {
+        // TODO: Add timed toggle functionality
+        
     }
 
     return (
