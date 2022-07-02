@@ -580,7 +580,7 @@ export function ObsProvider ({children}) {
     return (
         <ObsContext.Provider 
         // variables and functions that will be used globally
-            value={
+            value = {
                 {
                     scenes, setScenes, 
                     sources, setSources,
@@ -601,7 +601,7 @@ export function ObsProvider ({children}) {
                     obsTwitchMap, setObsTwitchMap, addChannelPoints,
                     tabIndex, handleTabChange,
                     handleSaveDisabled, setObsToggleData,
-                    getObsTogglingIndex, handleObsToggling
+                    getObsTogglingIndex, handleObsToggling, handleSetObsTwitchMapAndLocal
                 }
             }
         >
