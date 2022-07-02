@@ -1,5 +1,5 @@
 /* eslint-disable no-fallthrough */
-import React, { useState } from "react";
+import React, { useState, Dispatch } from "react";
 import OBSWebSocket, {SceneItem} from "obs-websocket-js";
 import { useToast } from "@chakra-ui/toast";
 import { useEffect } from "react";
@@ -48,6 +48,11 @@ import { useEffect } from "react";
  */
 
 /**
+ * @typedef {Object} obsTwitchMap
+ * @property {setObsTwitchMapType} obsTwitchMap
+ */
+
+/**
  * @typedef {Object} setObsTwitchMapType
  * @property {Array<bits>} bits
  * @property {Array<channelPoints>} channelPoints
@@ -62,8 +67,8 @@ import { useEffect } from "react";
  * @callback changeScene
  * @param {string} scene scene to be changed
  * 
- * @callback setObsTwitchMapAndLocal
- * @param {setObsTwitchMapType} data
+ * @callback handleSetObsTwitchMapAndLocal
+ * @param {obsTwitchMap} data
  * 
  * @callback startStreaming
  * @param {number} timeOffset
@@ -102,7 +107,8 @@ import { useEffect } from "react";
  * startRecording, stopRecording: function,
  * startStreaming: startStreaming, stopStreaming: function,
  * toggleSource: toggleSource, changeScene: changeScene,
- * obsTwitchMap: setObsTwitchMapType, setObsTwitchMapAndLocal: setObsTwitchMapAndLocal
+ * obsTwitchMap: obsTwitchMap, setObsTwitchMap, handleSetObsTwitchMapAndLocal: handleSetObsTwitchMapAndLocal
+ * addChannelPoints,
  * tabIndex: number, handleTabChange: handleTabChange
  * handleSaveDisabled: handleSaveDisabled, setObsToggleData: setObsToggleData,
  * getObsTogglingIndex: getObsTogglingIndex, handleObsToggling: handleObsToggling
@@ -142,18 +148,19 @@ export function ObsProvider ({children}) {
     })
     const [ sceneSelected, setSceneSelected ] = useState('')
     const [ sourceSelected, setSourceSelected ] = useState('')
-    /**@type {[SceneItem, Function]} */
+    /**@type {[SceneItem,  Dispatch<SceneItem>]} */
     const [ sourceSelectedComplete, setSourceSelectedComplete ] = useState(null)
     const [ filterSelected, setFilterSelected ] = useState('')
+    /** @type {[obsTwitchMap, Dispatch<obsTwitchMap>]} */
     const [ obsTwitchMap, setObsTwitchMap] = useState(() => {
         const saved = localStorage.getItem('obsTwitchMap');
         const initialValue = JSON.parse(saved);
         // * Add extra twitch events here
-        return initialValue || {
+        return initialValue || { obsTwitchMap: {
             'bits': [],
             'channelPoints': [],
             'subscriptions': []
-        }
+        }}
     })
 
     const [tabIndex, setTabIndex] = useState(0);
@@ -182,10 +189,21 @@ export function ObsProvider ({children}) {
 
     }, [obs])
 
+    useEffect(() => {
+        console.log('obsTwitchMapEffect', obsTwitchMap);
+    }, [obsTwitchMap])
+
     // Add Functions below
-    const setObsTwitchMapAndLocal = (data) => {
+    /**
+     * 
+     * @param {obsTwitchMap} data 
+     */
+    const handleSetObsTwitchMapAndLocal = (data) => {
         console.log('mapData', data)
-        setObsTwitchMap(data);
+        setObsTwitchMap({
+            ...obsTwitchMap,
+            obsTwitchMap: data.obsTwitchMap
+        });
         localStorage.setItem('obsTwitchMap', JSON.stringify(data))
     }
 
@@ -379,6 +397,36 @@ export function ObsProvider ({children}) {
         })
     }
 
+    const addChannelPoints = (selectedReward) => {
+        const currentMap = obsTwitchMap;
+
+        // Check if its the first time being added
+        const rewardIndex = currentMap.obsTwitchMap.channelPoints.findIndex(f => f.id === selectedReward.id);
+        if (rewardIndex === -1) {
+            let initialMapItem = {
+                id: selectedReward.id,
+                name: selectedReward.title,
+                cost: selectedReward.cost,
+                obsToggling: [setObsToggleData()]
+            };
+
+            currentMap.obsTwitchMap.channelPoints.push(initialMapItem)
+        } else {
+            // If rewardIndex id exists, add to things to toggle
+            const obsToggleIndex = getObsTogglingIndex(currentMap.obsTwitchMap.channelPoints[rewardIndex].obsToggling);
+            if (obsToggleIndex === -1) {
+                // If none are found then add to array
+                currentMap.obsTwitchMap.channelPoints[rewardIndex].obsToggling.push(setObsToggleData())
+            } else {
+                // Update the data at the index
+                currentMap.obsTwitchMap.channelPoints[rewardIndex].obsToggling[obsToggleIndex] = setObsToggleData();
+            }
+            
+            
+        }
+        handleSetObsTwitchMapAndLocal(currentMap);
+    }
+
     const setObsToggleData = () => {
         /**@type obsToggling */
         let tempData;
@@ -505,7 +553,7 @@ export function ObsProvider ({children}) {
                     startRecording, stopRecording,
                     startStreaming, stopStreaming,
                     toggleSource, changeScene,
-                    obsTwitchMap, setObsTwitchMapAndLocal,
+                    obsTwitchMap, setObsTwitchMap, addChannelPoints,
                     tabIndex, handleTabChange,
                     handleSaveDisabled, setObsToggleData,
                     getObsTogglingIndex, handleObsToggling
