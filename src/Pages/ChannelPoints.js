@@ -8,7 +8,7 @@ import ObsOptions from 'Components/ObsOptions';
 
 
 const ChannelPoints = () => {
-    const {obsTwitchMap, setObsTwitchMapAndLocal, handleSaveDisabled, setObsToggleData, getObsTogglingIndex} = useContext(ObsContext)
+    const {handleSaveDisabled, addChannelPoints} = useContext(ObsContext)
     const { getPointRewards, twitchRewards, twitchConnected } = useContext(TwitchContext)
 
     const [selectedReward, setSelectedReward] = useState(null);
@@ -22,35 +22,7 @@ const ChannelPoints = () => {
     }
 
 
-    const addChannelPoints = () => {
-        const currentMap = obsTwitchMap;
-
-        // Check if its the first time being added
-        const reward = currentMap.channelPoints.find(f => f.id === selectedReward.id);
-        if (!reward) {
-            let initialMapItem = {
-                id: selectedReward.id,
-                name: selectedReward.title,
-                cost: selectedReward.cost,
-                obsToggling: [setObsToggleData()]
-            };
-
-            currentMap.channelPoints.push(initialMapItem)
-        } else {
-            // If reward id exists, add to things to toggle
-            const obsToggleIndex = getObsTogglingIndex(reward.obsToggling);
-            if (obsToggleIndex === -1) {
-                // If none are found then add to array
-                reward.obsToggling.push(setObsToggleData())
-            } else {
-                // Update the data at the index
-                reward.obsToggling[obsToggleIndex] = setObsToggleData();
-            }
-            
-            
-        }
-        setObsTwitchMapAndLocal(currentMap);
-    }
+   
 
     return (
         <>
@@ -71,7 +43,7 @@ const ChannelPoints = () => {
             </VStack>
             <Center>
                 <HStack paddingTop={'10px'}>
-                    <Button disabled={handleSaveDisabled() || selectedReward === null} onClick={ () => addChannelPoints()}>Add to List</Button>
+                    <Button disabled={handleSaveDisabled() || selectedReward === null} onClick={() => addChannelPoints(selectedReward)}>Add to List</Button>
                     <Button onClick={ () => getPointRewards()}>Refresh Rewards</Button>
                 </HStack>
             </Center>
