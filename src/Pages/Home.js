@@ -2,6 +2,7 @@ import React, { useContext } from "react"
 import { Button,Center, VStack, Heading, HStack, Text, Tooltip } from "@chakra-ui/react";
 import { ObsContext } from "Contexts/ObsContext";
 import { TwitchContext } from "Contexts/TwitchContext";
+import md5 from "md5";
 
 const Home = () => {
     const {
@@ -43,6 +44,7 @@ const Home = () => {
                                 <Button onClick={() => { startStreaming(5000) }}>Start Streaming</Button>
                                 <Button onClick={() => { stopStreaming() }}>Stop Streaming</Button>
                                 <Button onClick={() => { console.log(obsTwitchMap) }}>Get Map</Button>
+                                <Button onClick={() => { console.log(md5(JSON.stringify({min:5, max:6}))) }}>Get MD5</Button>
                             </div>
                     }
                     {twitchConnected ? 
