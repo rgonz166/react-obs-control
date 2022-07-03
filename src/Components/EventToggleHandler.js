@@ -5,7 +5,7 @@ const { useContext, useEffect } = require("react");
 
 const EventToggleHandler = () => {
     const {
-        startRecording, stopRecording, obsTwitchMap, handleObsToggling
+        startRecording, stopRecording, obsTwitchMap, handleMappedObsToggling
     } = useContext(ObsContext);
 
     const {
@@ -52,7 +52,7 @@ const EventToggleHandler = () => {
           console.log('extra', extra);
           const currentReward = obsTwitchMap.obsTwitchMap.channelPoints.find(f => f.id === extra.reward.id);
           currentReward.obsToggling.map(toggle => {
-            return handleObsToggling(toggle)
+            return handleMappedObsToggling(toggle)
           })
         }
     
@@ -80,7 +80,7 @@ const EventToggleHandler = () => {
           console.log('extra', extra);
         }
 
-    }, [ComfyJS, startRecording, stopRecording, handleObsToggling, obsTwitchMap.obsTwitchMap.channelPoints])
+    }, [ComfyJS, startRecording, stopRecording, handleMappedObsToggling, obsTwitchMap.obsTwitchMap.channelPoints])
 
     return (null)
 
