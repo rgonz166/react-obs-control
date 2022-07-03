@@ -1,6 +1,6 @@
 /* eslint-disable no-fallthrough */
 import React, { useState, Dispatch } from "react";
-import OBSWebSocket, {SceneItem} from "obs-websocket-js";
+import OBSWebSocket, {Scene, SceneItem} from "obs-websocket-js";
 import { useToast } from "@chakra-ui/toast";
 import { useEffect } from "react";
 
@@ -142,6 +142,7 @@ export function ObsProvider ({children}) {
      * @type {[obs, LoadingStateSetter]} Loading
      */
     const [obs, setObs] = useState(null);
+    /** @type {[Scene[], Function]} */
     const [scenes, setScenes] = useState([])
     const [sources, setSources] = useState([])
     const [filters, setFilters] = useState([])
@@ -309,6 +310,10 @@ export function ObsProvider ({children}) {
         })
     }
 
+    /**
+     * 
+     * @param {string} scene 
+     */
     const handleSceneSelection = (scene) => {
         if(!scene) {
           setSceneSelected('')
@@ -317,7 +322,21 @@ export function ObsProvider ({children}) {
           setSceneSelected(scene)
           const selectedScene =  scenes.find((s) => s.name === scene)
           console.log('sceneSelected', sceneSelected)
-          console.log(selectedScene)
+          console.log('sources', selectedScene.sources);
+          selectedScene.sources.map(async source => {
+            let currentSource;
+            if (source.type === 'ffmpeg_source') {
+                await obs.sendCallback('GetMediaDuration', {sourceName: source.name}, (err, res) => {
+                    if (err) console.error(err);
+                    source['time'] = res.mediaDuration;
+                    currentSource = source;
+                })
+            } else {
+                currentSource = source;
+            }
+            return currentSource;
+          })
+          console.log('transformedSources', selectedScene.sources)
           setSources(selectedScene.sources)
         }
     }

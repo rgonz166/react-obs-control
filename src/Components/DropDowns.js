@@ -31,7 +31,7 @@ const DropDown = ({type}) => {
                                     <Select value={sourceSelected} onChange={(e) => handleSourceSelection(e.target)} placeholder={obsConnected ? 'Select a Source' : 'OBS Not Connected'}>
                                         {sources.map((source) => {
                                             return (
-                                                <option key={source.name} data-source={JSON.stringify(source)} value={source.name}>{source.name}</option>
+                                                <option key={source.name} data-source={JSON.stringify(source)} value={source.name}>{source.time ? `${source.name} (${source.time/1000}s)` : source.name}</option>
                                             )
                                         })}
                                     </Select>
