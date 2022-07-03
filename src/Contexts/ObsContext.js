@@ -94,7 +94,7 @@ import { useEffect } from "react";
  * @param {Array<obsToggling>} value 
  * @returns number
  *
- * @callback handleObsToggling
+ * @callback handleMappedObsToggling
  * @param {obsToggling} toggle
  * @returns obsToggling
  *
@@ -119,13 +119,15 @@ import { useEffect } from "react";
  * addChannelPoints,
  * tabIndex: number, handleTabChange: handleTabChange
  * handleSaveDisabled: handleSaveDisabled, setObsToggleData: setObsToggleData,
- * getObsTogglingIndex: getObsTogglingIndex, handleObsToggling: handleObsToggling
+ * getObsTogglingIndex: getObsTogglingIndex, handleMappedObsToggling: handleMappedObsToggling
  * }>}
  * 
  */
 export const ObsContext = React.createContext(null);
 
 export function ObsProvider ({children}) {
+    /**@type {Map<string, QueueData>} */
+    const queueMap = new Map()
     const toast = useToast();
 
     // Add states below
@@ -178,13 +180,34 @@ export function ObsProvider ({children}) {
     }
 
     /** @type {[Map<string, QueueData>, Function]} */
-    const [queueMap, setQueueMap] = useState(new Map());
+    // const [queueMap, setQueueMap] = useState(new Map());
 
     // Add useEffect below
     useEffect(() => {
         if (obs) {
             obs.on('SourceCreated', data => {
                 console.log('sourceCreated', data)
+                getAndSetScenes();
+            })
+            obs.on('SourceDestroyed', data => {
+                toast({
+                    title: 'Source Deleted',
+                    description: `${data.sourceName} has been deleted in OBS. Verify no toggles have been set for this source.`,
+                    status: 'warning',
+                    duration: 7000,
+                    isClosable: true
+                })
+                getAndSetScenes();
+            })
+            obs.on('SourceRenamed', data => {
+                toast({
+                    title: 'Source Renamed',
+                    description: `"${data.previousName}" has been renamed to "${data.newName}" in OBS. If a toggle had this scene, add the new name and remove the old one.`,
+                    status: 'warning',
+                    duration: 10000,
+                    isClosable: true
+                })
+                getAndSetScenes();
             })
             obs.on('ScenesChanged', data => {
                 // When scene order changed
@@ -204,7 +227,21 @@ export function ObsProvider ({children}) {
         console.log('obsTwitchMapEffect', obsTwitchMap);
     }, [obsTwitchMap])
 
+    useEffect(() => {
+        console.log('scenes', scenes);
+    }, [scenes])
+
     // Add Functions below
+
+    const getAndSetScenes = () => {
+        obs.send('GetSceneList').then( data => {
+            setScenes(data.scenes);
+            setSceneSelected('');
+            setSourceSelected('');
+            setFilterSelected('');
+        })
+    }
+
     /**
      * 
      * @param {obsTwitchMap} data 
@@ -225,16 +262,16 @@ export function ObsProvider ({children}) {
         obs.connect({address: `localhost:${obsPort}`, password: obsPassword}).then(() => {
             setObsConnected(true);
             obs.send('GetSceneList')
-        .then( data => {
-            setScenes(data.scenes);
-        })
-        toast({
-            title: `OBS Connected`,
-            description: 'OBS Connection has been successfully established',
-            status: 'success',
-            duration: 7000,
-            isClosable: true
-        })
+            .then( data => {
+                setScenes(data.scenes);
+            })
+            toast({
+                title: `OBS Connected`,
+                description: 'OBS Connection has been successfully established',
+                status: 'success',
+                duration: 7000,
+                isClosable: true
+            })
         }).catch(rejected => {
             setObsConnected(false)
             setScenes([]);
@@ -510,14 +547,15 @@ export function ObsProvider ({children}) {
     }
 
 
-    /** @type handleObsToggling */
-    const handleObsToggling = (toggle) => {
-        
+    /** @type handleMappedObsToggling */
+    const handleMappedObsToggling = (toggle) => {
         switch(toggle.type) {
             case "Scene":
                 toggleScene(toggle.sceneName)
                 break;
-            case "Source":
+                case "Source":
+                // TODO: Change this to do a queue status
+                console.log('toggle', toggle);
                 toggleSource(toggle.sourceName, !toggle.sourceRender)
                 toggle.sourceRender = !toggle.sourceRender;
                 break;
@@ -551,13 +589,14 @@ export function ObsProvider ({children}) {
      * @param {boolean} isGroup Check if type is group
      * @param {string} user User that activated the toggle and stored in array
      */
-     const checkQueueStatus = (mapKey, source, isGroup, user) => {
+     const handleQueueMap = (mapKey, source, isGroup, user) => {
+        // TODO: Check source type, add delay, video time
         if (queueMap.has(mapKey)) {
-
+            queueMap.get(mapKey).rewardArray.push(user);
         } else {
             queueMap.set(mapKey, {reward: source, rewardArray: [user], isGroup: isGroup, flag: false});
             const currentActiveReward = queueMap.get(mapKey);
-            setQueueMap(queueMap);
+            // setQueueMap(queueMap);
             toggleSourceQueue(currentActiveReward);
         }
     }
@@ -601,7 +640,7 @@ export function ObsProvider ({children}) {
                     obsTwitchMap, setObsTwitchMap, addChannelPoints,
                     tabIndex, handleTabChange,
                     handleSaveDisabled, setObsToggleData,
-                    getObsTogglingIndex, handleObsToggling, handleSetObsTwitchMapAndLocal
+                    getObsTogglingIndex, handleMappedObsToggling, handleSetObsTwitchMapAndLocal
                 }
             }
         >
