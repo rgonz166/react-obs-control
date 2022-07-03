@@ -51,9 +51,11 @@ const EventToggleHandler = () => {
           console.log('message', message);
           console.log('extra', extra);
           const currentReward = obsTwitchMap.obsTwitchMap.channelPoints.find(f => f.id === extra.reward.id);
-          currentReward.obsToggling.map(toggle => {
-            return handleMappedObsToggling(toggle)
-          })
+          if (currentReward) {
+            currentReward.obsToggling.map(toggle => {
+              return handleMappedObsToggling(toggle)
+            })
+          }
         }
     
         ComfyJS.onResub = (user, message, streakMonths, cumulativeMonths, subTierInfo, extra) => {
