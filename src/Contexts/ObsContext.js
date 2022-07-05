@@ -575,6 +575,10 @@ export function ObsProvider ({children}) {
                 case "Source":
                 // TODO: Change this to do a queue status
                 console.log('toggle', toggle);
+                // TODO: Get current source render
+                // obs.sendCallback('GetSourceActive', {sourceName: toggle.sourceName}, (err, res) => {
+                //     console.log('sourceActive', res.sourceActive)
+                // })
                 toggleSource(toggle.sourceName, !toggle.sourceRender)
                 toggle.sourceRender = !toggle.sourceRender;
                 break;
