@@ -22,15 +22,17 @@ import { useEffect } from "react";
  * @property {boolean} [isRandom]
  * @property {boolean} [isRarity] will the source have rarity
  * @property {number} [rarity] will the source have rarity
- * @property {number} [timed]
+ * @property {boolean} [timed]
+ * @property {number} [time]
  */
 
 /**
  * @typedef {Object} QueueData
- * @property {string} QueueData.reward
+ * @property {string} sourceName
  * @property {string[]} rewardArray
  * @property {boolean} isGroup
  * @property {boolean} flag
+ * @property {obsToggling} source
  */
 
 /**
@@ -96,6 +98,7 @@ import { useEffect } from "react";
  *
  * @callback handleMappedObsToggling
  * @param {obsToggling} toggle
+ * @param {string} user
  * @returns obsToggling
  *
  * 
@@ -567,7 +570,7 @@ export function ObsProvider ({children}) {
 
 
     /** @type handleMappedObsToggling */
-    const handleMappedObsToggling = (toggle) => {
+    const handleMappedObsToggling = (toggle, user) => {
         switch(toggle.type) {
             case "Scene":
                 toggleScene(toggle.sceneName)
@@ -607,20 +610,28 @@ export function ObsProvider ({children}) {
     // Queue system
     /**
      * 
-     * @param {string} mapKey Key of source or group name to store for queue map
-     * @param {string} source The source that will be toggled
+     * @param {string} sourceName The source that will be toggled
+     * @param {obsToggling} source The complete source to be toggled
      * @param {boolean} isGroup Check if type is group
      * @param {string} user User that activated the toggle and stored in array
      */
-     const handleQueueMap = (mapKey, source, isGroup, user) => {
+     const handleQueueMap = (sourceName, source, isGroup, user) => {
         // TODO: Check source type, add delay, video time
-        if (queueMap.has(mapKey)) {
-            queueMap.get(mapKey).rewardArray.push(user);
+        if (source.sourceType === 'ffmpeg_source' || source.timed) {
+            if (queueMap.has(sourceName)) {
+                const updatedActiveReward = queueMap.get(sourceName);
+                updatedActiveReward.rewardArray.push(user);
+                toggleSourceQueue(updatedActiveReward);
+            } else {
+                queueMap.set(sourceName, {sourceName: sourceName, rewardArray: [user], isGroup: isGroup, flag: false, source: source});
+                const currentActiveReward = queueMap.get(sourceName);
+                // setQueueMap(queueMap);
+                toggleSourceQueue(currentActiveReward);
+            }
         } else {
-            queueMap.set(mapKey, {reward: source, rewardArray: [user], isGroup: isGroup, flag: false});
-            const currentActiveReward = queueMap.get(mapKey);
-            // setQueueMap(queueMap);
-            toggleSourceQueue(currentActiveReward);
+            // If source is not timed just toggle
+            toggleSource(sourceName, !source.sourceRender)
+            source.sourceRender = !source.sourceRender;
         }
     }
 
@@ -629,8 +640,15 @@ export function ObsProvider ({children}) {
      * @param {QueueData} queue 
      */
     const toggleSourceQueue = (queue) => {
-        if (!queue.flag) {
-            timedToggleSource()
+        if (!queue.flag && queue.rewardArray.length > 0) {
+            // Only run if the flag is false and there is at least one item in the array
+            queue.flag = true;
+            queue.rewardArray.shift();
+            // Set the source the false so that the timing can start
+            toggleSource(queue.sourceName, false);
+            setTimeout(() => {
+
+            })
         }
     }
 
