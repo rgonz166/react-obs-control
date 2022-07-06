@@ -640,22 +640,36 @@ export function ObsProvider ({children}) {
      * @param {QueueData} queue 
      */
     const toggleSourceQueue = (queue) => {
+        // Only run if the flag is false and there is at least one item in the array
         if (!queue.flag && queue.rewardArray.length > 0) {
-            // Only run if the flag is false and there is at least one item in the array
             queue.flag = true;
             queue.rewardArray.shift();
             // Set the source the false so that the timing can start
             toggleSource(queue.sourceName, false);
             setTimeout(() => {
-
-            })
+                // toggle source and then set timer to toggle off after amount set
+                toggleSource(queue.sourceName, true);
+                setTimeout(() => {
+                    // Once timer finishes, toggle off the source
+                    toggleSource(queue.sourceName, false);
+                    if (queue.rewardArray.length > 0) {
+                        toggleSourceQueue(queue)
+                    } else {
+                        queue.flag = false;
+                    }
+                }, queue.source.time)
+            }, 500);
+            // Set the render to false
+            queue.source.sourceRender = false;
+            // Update the map with the new properties set
+            queueMap.set(queue.sourceName, queue);
         }
     }
 
-    const timedToggleSource = () => {
-        // TODO: Add timed toggle functionality
+    // const timedToggleSource = () => {
+    //     // TODO: Add timed toggle functionality
         
-    }
+    // }
 
     return (
         <ObsContext.Provider 
