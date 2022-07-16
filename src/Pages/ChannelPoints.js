@@ -3,6 +3,7 @@ import {  Heading, VStack, Text, Select, Button, Center, HStack } from '@chakra-
 import { TwitchContext } from 'Contexts/TwitchContext';
 import { ObsContext } from 'Contexts/ObsContext';
 import ObsOptions from 'Components/ObsOptions';
+import MapTable from 'Components/MapTable';
 
 
 
@@ -47,6 +48,7 @@ const ChannelPoints = () => {
                     <Button onClick={ () => getPointRewards()}>Refresh Rewards</Button>
                 </HStack>
             </Center>
+            <MapTable />
         </>
     )
 }
