@@ -556,7 +556,8 @@ export function ObsProvider ({children}) {
                     obsTwitchMap, setObsTwitchMap, addChannelPoints,
                     tabIndex, handleTabChange,
                     handleSaveDisabled, setObsToggleData,
-                    getObsTogglingIndex, handleObsToggling
+                    getObsTogglingIndex, handleObsToggling,
+                    handleSetObsTwitchMapAndLocal
                 }
             }
         >

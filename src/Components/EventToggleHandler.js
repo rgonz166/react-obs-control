@@ -50,7 +50,7 @@ const EventToggleHandler = () => {
           console.log('cost', cost)
           console.log('message', message);
           console.log('extra', extra);
-          const currentReward = obsTwitchMap.channelPoints.find(f => f.id === extra.reward.id);
+          const currentReward = obsTwitchMap.obsTwitchMap.channelPoints.find(f => f.id === extra.reward.id);
           currentReward.obsToggling.map(toggle => {
             return handleObsToggling(toggle)
           })
@@ -80,7 +80,7 @@ const EventToggleHandler = () => {
           console.log('extra', extra);
         }
 
-    }, [ComfyJS, startRecording, stopRecording, handleObsToggling, obsTwitchMap.channelPoints])
+    }, [ComfyJS, startRecording, stopRecording, handleObsToggling, obsTwitchMap.obsTwitchMap.channelPoints])
 
     return (null)
 
