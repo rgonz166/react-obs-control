@@ -18,11 +18,13 @@ const MapTable = () => {
 
     const { obsTwitchMap } = useContext(ObsContext)
 
+    const channelPoints = obsTwitchMap.obsTwitchMap.channelPoints
+    
 
     return (
         <Center>
 
-        <TableContainer width={"40%"}>
+        <TableContainer width={"60%"} >
             <Table variant={'simple'}>
             <TableCaption>OBS and Twitch Connection</TableCaption>
             <Thead>
@@ -33,13 +35,20 @@ const MapTable = () => {
                 </Tr>
             </Thead>
            <Tbody>
-                {obsTwitchMap.obsTwitchMap.channelPoints.map(channelPoint => {
-                    return (
-                        <Tr key={channelPoint.id}>
-                            <Td>{channelPoint.name}</Td>
-                        </Tr>
-                    )
-                })}
+               {channelPoints.map((channelPoint) => {
+                return (
+                    channelPoint.obsToggling.map((toggle) => {
+                        return (
+                            <Tr key={channelPoint.id}>
+                                <Td>{channelPoint.name}</Td>
+                                <Td>{toggle.sourceName}</Td>
+                                <Td>{channelPoint.cost}</Td>
+                            </Tr>
+                        )
+                    })
+                )
+               })}
+               
            </Tbody>
             </Table>
         </TableContainer>
