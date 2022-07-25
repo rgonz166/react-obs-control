@@ -9,6 +9,7 @@ import {
     Td,
     TableCaption,
     TableContainer,
+    Center
   } from '@chakra-ui/react'
 
   import { ObsContext } from "Contexts/ObsContext";
@@ -17,10 +18,11 @@ const MapTable = () => {
 
     const { obsTwitchMap } = useContext(ObsContext)
 
-     
 
     return (
-        <TableContainer>
+        <Center>
+
+        <TableContainer width={"40%"}>
             <Table variant={'simple'}>
             <TableCaption>OBS and Twitch Connection</TableCaption>
             <Thead>
@@ -30,11 +32,18 @@ const MapTable = () => {
                    <Th>Cost</Th> 
                 </Tr>
             </Thead>
-            <Tbody>
-                <Tr></Tr>
-            </Tbody>
+           <Tbody>
+                {obsTwitchMap.obsTwitchMap.channelPoints.map(channelPoint => {
+                    return (
+                        <Tr key={channelPoint.id}>
+                            <Td>{channelPoint.name}</Td>
+                        </Tr>
+                    )
+                })}
+           </Tbody>
             </Table>
         </TableContainer>
+        </Center>
     )
 
 }
