@@ -13,14 +13,16 @@ import {
   } from '@chakra-ui/react'
 
   import { ObsContext } from "Contexts/ObsContext";
+  import { TwitchContext } from "Contexts/TwitchContext";
 
 const MapTable = () => {
 
-    const { obsTwitchMap } = useContext(ObsContext)
+    const { obsTwitchMap, tabIndex } = useContext(ObsContext)
+    const { twitchRewards } = useContext(TwitchContext)
 
     const channelPoints = obsTwitchMap.obsTwitchMap.channelPoints
     
-
+    
     return (
         <Center>
 
@@ -28,28 +30,46 @@ const MapTable = () => {
             <Table variant={'simple'}>
             <TableCaption>OBS and Twitch Connection</TableCaption>
             <Thead>
-                <Tr>
-                   <Th>Reward</Th> 
-                   <Th>Source</Th> 
-                   <Th>Cost</Th> 
-                </Tr>
+                
             </Thead>
            <Tbody>
                {channelPoints.map((channelPoint) => {
                 return (
                     channelPoint.obsToggling.map((toggle) => {
-                        return (
-                            <Tr key={channelPoint.id}>
-                                <Td>{channelPoint.name}</Td>
-                                <Td>{toggle.sourceName}</Td>
-                                <Td>{channelPoint.cost}</Td>
-                            </Tr>
-                        )
+                       switch (tabIndex) {
+                        case 0:
+                            return (
+                                <Tr key={channelPoint.id}>
+                                    <Td>{channelPoint.name}</Td>
+                                    <Td>{toggle.sceneName}</Td>
+                                    <Td>{channelPoint.cost}</Td>
+                                </Tr>
+                            )
+                        case 1: 
+                            return (
+                                <Tr key={channelPoint.id}>
+                                    <Td>{channelPoint.name}</Td>
+                                    <Td>{toggle.sceneName}</Td>
+                                    <Td>{toggle.sourceName}</Td>
+                                    <Td>{channelPoint.cost}</Td>
+                                </Tr>
+                            )
+                       
+                        default:
+                            break;
+                       }
                     })
                 )
                })}
                
            </Tbody>
+           <Tfoot>
+            <Tr>
+                <Th>Reward</Th>
+                <Th>Source</Th> 
+                <Th>Cost</Th> 
+            </Tr>
+           </Tfoot>
             </Table>
         </TableContainer>
         </Center>
