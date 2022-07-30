@@ -582,7 +582,8 @@ export function ObsProvider ({children}) {
                 // obs.sendCallback('GetSourceActive', {sourceName: toggle.sourceName}, (err, res) => {
                 //     console.log('sourceActive', res.sourceActive)
                 // })
-                toggleSource(toggle.sourceName, !toggle.sourceRender)
+                // toggleSource(toggle.sourceName, !toggle.sourceRender)
+                handleQueueMap(toggle.sourceName, toggle, user)
                 toggle.sourceRender = !toggle.sourceRender;
                 break;
             case "Filter":
@@ -612,10 +613,9 @@ export function ObsProvider ({children}) {
      * 
      * @param {string} sourceName The source that will be toggled
      * @param {obsToggling} source The complete source to be toggled
-     * @param {boolean} isGroup Check if type is group
      * @param {string} user User that activated the toggle and stored in array
      */
-     const handleQueueMap = (sourceName, source, isGroup, user) => {
+     const handleQueueMap = (sourceName, source, user) => {
         // TODO: Check source type, add delay, video time
         if (source.sourceType === 'ffmpeg_source' || source.timed) {
             if (queueMap.has(sourceName)) {
