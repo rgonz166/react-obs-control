@@ -1,6 +1,6 @@
 /* eslint-disable no-fallthrough */
-import React, { useState, Dispatch } from "react";
-import OBSWebSocket, {SceneItem} from "obs-websocket-js";
+import React, { useState } from "react";
+import OBSWebSocket from "obs-websocket-js";
 import { useToast } from "@chakra-ui/toast";
 import { useEffect } from "react";
 

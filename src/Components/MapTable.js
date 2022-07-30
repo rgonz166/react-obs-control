@@ -113,7 +113,7 @@ const MapTable = () => {
                             }
                        
                         default:
-                            break;
+                            return ('');
                        }
                     })
                 )
