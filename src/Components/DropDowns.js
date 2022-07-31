@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { VStack, Center, Text, Input, Select, Box,  } from "@chakra-ui/react";
+import { VStack, Center, Text, Select, Box,  } from "@chakra-ui/react";
 import { ObsContext } from "Contexts/ObsContext";
 import InputNumber from "./InputNumber";
 
@@ -68,7 +68,7 @@ const DropDown = ({type}) => {
                     </VStack>  
 
                     {
-                        type === 'source' 
+                        type !== 'scene' 
                         && (
                             <VStack>
                                 <Text fontSize='2xl'>Timed?</Text>
