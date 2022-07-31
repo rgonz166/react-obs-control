@@ -278,26 +278,30 @@ export function ObsProvider ({children}) {
           setSceneSelected('')
           setSources([])
         } else {
-          setSceneSelected(scene)
-          const selectedScene =  scenes.find((s) => s.name === scene)
-          console.log('sceneSelected', sceneSelected)
-          console.log(selectedScene)
-          selectedScene.sources.map(async source => {
+            setSceneSelected(scene)
+            const selectedScene =  scenes.find((s) => s.name === scene)
+            Promise.all(
+                selectedScene.sources.map(async source => handlePromiseMediaDuration(source))
+            ).then(asyncData => setSources(asyncData))
+        }
+    }
+
+    const handlePromiseMediaDuration = async (source) => {
+        const currentSourcePromise = new Promise((resolve, reject) => {
             let currentSource;
             if (source.type === 'ffmpeg_source') {
-                await obs.sendCallback('GetMediaDuration', {sourceName: source.name}, (err, res) => {
+                obs.sendCallback('GetMediaDuration', {sourceName: source.name}, (err, res) => {
                     if (err) console.error(err);
                     source['time'] = res.mediaDuration;
                     currentSource = source;
+                    resolve(currentSource);
                 })
             } else {
                 currentSource = source;
+                resolve(currentSource);
             }
-            return currentSource;
-          })
-          console.log('transformedSources', selectedScene.sources)
-          setSources(selectedScene.sources)
-        }
+        });
+        return currentSourcePromise;
     }
     
     const handleSourceSelection = (source) => {
