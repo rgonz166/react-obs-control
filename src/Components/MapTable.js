@@ -60,7 +60,7 @@ const MapTable = () => {
 
         <TableContainer width={"60%"} >
             <Table variant={'simple'}>
-            <TableCaption>OBS and Twitch Connection</TableCaption>
+            <TableCaption>OBS and Twitch Toggle List</TableCaption>
             <Thead>
                 {head()}
             </Thead>
