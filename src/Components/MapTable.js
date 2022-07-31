@@ -37,6 +37,7 @@ const MapTable = () => {
                         <Th>Scene</Th>
                         <Th>Source</Th>
                         <Th>Cost</Th> 
+                        <Th>Timed</Th> 
                     </Tr>
                 )
             case 2: 
@@ -47,6 +48,7 @@ const MapTable = () => {
                         <Th>Source</Th>
                         <Th>Filter</Th>
                         <Th>Cost</Th> 
+                        <Th>Timed</Th> 
                     </Tr>
             )
             default:
@@ -60,7 +62,7 @@ const MapTable = () => {
 
         <TableContainer width={"60%"} >
             <Table variant={'simple'}>
-            <TableCaption>OBS and Twitch Connection</TableCaption>
+            <TableCaption>OBS and Twitch Toggle List</TableCaption>
             <Thead>
                 {head()}
             </Thead>
@@ -91,6 +93,7 @@ const MapTable = () => {
                                         <Td>{toggle.sceneName}</Td>
                                         <Td>{toggle.sourceName}</Td>
                                         <Td>{channelPoint.cost}</Td>
+                                        <Td>{toggle.timed}</Td>
                                     </Tr>
                                 )
                             } else {
@@ -104,8 +107,9 @@ const MapTable = () => {
                                         <Td>{channelPoint.name}</Td>
                                         <Td>{toggle.sceneName}</Td>
                                         <Td>{toggle.sourceName}</Td>
-                                        <Td>{toggle.filterName ? toggle.filterName : " "}</Td>
+                                        <Td>{toggle.filterName}</Td>
                                         <Td>{channelPoint.cost}</Td>
+                                        <Td>{toggle.timed}</Td>
                                     </Tr>
                                 )
                             } else {
@@ -113,7 +117,7 @@ const MapTable = () => {
                             }
                        
                         default:
-                            break;
+                            return ('');
                        }
                     })
                 )

@@ -18,11 +18,11 @@ const Bits = () => {
                     <HStack>
                         <VStack>
                             <Text fontSize='2xl'>Max Value</Text>
-                            <InputNumber defaultVal={minBits} min={0} handleValue={setMinBits} />
+                            <InputNumber defaultVal={minBits} min={0} handleValue={setMinBits} value={minBits} />
                         </VStack>
                         <VStack>
                             <Text fontSize='2xl'>Max Value</Text>
-                            <InputNumber defaultVal={maxBits} min={0} handleValue={setMaxBits} />
+                            <InputNumber defaultVal={maxBits} min={0} handleValue={setMaxBits} value={maxBits} />
                         </VStack>
                     </HStack>
                     <ObsOptions />
