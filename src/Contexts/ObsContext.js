@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-fallthrough */
-import React, { useState } from "react";
-import OBSWebSocket from "obs-websocket-js";
+import React, { useState, Dispatch } from "react";
+import OBSWebSocket, {SceneItem} from "obs-websocket-js";
 import { useToast } from "@chakra-ui/toast";
 import { useEffect } from "react";
 
@@ -101,17 +102,18 @@ import { useEffect } from "react";
  * sceneSelected: string, setSceneSelected,
  * sourceSelected: string, setSourceSelected,
  * sourceSelectedComplete: SceneItem,
- * filterSelected: string, setFilterSelected
+ * filterSelected: string, setFilterSelected,
+ * timed: number, setTimed,
  * connectObs: Function, disconnectObs: Function,
- * handleSceneSelection, handleSourceSelection, handleFilterSelection
+ * handleSceneSelection, handleSourceSelection, handleFilterSelection,
  * startRecording, stopRecording: function,
  * startStreaming: startStreaming, stopStreaming: function,
  * toggleSource: toggleSource, changeScene: changeScene,
- * obsTwitchMap: obsTwitchMap, setObsTwitchMap, handleSetObsTwitchMapAndLocal: handleSetObsTwitchMapAndLocal
+ * obsTwitchMap: obsTwitchMap, setObsTwitchMap, handleSetObsTwitchMapAndLocal: handleSetObsTwitchMapAndLocal,
  * addChannelPoints,
- * tabIndex: number, handleTabChange: handleTabChange
+ * tabIndex: number, handleTabChange: handleTabChange,
  * handleSaveDisabled: handleSaveDisabled, setObsToggleData: setObsToggleData,
- * getObsTogglingIndex: getObsTogglingIndex, handleObsToggling: handleObsToggling
+ * getObsTogglingIndex: getObsTogglingIndex, handleObsToggling: handleObsToggling,
  * }>}
  * 
  */
@@ -151,6 +153,7 @@ export function ObsProvider ({children}) {
     /**@type {[SceneItem,  Dispatch<SceneItem>]} */
     const [ sourceSelectedComplete, setSourceSelectedComplete ] = useState(null)
     const [ filterSelected, setFilterSelected ] = useState('')
+    const [ timed, setTimed ] = useState(0); 
     /** @type {[obsTwitchMap, Dispatch<obsTwitchMap>]} */
     const [ obsTwitchMap, setObsTwitchMap] = useState(() => {
         const saved = localStorage.getItem('obsTwitchMap');
@@ -163,9 +166,18 @@ export function ObsProvider ({children}) {
         }}
     })
 
+    /**
+     * Different queue for scene, source and filter
+     * Each toggle will have its own array
+     */
+    const [queueMap, setQueueMap] = useState({
+        scene: {},
+        source: {},
+        filter: {}
+    });
+
     const [tabIndex, setTabIndex] = useState(0);
     const handleTabChange = (index) => {
-        console.log('index', index)
         setTabIndex(index);
     }
 
@@ -270,18 +282,37 @@ export function ObsProvider ({children}) {
           const selectedScene =  scenes.find((s) => s.name === scene)
           console.log('sceneSelected', sceneSelected)
           console.log(selectedScene)
+          selectedScene.sources.map(async source => {
+            let currentSource;
+            if (source.type === 'ffmpeg_source') {
+                await obs.sendCallback('GetMediaDuration', {sourceName: source.name}, (err, res) => {
+                    if (err) console.error(err);
+                    source['time'] = res.mediaDuration;
+                    currentSource = source;
+                })
+            } else {
+                currentSource = source;
+            }
+            return currentSource;
+          })
+          console.log('transformedSources', selectedScene.sources)
           setSources(selectedScene.sources)
         }
     }
     
     const handleSourceSelection = (source) => {
-        console.log('source', source.value);
+        console.log('source', source);
         setSourceSelected(source.value)
-        setSourceSelectedComplete(source.value ? JSON.parse(source.selectedOptions[0].dataset.source) : null);
+        const sourceCompleteData = source.value ? JSON.parse(source.selectedOptions[0].dataset.source) : null;
+        console.log('sourceCompleteData', sourceCompleteData)
+        console.log('sourceCompleteDataTime', sourceCompleteData.time)
+        setSourceSelectedComplete(sourceCompleteData);
+        setTimed(sourceCompleteData.time ? sourceCompleteData.time : 0);
         getFilterBySource(source.value)
     }
 
     const handleFilterSelection = (filter) => {
+        setTimed(0);
         setFilterSelected(filter)
     }
 
@@ -335,7 +366,6 @@ export function ObsProvider ({children}) {
             if (err) console.error(err);
         });
     }
-    
 
     const startStreaming = (timeOffset) => {
         setTimeout(() => {
@@ -355,7 +385,6 @@ export function ObsProvider ({children}) {
 
         }, timeOffset)
     }
-    
 
     const stopStreaming = () => {
         obs.sendCallback('StopStreaming', (err) => {
@@ -368,7 +397,6 @@ export function ObsProvider ({children}) {
             if (err) console.error(err);
         })
     }
-
 
     const toggleSource = (source, toggled) => {
         obs.sendCallback('SetSceneItemRender', {
@@ -389,6 +417,7 @@ export function ObsProvider ({children}) {
         })
     }
 
+    // TODO: Remove this dupe of toggleScene
     const changeScene = (scene) => {
         obs.sendCallback('SetCurrentScene', {
             "scene-name": scene
@@ -443,7 +472,8 @@ export function ObsProvider ({children}) {
                     sceneName: sceneSelected,
                     sourceName: sourceSelected,
                     sourceType: sourceSelectedComplete.type,
-                    sourceRender: sourceSelectedComplete.render
+                    sourceRender: sourceSelectedComplete.render,
+                    timed: timed
                 }
                 if (sourceSelectedComplete.type === 'group') {
                     // TODO: Add rarity object for each child
@@ -455,7 +485,8 @@ export function ObsProvider ({children}) {
                     type: 'Filter',
                     sceneName: sceneSelected,
                     sourceName: sourceSelected,
-                    filterName: filterSelected
+                    filterName: filterSelected,
+                    timed: timed
                 }
                 break;
             case 3:
@@ -547,6 +578,7 @@ export function ObsProvider ({children}) {
                     sourceSelected, setSourceSelected,
                     sourceSelectedComplete,
                     filterSelected, setFilterSelected,
+                    timed, setTimed,
                     connectObs, disconnectObs,
                     handleSceneSelection, handleSourceSelection,
                     handleFilterSelection,
