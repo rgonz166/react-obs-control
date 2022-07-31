@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
 import { VStack, Center, Text, Input, Select, Box,  } from "@chakra-ui/react";
 import { ObsContext } from "Contexts/ObsContext";
+import InputNumber from "./InputNumber";
 
 const DropDown = ({type}) => {
     const {
         scenes, sources, filters,  obsConnected, sceneSelected, sourceSelected, filterSelected,
-        handleSceneSelection, handleSourceSelection, handleFilterSelection
+        handleSceneSelection, handleSourceSelection, handleFilterSelection, timed, setTimed
     } = useContext(ObsContext)
 
     return(
@@ -31,7 +32,7 @@ const DropDown = ({type}) => {
                                     <Select value={sourceSelected} onChange={(e) => handleSourceSelection(e.target)} placeholder={obsConnected ? 'Select a Source' : 'OBS Not Connected'}>
                                         {sources.map((source) => {
                                             return (
-                                                <option key={source.name} data-source={JSON.stringify(source)} value={source.name}>{source.name}</option>
+                                                <option key={source.name} data-source={JSON.stringify(source)} value={source.name}>{source.time ? `${source.name} (${source.time/1000}s)` : source.name}</option>
                                             )
                                         })}
                                     </Select>
@@ -71,9 +72,10 @@ const DropDown = ({type}) => {
                         && (
                             <VStack>
                                 <Text fontSize='2xl'>Timed?</Text>
-                                <Input type='text' placeholder='0'></Input>
-                                <Text fontSize='2xl'>Group</Text>
-                                <Input placeholder='Text' type='text'></Input>
+                                <InputNumber defaultVal={timed} min={0} handleValue={setTimed} value={timed} />
+                                {/* <Input type='number' placeholder='0' defaultValue={0}></Input> */}
+                                {/* <Text fontSize='2xl'>Group</Text>
+                                <Input placeholder='Text' type='text'></Input> */}
                             </VStack>
                         )
                     }
