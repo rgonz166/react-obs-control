@@ -75,7 +75,7 @@ const MapTable = () => {
                             if(toggle.sceneName && !toggle.filterName && !toggle.sourceName){
                                 // Scene Tab
                                 return(
-                                    <Tr key={channelPoint.id}>
+                                    <Tr key={channelPoint.id+toggle.sceneName}>
                                         <Td>{channelPoint.name}</Td>
                                         <Td>{toggle.sceneName}</Td>
                                         <Td>{channelPoint.cost}</Td>
@@ -88,7 +88,7 @@ const MapTable = () => {
                             if(toggle.sourceName && !toggle.filterName) {
                                 // Source Tab
                                 return (
-                                    <Tr key={channelPoint.id}>
+                                    <Tr key={channelPoint.id+toggle.sourceName}>
                                         <Td>{channelPoint.name}</Td>
                                         <Td>{toggle.sceneName}</Td>
                                         <Td>{toggle.sourceName}</Td>
@@ -103,7 +103,7 @@ const MapTable = () => {
                             if (toggle.filterName) {
                                 // Filter Tab
                                 return (
-                                    <Tr key={channelPoint.id}>
+                                    <Tr key={channelPoint.id+toggle.filterName}>
                                         <Td>{channelPoint.name}</Td>
                                         <Td>{toggle.sceneName}</Td>
                                         <Td>{toggle.sourceName}</Td>
