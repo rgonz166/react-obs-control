@@ -23,8 +23,8 @@ const ObsOptions = () => {
                 <Tab>Scene</Tab>
                 <Tab>Source</Tab>
                 <Tab>Filter</Tab>
-                <Tab>Streaming</Tab>
-                <Tab>Recording</Tab>
+                {/* <Tab>Streaming</Tab>
+                <Tab>Recording</Tab> */}
             </TabList>
             <TabPanels>
                 <TabPanel>
@@ -36,12 +36,12 @@ const ObsOptions = () => {
                 <TabPanel>
                     <DropDown type={'filter'} />
                 </TabPanel>
-                <TabPanel>
+                {/* <TabPanel>
                     <h3>Streaming</h3>
                 </TabPanel>
                 <TabPanel>
                     <h3>Recording</h3>
-                </TabPanel>
+                </TabPanel> */}
             </TabPanels>
         </Tabs>
     )
