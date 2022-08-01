@@ -52,7 +52,7 @@ const EventToggleHandler = () => {
           console.log('extra', extra);
           const currentReward = obsTwitchMap.obsTwitchMap.channelPoints.find(f => f.id === extra.reward.id);
           currentReward.obsToggling.map(toggle => {
-            return handleObsToggling(toggle)
+            return handleObsToggling(toggle, user)
           })
         }
     

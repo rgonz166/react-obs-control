@@ -89,6 +89,7 @@ import { useEffect } from "react";
  *
  * @callback handleObsToggling
  * @param {obsToggling} toggle
+ * @param {string} user
  * @returns obsToggling
  *
  * 
@@ -128,7 +129,7 @@ export function ObsProvider ({children}) {
      * @description Additional doc
      */
     /**
-     * @typedef {Function} LoadingStateSetter — documentation for setIsLoading
+     * @typedef {Dispatch<OBSWebSocket>} LoadingStateSetter — documentation for setIsLoading
      */
     /**
      * @type {[obs, LoadingStateSetter]} Loading
@@ -170,11 +171,18 @@ export function ObsProvider ({children}) {
      * Different queue for scene, source and filter
      * Each toggle will have its own array
      */
-    const [queueMap, setQueueMap] = useState({
-        scene: {},
-        source: {},
-        filter: {}
-    });
+    /**
+     * @typedef {Object.<string, Array<string>>} GenericType
+     * 
+     * @typedef {Object} QueueMapType
+     * @property {GenericType} types
+     * 
+     * @type {[QueueMapType, Dispatch<QueueMapType>]}
+     */
+    const [queueMap, setQueueMap] = useState({types: {
+        sourceMap: {},
+        filterMap: {}
+    }});
 
     const [tabIndex, setTabIndex] = useState(0);
     const handleTabChange = (index) => {
@@ -535,19 +543,28 @@ export function ObsProvider ({children}) {
 
 
     /** @type handleObsToggling */
-    const handleObsToggling = (toggle) => {
+    const handleObsToggling = (toggle, user) => {
         
         switch(toggle.type) {
             case "Scene":
                 toggleScene(toggle.sceneName)
                 break;
             case "Source":
-                toggleSource(toggle.sourceName, !toggle.sourceRender)
-                toggle.sourceRender = !toggle.sourceRender;
+                if (toggle.timed === 0) {
+                    toggleSource(toggle.sourceName, !toggle.sourceRender)
+                    toggle.sourceRender = !toggle.sourceRender;
+                } else {
+                    console.log('THIS IS TIMED, WORKING ON TOGGLING')
+                    checkQueueStatus('source', toggle, user)
+                }
                 break;
             case "Filter":
-                toggleFilter(toggle.sourceName, toggle.filterName, !toggle.filterRender)
-                toggle.filterRender = !toggle.filterRender;
+                if (toggle.timed === 0) {
+                    toggleFilter(toggle.sourceName, toggle.filterName, !toggle.filterRender)
+                    toggle.filterRender = !toggle.filterRender;
+                } else {
+                    console.log('THIS IS TIMED, WORKING ON TOGGLING')
+                }
                 break;
             case "Start Recording":
                 startRecording();
@@ -565,6 +582,82 @@ export function ObsProvider ({children}) {
                 break
         }
         return toggle;
+    }
+
+    /**
+     * 
+     * @param {'source' | 'filter'} type 
+     * @param {obsToggling} toggle 
+     * @param {string} user
+     */
+    const checkQueueStatus = (type, toggle, user) => {
+        const currentMap = queueMap;
+        if (type === 'source') {
+            if (currentMap.types.sourceMap[toggle.sourceName]) {
+                console.log('queueArrayLength', currentMap.types.sourceMap[toggle.sourceName].queueArray.length)
+                currentMap.types.sourceMap[toggle.sourceName].queueArray.push(user)
+                setQueueMap({...currentMap})
+                const currentActiveToggle = currentMap.types.sourceMap[toggle.sourceName];
+                console.log('currentActiveToggle', currentActiveToggle);
+                handleTimedToggle(currentActiveToggle);
+            } else {
+                currentMap.types.sourceMap[toggle.sourceName] = {queueFlag: false, toggleName: toggle.sourceName, toggleData: toggle, queueArray: [user], queueType: type}
+                setQueueMap({...currentMap})
+                const currentActiveToggle = currentMap.types.sourceMap[toggle.sourceName];
+                console.log('currentActiveToggle', currentActiveToggle);
+                handleTimedToggle(currentActiveToggle);
+            }
+        } else if (type === 'filter') {
+            if (currentMap.types.filterMap[toggle.filterName]) {
+                currentMap.types.filterMap[toggle.filterName].queueArray.push(user)
+                setQueueMap({...currentMap})
+                const currentActiveToggle = currentMap.types.filterMap[toggle.filterName];
+                handleTimedToggle(currentActiveToggle);
+            } else {
+                currentMap.types.filterMap[toggle.filterName] = {queueFlag: false, toggleName: toggle.filterName, toggleData: toggle, queueArray: [user], queueType: type}
+                setQueueMap({...currentMap})
+                const currentActiveToggle = currentMap.types.filterMap[toggle.filterName];
+                handleTimedToggle(currentActiveToggle);
+            }
+        }
+        console.log('currentMap', currentMap);
+    }
+
+    /**
+     * Failsafe if active queue is live but user is added to array
+     * @param {any} queue 
+     */
+    const handleTimedToggle = (queue) => {
+        if (!queue.queueFlag) {
+            timeToggle(queue)
+        }
+    }
+
+    const timeToggle = (activeQueue) => {
+        console.log('activeQueue', activeQueue);
+        // Only run if array is not empty
+        //* For recursion purposes
+        if (activeQueue.queueArray.length > 0) {
+            activeQueue.queueFlag = true;
+            activeQueue.queueArray.shift();
+            // Initialize toggling by setting to off
+            if (activeQueue.queueType === 'source') {
+                toggleSource(activeQueue.toggleName, false);
+                // Let toggle turn off before turning on
+                setTimeout(() => {
+                    toggleSource(activeQueue.toggleName, true);
+                    setTimeout(() => {
+                        toggleSource(activeQueue.toggleName, false)
+                        if (activeQueue.queueArray.length > 0) {
+                            timeToggle(activeQueue);
+                        } else {
+                            activeQueue.queueFlag = false;
+                        }
+                    }, activeQueue.toggleData.timed)
+                }, 500)
+            }
+
+        }
     }
 
     return (
@@ -601,3 +694,11 @@ export function ObsProvider ({children}) {
         </ObsContext.Provider>
     )
 }
+/**
+ * TODO: 
+ * ADD:Filter queue list with timed
+ * Stress test queue logic
+ * Add: random group 
+ * Add: random queue with % randomness
+ * Add: edit and delete buttons to array
+ */
