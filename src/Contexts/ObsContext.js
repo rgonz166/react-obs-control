@@ -105,6 +105,7 @@ import { useEffect } from "react";
  * sourceSelectedComplete: SceneItem,
  * filterSelected: string, setFilterSelected,
  * timed: number, setTimed,
+ * randomRarity: Object, setRandomRarity: Dispatch<Object>,
  * totalPercent: number, setTotalPercent: Dispatch<number>,
  * isRandomized: boolean, setIsRandomized: Dispatch<boolean>,
  * connectObs: Function, disconnectObs: Function,
@@ -157,6 +158,7 @@ export function ObsProvider ({children}) {
     const [ sourceSelectedComplete, setSourceSelectedComplete ] = useState(null)
     const [ filterSelected, setFilterSelected ] = useState('')
     const [ timed, setTimed ] = useState(0); 
+    const [randomRarity, setRandomRarity] = useState({data: {}})
     const [isRandomized, setIsRandomized] = useState(false)
     const [totalPercent, setTotalPercent] = useState(0);
     /** @type {[obsTwitchMap, Dispatch<obsTwitchMap>]} */
@@ -191,6 +193,7 @@ export function ObsProvider ({children}) {
     const [tabIndex, setTabIndex] = useState(0);
     const handleTabChange = (index) => {
         setTabIndex(index);
+        setRandomFieldsNull();
     }
 
     // Add useEffect below
@@ -271,6 +274,7 @@ export function ObsProvider ({children}) {
         setSourceSelected('')
         setSourceSelectedComplete(null)
         setFilterSelected('')
+        setRandomFieldsNull();
 
         toast({
             title: `OBS Disconnected`,
@@ -281,10 +285,18 @@ export function ObsProvider ({children}) {
         })
     }
 
+    const setRandomFieldsNull = () => {
+        setRandomRarity({data: {}})
+        setIsRandomized(false)
+        setTotalPercent(0)
+    };
+
     const handleSceneSelection = (scene) => {
+        setRandomFieldsNull();
+        setSourceSelectedComplete(null);
+        setSources([])
         if(!scene) {
           setSceneSelected('')
-          setSources([])
         } else {
             setSceneSelected(scene)
             const selectedScene =  scenes.find((s) => s.name === scene)
@@ -304,6 +316,14 @@ export function ObsProvider ({children}) {
                     currentSource = source;
                     resolve(currentSource);
                 })
+            } else if(source.groupChildren && source.groupChildren.length > 0) {
+                currentSource = source;
+                Promise.all(
+                    source.groupChildren.map(async grp => handlePromiseMediaDuration(grp))
+                ).then(asyncData => {
+                    currentSource.groupChildren = asyncData;
+                    resolve(currentSource)
+                })
             } else {
                 currentSource = source;
                 resolve(currentSource);
@@ -314,6 +334,7 @@ export function ObsProvider ({children}) {
     
     const handleSourceSelection = (source) => {
         setSourceSelected(source.value)
+        setRandomFieldsNull();
         const sourceCompleteData = source.value ? JSON.parse(source.selectedOptions[0].dataset.source) : null;
         setSourceSelectedComplete(sourceCompleteData);
         setTimed(sourceCompleteData.time ? sourceCompleteData.time : 0);
@@ -323,6 +344,7 @@ export function ObsProvider ({children}) {
     const handleFilterSelection = (filter) => {
         setTimed(0);
         setFilterSelected(filter)
+        setRandomFieldsNull();
     }
 
     const getFilterBySource = (source) => {
@@ -681,6 +703,7 @@ export function ObsProvider ({children}) {
                     sourceSelectedComplete,
                     filterSelected, setFilterSelected,
                     timed, setTimed,
+                    randomRarity, setRandomRarity,
                     totalPercent, setTotalPercent,
                     isRandomized, setIsRandomized,
                     connectObs, disconnectObs,
