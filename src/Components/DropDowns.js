@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { VStack, Center, Text, Select, Box, TableContainer, Table, Thead, Tr, Th, Tbody, Td, OrderedList, ListItem, List, Progress, Checkbox,  } from "@chakra-ui/react";
 import { ObsContext } from "Contexts/ObsContext";
 import InputNumber from "./InputNumber";
@@ -8,26 +8,45 @@ const DropDown = ({type}) => {
     const {
         scenes, sources, filters,  obsConnected, sceneSelected, sourceSelected, filterSelected,
         handleSceneSelection, handleSourceSelection, handleFilterSelection, timed, setTimed, 
-        isRandomized, setIsRandomized, totalPercent, setTotalPercent, sourceSelectedComplete
+        isRandomized, setIsRandomized, totalPercent, setTotalPercent, sourceSelectedComplete,
+        randomRarity, setRandomRarity,
     } = useContext(ObsContext)
 
-    const testArray = ['test', 'test', 'test', 'test'];
     const marginTest = 20;
-    
-    const [randomRarity, setRandomRarity] = useState({})
-    // const [isTotalPercent, setIsTotalPercent] = useState(false)
 
-    const onChangeInput = (val, index) => {
+    const onChangeInputPercentage = (val, index) => {
         let temp = {...randomRarity};
-        temp[index] = val ? val : 0;
+        temp['data'][index]['perc'] = val ? val : 0;
+        setRandomRarity(temp)
+    }
+
+    const onChangeInputTime = (val, index) => {
+        let temp = {...randomRarity};
+        temp['data'][index]['time'] = val ? val : 0;
         setRandomRarity(temp);
     }
 
     useEffect(() => {
         let tempTotal = 0;
-        const percentSum = Object.values(randomRarity).reduce((prev, curr) => prev + curr, tempTotal)
+        const tempValues = randomRarity['data'] ? randomRarity['data'] : {}
+        const percentSum = Object.values(tempValues).map(r => r.perc).reduce((prev, curr) => prev + curr, tempTotal)
         setTotalPercent(percentSum)
     }, [randomRarity])
+
+    useEffect(() => {
+        let temp = {data: {}};
+        if (sourceSelectedComplete && sourceSelectedComplete.groupChildren && sourceSelectedComplete.groupChildren.length > 0) {
+            sourceSelectedComplete.groupChildren.forEach((child, index) => {
+                temp['data'][index] = temp['data'][index] ? temp['data'][index] : {};
+                temp['data'][index]['time'] = temp['data'][index] && temp['data'][index]['time'] ? temp['data'][index]['time'] : sourceSelectedComplete.groupChildren[index]['time'];
+                temp['data'][index]['perc'] = 0;
+                temp['data'][index]['name'] = child.name;
+                setRandomRarity(temp);
+            })
+        } else {
+            setRandomRarity({data: {}})
+        }
+    }, [sourceSelectedComplete])
     
 
     return(
@@ -107,7 +126,7 @@ const DropDown = ({type}) => {
                 
             </Center>
             {
-                (type === 'source' && isRandomized)
+                (type === 'source' && isRandomized && sourceSelectedComplete && sourceSelectedComplete.groupChildren && sourceSelectedComplete.groupChildren.length > 0)
                 && (
                     <Box outline={'1px solid rgba(255,255,255,0.2)'} marginTop={'20px'}>
                         {/* <Divider margin={'20px 0'} /> */}
@@ -118,6 +137,7 @@ const DropDown = ({type}) => {
                                         <Th>Folder</Th>
                                         <Th>Sources</Th>
                                         <Th>Percentages</Th>
+                                        <Th>Timed (ms)</Th>
                                     </Tr>
                                 </Thead>
                                 <Tbody>
@@ -149,7 +169,32 @@ const DropDown = ({type}) => {
                                                 {
                                                     sourceSelectedComplete.groupChildren.map((t, idx) => {
                                                         return (
-                                                            <ListItem key={idx}><InputNumber defaultVal={randomRarity[idx] ? randomRarity[idx] : 0} min={0} handleValue={(ds, dn) => onChangeInput(dn, idx)} value={randomRarity[idx] ? randomRarity[idx] : 0} /></ListItem>
+                                                            <ListItem key={idx}>
+                                                                <InputNumber 
+                                                                    defaultVal={0} 
+                                                                    min={0} 
+                                                                    handleValue={(ds, dn) => onChangeInputPercentage(dn, idx)} 
+                                                                    value={randomRarity['data'][idx] && randomRarity['data'][idx]['perc'] ? randomRarity['data'][idx]['perc'] : 0} 
+                                                                />
+                                                            </ListItem>
+                                                        )
+                                                    })
+                                                }
+                                            </List>
+                                        </Td>
+                                        <Td>
+                                            <List>
+                                                {
+                                                    sourceSelectedComplete.groupChildren.map((t, idx) => {
+                                                        return (
+                                                            <ListItem key={idx}>
+                                                                <InputNumber 
+                                                                    defaultVal={t && t['time'] ? t['time'] : 0} 
+                                                                    min={0} 
+                                                                    handleValue={(ds, dn) => onChangeInputTime(dn, idx)} 
+                                                                    value={randomRarity['data'][idx] && randomRarity['data'][idx]['time'] ? randomRarity['data'][idx]['time'] : 0} 
+                                                                />
+                                                            </ListItem>
                                                         )
                                                     })
                                                 }
@@ -167,7 +212,6 @@ const DropDown = ({type}) => {
                     </Box>
                 )
             }
-            
         </>
     )
 }
