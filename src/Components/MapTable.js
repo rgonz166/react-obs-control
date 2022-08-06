@@ -58,7 +58,7 @@ const MapTable = () => {
     }
     
     return (
-        <Center>
+        <Center marginBottom={'50px'}>
 
         <TableContainer width={"60%"} >
             <Table variant={'simple'}>
