@@ -8,7 +8,7 @@ const DropDown = ({type}) => {
     const {
         scenes, sources, filters,  obsConnected, sceneSelected, sourceSelected, filterSelected,
         handleSceneSelection, handleSourceSelection, handleFilterSelection, timed, setTimed, 
-        isRandomized, setIsRandomized, totalPercent, setTotalPercent
+        isRandomized, setIsRandomized, totalPercent, setTotalPercent, sourceSelectedComplete
     } = useContext(ObsContext)
 
     const testArray = ['test', 'test', 'test', 'test'];
@@ -98,7 +98,9 @@ const DropDown = ({type}) => {
                             {/* <Input type='number' placeholder='0' defaultValue={0}></Input> */}
                             {/* <Text fontSize='2xl'>Group</Text>
                             <Input placeholder='Text' type='text'></Input> */}
-                            <Checkbox isChecked={isRandomized} onChange={(e) => setIsRandomized(e.target.checked)} >Randomize Group?</Checkbox>
+                            {sourceSelectedComplete && sourceSelectedComplete.type === 'group' && (
+                                <Checkbox isChecked={isRandomized} onChange={(e) => setIsRandomized(e.target.checked)} >Randomize Group?</Checkbox>
+                            )}
                         </VStack>
                     )
                 }
@@ -120,22 +122,22 @@ const DropDown = ({type}) => {
                                 </Thead>
                                 <Tbody>
                                     <Tr>
-                                        <Td>Test Folder</Td>
+                                        <Td>{sourceSelectedComplete.name}</Td>
                                         <Td>
                                             <OrderedList>
                                             {
-                                                testArray.map((t, index) => {
+                                                sourceSelectedComplete.groupChildren.map((t, index) => {
                                                     if (index === 0) {
                                                         return (
-                                                            <ListItem key={index} marginBottom={ marginTest + 'px'}>{t}</ListItem>
+                                                            <ListItem key={index} marginBottom={ marginTest + 'px'}>{t.name}</ListItem>
                                                         )
-                                                    } else if (index === testArray.length -1) {
+                                                    } else if (index === sourceSelectedComplete.groupChildren.length -1) {
                                                         return (
-                                                            <ListItem key={index} marginTop={ marginTest + 'px'}>{t}</ListItem>
+                                                            <ListItem key={index} marginTop={ marginTest + 'px'}>{t.name}</ListItem>
                                                         )
                                                     } else {
                                                         return (
-                                                            <ListItem key={index} margin={ marginTest + 'px 0'}>{t}</ListItem>
+                                                            <ListItem key={index} margin={ marginTest + 'px 0'}>{t.name}</ListItem>
                                                         )
                                                     }
                                                 })
@@ -145,7 +147,7 @@ const DropDown = ({type}) => {
                                         <Td>
                                             <List>
                                                 {
-                                                    testArray.map((t, idx) => {
+                                                    sourceSelectedComplete.groupChildren.map((t, idx) => {
                                                         return (
                                                             <ListItem key={idx}><InputNumber defaultVal={randomRarity[idx] ? randomRarity[idx] : 0} min={0} handleValue={(ds, dn) => onChangeInput(dn, idx)} value={randomRarity[idx] ? randomRarity[idx] : 0} /></ListItem>
                                                         )
