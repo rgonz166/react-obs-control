@@ -105,6 +105,8 @@ import { useEffect } from "react";
  * sourceSelectedComplete: SceneItem,
  * filterSelected: string, setFilterSelected,
  * timed: number, setTimed,
+ * totalPercent: number, setTotalPercent: Dispatch<number>,
+ * isRandomized: boolean, setIsRandomized: Dispatch<boolean>,
  * connectObs: Function, disconnectObs: Function,
  * handleSceneSelection, handleSourceSelection, handleFilterSelection,
  * startRecording, stopRecording: function,
@@ -155,6 +157,8 @@ export function ObsProvider ({children}) {
     const [ sourceSelectedComplete, setSourceSelectedComplete ] = useState(null)
     const [ filterSelected, setFilterSelected ] = useState('')
     const [ timed, setTimed ] = useState(0); 
+    const [isRandomized, setIsRandomized] = useState(false)
+    const [totalPercent, setTotalPercent] = useState(0);
     /** @type {[obsTwitchMap, Dispatch<obsTwitchMap>]} */
     const [ obsTwitchMap, setObsTwitchMap] = useState(() => {
         const saved = localStorage.getItem('obsTwitchMap');
@@ -352,6 +356,8 @@ export function ObsProvider ({children}) {
                 disabled = true;
                 break;
         }
+        // CHeck if isRandomized is checked and totalPercent === 100
+        disabled = (isRandomized && !(totalPercent === 100 || totalPercent === 0)) || disabled;
         return disabled;
     }
 
@@ -675,6 +681,8 @@ export function ObsProvider ({children}) {
                     sourceSelectedComplete,
                     filterSelected, setFilterSelected,
                     timed, setTimed,
+                    totalPercent, setTotalPercent,
+                    isRandomized, setIsRandomized,
                     connectObs, disconnectObs,
                     handleSceneSelection, handleSourceSelection,
                     handleFilterSelection,
