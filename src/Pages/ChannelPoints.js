@@ -43,7 +43,7 @@ const ChannelPoints = () => {
                 <ObsOptions />
             </VStack>
             <Center>
-                <HStack paddingTop={'10px'}>
+                <HStack padding={'15px 0'}>
                     <Button disabled={handleSaveDisabled() || selectedReward === null} onClick={() => addChannelPoints(selectedReward)}>Add to List</Button>
                     <Button onClick={ () => getPointRewards()}>Refresh Rewards</Button>
                 </HStack>

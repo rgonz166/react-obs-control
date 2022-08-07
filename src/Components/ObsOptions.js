@@ -14,7 +14,7 @@ const ObsOptions = () => {
         <Tabs
             isFitted 
             variant='enclosed' 
-            w={'50vw'} 
+            w={'75vw'} 
             paddingTop={'15px'} 
             index={tabIndex}
             onChange={handleTabChange}
