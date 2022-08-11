@@ -508,6 +508,10 @@ export function ObsProvider ({children}) {
                 if (sourceSelectedComplete.type === 'group') {
                     // TODO: Add rarity object for each child
                     tempData['sourceGroup'] = sourceSelectedComplete.groupChildren
+                    if (isRandomized) {
+                        tempData['weighted'] = randomRarity;
+                        tempData['totalPerc'] = totalPercent;
+                    }
                 }
                 break;
             case 2:
@@ -526,7 +530,6 @@ export function ObsProvider ({children}) {
             default:
                 break;
         }
-
         return tempData;
     }
 
