@@ -559,7 +559,7 @@ export function ObsProvider ({children}) {
                 toggleScene(toggle.sceneName)
                 break;
             case "Source":
-                if (toggle.timed === 0) {
+                if (toggle.timed == 0) {
                     toggleSource(toggle.sourceName, !toggle.sourceRender)
                     toggle.sourceRender = !toggle.sourceRender;
                 } else {
