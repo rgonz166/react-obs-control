@@ -11,7 +11,7 @@ const Subs = () => {
                     <Text fontSize='2xl'>Set Sub Amounts</Text>
                     <HStack>
                         <VStack>
-                            <Text fontSize='2xl'>Max Value</Text>
+                            <Text fontSize='2xl'>Min Value</Text>
                             <Input type='text' placeholder='Min Value'></Input>
                         </VStack>
                         <VStack>
@@ -19,7 +19,7 @@ const Subs = () => {
                             <Input type='text' placeholder='Min Value'></Input>
                         </VStack>
                     </HStack>
-                <DropDown />
+                <DropDown type={undefined} />
             </VStack>
         </form>
         </>
