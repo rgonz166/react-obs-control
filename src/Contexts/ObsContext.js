@@ -65,9 +65,6 @@ import { useEffect } from "react";
  * @param {string} source the source that will be toggled off/on
  * @param {boolean} toggled the value true/false to toggle source
  * 
- * @callback changeScene
- * @param {string} scene scene to be changed
- * 
  * @callback handleSetObsTwitchMapAndLocal
  * @param {obsTwitchMap} data
  * 
@@ -112,7 +109,7 @@ import { useEffect } from "react";
  * handleSceneSelection, handleSourceSelection, handleFilterSelection,
  * startRecording, stopRecording: function,
  * startStreaming: startStreaming, stopStreaming: function,
- * toggleSource: toggleSource, changeScene: changeScene,
+ * toggleSource: toggleSource,
  * obsTwitchMap: obsTwitchMap, setObsTwitchMap, handleSetObsTwitchMapAndLocal: handleSetObsTwitchMapAndLocal,
  * addChannelPoints,
  * tabIndex: number, handleTabChange: handleTabChange,
@@ -447,15 +444,6 @@ export function ObsProvider ({children}) {
         })
     }
 
-    // TODO: Remove this dupe of toggleScene
-    const changeScene = (scene) => {
-        obs.sendCallback('SetCurrentScene', {
-            "scene-name": scene
-        }, (err, res) => {
-            if (err) console.error(err)
-        })
-    }
-
     const addChannelPoints = (selectedReward) => {
         const currentMap = obsTwitchMap;
 
@@ -714,7 +702,7 @@ export function ObsProvider ({children}) {
                     handleFilterSelection,
                     startRecording, stopRecording,
                     startStreaming, stopStreaming,
-                    toggleSource, changeScene,
+                    toggleSource,
                     obsTwitchMap, setObsTwitchMap, addChannelPoints,
                     tabIndex, handleTabChange,
                     handleSaveDisabled, setObsToggleData,
