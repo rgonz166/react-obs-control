@@ -45,11 +45,11 @@ const EventToggleHandler = () => {
         }
     
         ComfyJS.onReward = (user, reward, cost, message, extra) => {
-          console.log('user', user);
-          console.log('reward', reward);
-          console.log('cost', cost)
-          console.log('message', message);
-          console.log('extra', extra);
+          // console.log('user', user);
+          // console.log('reward', reward);
+          // console.log('cost', cost)
+          // console.log('message', message);
+          // console.log('extra', extra);
           const currentReward = obsTwitchMap.obsTwitchMap.channelPoints.find(f => f.id === extra.reward.id);
           currentReward.obsToggling.map(toggle => {
             return handleObsToggling(toggle, user)
