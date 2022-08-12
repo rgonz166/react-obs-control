@@ -8,7 +8,8 @@ import {
     Td,
     TableCaption,
     TableContainer,
-    Center
+    Center,
+    Box
   } from '@chakra-ui/react'
 
   import { ObsContext } from "Contexts/ObsContext";
@@ -38,6 +39,7 @@ const MapTable = () => {
                         <Th>Source</Th>
                         <Th>Cost</Th> 
                         <Th>Timed</Th> 
+                        <Th>Random?</Th> 
                     </Tr>
                 )
             case 2: 
@@ -61,7 +63,7 @@ const MapTable = () => {
         <Center marginBottom={'50px'}>
 
         <TableContainer width={"60%"} >
-            <Table variant={'simple'}>
+            <Table variant={'striped'}>
             <TableCaption>OBS and Twitch Toggle List</TableCaption>
             <Thead>
                 {head()}
@@ -87,15 +89,29 @@ const MapTable = () => {
                         case 1: 
                             if(toggle.sourceName && !toggle.filterName) {
                                 // Source Tab
-                                return (
-                                    <Tr key={channelPoint.id+toggle.sourceName}>
-                                        <Td>{channelPoint.name}</Td>
-                                        <Td>{toggle.sceneName}</Td>
-                                        <Td>{toggle.sourceName}</Td>
-                                        <Td>{channelPoint.cost}</Td>
-                                        <Td>{toggle.timed}</Td>
-                                    </Tr>
-                                )
+                                if (toggle.sourceType === 'group' && toggle.isRandom) {
+                                    return (
+                                        <Tr key={channelPoint.id+toggle.sourceName}>
+                                            <Td>{channelPoint.name}</Td>
+                                            <Td>{toggle.sceneName}</Td>
+                                            <Td>{toggle.sourceName}</Td>
+                                            <Td>{channelPoint.cost}</Td>
+                                            <Td>{toggle.timed}</Td>
+                                            <Td>{toggle.isRandom ? 'Yes' : 'No'}</Td>
+                                        </Tr>
+                                    )
+                                } else {
+                                    return (
+                                        <Tr key={channelPoint.id+toggle.sourceName}>
+                                            <Td>{channelPoint.name}</Td>
+                                            <Td>{toggle.sceneName}</Td>
+                                            <Td>{toggle.sourceName}</Td>
+                                            <Td>{channelPoint.cost}</Td>
+                                            <Td>{toggle.timed}</Td>
+                                            <Td>{toggle.isRandom ? 'Yes' : 'No'}</Td>
+                                        </Tr>
+                                    )
+                                }
                             } else {
                                 return ('')
                             }
