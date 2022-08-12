@@ -17,7 +17,7 @@ const Bits = () => {
                     <Text fontSize='2xl'>Set Bit Amounts</Text>
                     <HStack>
                         <VStack>
-                            <Text fontSize='2xl'>Max Value</Text>
+                            <Text fontSize='2xl'>Min Value</Text>
                             <InputNumber defaultVal={minBits} min={0} handleValue={setMinBits} value={minBits} />
                         </VStack>
                         <VStack>

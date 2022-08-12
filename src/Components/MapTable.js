@@ -8,8 +8,7 @@ import {
     Td,
     TableCaption,
     TableContainer,
-    Center,
-    Box
+    Center
   } from '@chakra-ui/react'
 
   import { ObsContext } from "Contexts/ObsContext";
