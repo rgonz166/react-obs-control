@@ -506,7 +506,6 @@ export function ObsProvider ({children}) {
                     timed: timed
                 }
                 if (sourceSelectedComplete.type === 'group') {
-                    // TODO: Add rarity object for each child
                     tempData['sourceGroup'] = sourceSelectedComplete.groupChildren
                     tempData.isRandom = isRandomized;
                     if (isRandomized) {
