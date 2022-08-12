@@ -65,9 +65,6 @@ import { useEffect } from "react";
  * @param {string} source the source that will be toggled off/on
  * @param {boolean} toggled the value true/false to toggle source
  * 
- * @callback changeScene
- * @param {string} scene scene to be changed
- * 
  * @callback handleSetObsTwitchMapAndLocal
  * @param {obsTwitchMap} data
  * 
@@ -112,7 +109,7 @@ import { useEffect } from "react";
  * handleSceneSelection, handleSourceSelection, handleFilterSelection,
  * startRecording, stopRecording: function,
  * startStreaming: startStreaming, stopStreaming: function,
- * toggleSource: toggleSource, changeScene: changeScene,
+ * toggleSource: toggleSource,
  * obsTwitchMap: obsTwitchMap, setObsTwitchMap, handleSetObsTwitchMapAndLocal: handleSetObsTwitchMapAndLocal,
  * addChannelPoints,
  * tabIndex: number, handleTabChange: handleTabChange,
@@ -222,7 +219,6 @@ export function ObsProvider ({children}) {
      * @param {obsTwitchMap} data 
      */
     const handleSetObsTwitchMapAndLocal = (data) => {
-        console.log('mapData', data)
         setObsTwitchMap({
             ...obsTwitchMap,
             obsTwitchMap: data.obsTwitchMap
@@ -447,15 +443,6 @@ export function ObsProvider ({children}) {
         })
     }
 
-    // TODO: Remove this dupe of toggleScene
-    const changeScene = (scene) => {
-        obs.sendCallback('SetCurrentScene', {
-            "scene-name": scene
-        }, (err, res) => {
-            if (err) console.error(err)
-        })
-    }
-
     const addChannelPoints = (selectedReward) => {
         const currentMap = obsTwitchMap;
 
@@ -506,8 +493,12 @@ export function ObsProvider ({children}) {
                     timed: timed
                 }
                 if (sourceSelectedComplete.type === 'group') {
-                    // TODO: Add rarity object for each child
                     tempData['sourceGroup'] = sourceSelectedComplete.groupChildren
+                    tempData.isRandom = isRandomized;
+                    if (isRandomized) {
+                        tempData['weighted'] = randomRarity;
+                        tempData['totalPerc'] = totalPercent;
+                    }
                 }
                 break;
             case 2:
@@ -526,7 +517,6 @@ export function ObsProvider ({children}) {
             default:
                 break;
         }
-
         return tempData;
     }
 
@@ -562,13 +552,14 @@ export function ObsProvider ({children}) {
 
     /** @type handleObsToggling */
     const handleObsToggling = (toggle, user) => {
-        
+
         switch(toggle.type) {
             case "Scene":
                 toggleScene(toggle.sceneName)
                 break;
             case "Source":
-                if (toggle.timed === 0) {
+                // eslint-disable-next-line eqeqeq
+                if (toggle.timed == 0 && !toggle.isRandom) {
                     toggleSource(toggle.sourceName, !toggle.sourceRender)
                     toggle.sourceRender = !toggle.sourceRender;
                 } else {
@@ -611,24 +602,25 @@ export function ObsProvider ({children}) {
         const currentMap = queueMap;
         if (type === 'source') {
             if (currentMap.types.sourceMap[toggle.sourceName]) {
-                currentMap.types.sourceMap[toggle.sourceName].queueArray.push(user)
+                currentMap.types.sourceMap[toggle.sourceName].queueArray.push({toggleCurrent: toggle, user})
                 setQueueMap({...currentMap})
                 const currentActiveToggle = currentMap.types.sourceMap[toggle.sourceName];
                 handleTimedToggle(currentActiveToggle);
             } else {
-                currentMap.types.sourceMap[toggle.sourceName] = {queueFlag: false, toggleName: toggle.sourceName, toggleData: toggle, queueArray: [user], queueType: type}
+                // currentMap.types.sourceMap[toggle.sourceName] = {queueFlag: false, toggleName: toggle.sourceName, toggleData: toggle, queueArray: [{toggleD: toggle,user: user}], queueType: type}
+                currentMap.types.sourceMap[toggle.sourceName] = {queueFlag: false, queueArray: [{toggleCurrent: toggle, user: user}], queueType: type}
                 setQueueMap({...currentMap})
                 const currentActiveToggle = currentMap.types.sourceMap[toggle.sourceName];
                 handleTimedToggle(currentActiveToggle);
             }
         } else if (type === 'filter') {
             if (currentMap.types.filterMap[toggle.filterName]) {
-                currentMap.types.filterMap[toggle.filterName].queueArray.push(user)
+                currentMap.types.filterMap[toggle.filterName].queueArray.push({toggleCurrent: toggle, user})
                 setQueueMap({...currentMap})
                 const currentActiveToggle = currentMap.types.filterMap[toggle.filterName];
                 handleTimedToggle(currentActiveToggle);
             } else {
-                currentMap.types.filterMap[toggle.filterName] = {queueFlag: false, toggleName: toggle.filterName, toggleData: toggle, queueArray: [user], queueType: type}
+                currentMap.types.filterMap[toggle.filterName] = {queueFlag: false, queueArray: [{toggleCurrent: toggle, user: user}], queueType: type}
                 setQueueMap({...currentMap})
                 const currentActiveToggle = currentMap.types.filterMap[toggle.filterName];
                 handleTimedToggle(currentActiveToggle);
@@ -647,44 +639,71 @@ export function ObsProvider ({children}) {
     }
 
     const timeToggle = (activeQueue) => {
-        console.log('activeQueue', activeQueue);
         // Only run if array is not empty
         //* For recursion purposes
         if (activeQueue.queueArray.length > 0) {
             activeQueue.queueFlag = true;
-            activeQueue.queueArray.shift();
+            const currentActiveQueue = activeQueue.queueArray.shift();
             // Initialize toggling by setting to off
             if (activeQueue.queueType === 'source') {
-                toggleSource(activeQueue.toggleName, false);
-                // Let toggle turn off before turning on
-                setTimeout(() => {
-                    toggleSource(activeQueue.toggleName, true);
-                    setTimeout(() => {
-                        toggleSource(activeQueue.toggleName, false)
-                        if (activeQueue.queueArray.length > 0) {
-                            timeToggle(activeQueue);
-                        } else {
-                            activeQueue.queueFlag = false;
-                        }
-                    }, activeQueue.toggleData.timed)
-                }, 500)
+                if (currentActiveQueue.toggleCurrent.isRandom) {
+                    /**
+                     * @constant
+                     * @type {Array<{time: number, perc: number, name: string}>}
+                     */
+                    const weightedArray = Object.values(currentActiveQueue.toggleCurrent.weighted.data);
+                    if (currentActiveQueue.toggleCurrent.totalPerc === 0) {
+                        const randomSelectionIndex = Math.floor(Math.random() * weightedArray.length);
+                        const selectedToggle = weightedArray[randomSelectionIndex];
+
+                        timedToggleSource(selectedToggle.name, selectedToggle.time, activeQueue);
+                    } else {
+                        const randomWeight = Math.floor(Math.random() * 100);
+                        let addedPercent = 0;
+                        const selectedToggle = weightedArray.find(f => {
+                            addedPercent += f.perc;
+                            return randomWeight < addedPercent;
+                        });
+
+                        timedToggleSource(selectedToggle.name, selectedToggle.time, activeQueue);
+                    }
+                } else {
+                    timedToggleSource(currentActiveQueue.toggleCurrent.sourceName, currentActiveQueue.toggleCurrent.timed, activeQueue);
+                }
             } else if (activeQueue.queueType === 'filter') {
-                toggleFilter(activeQueue.toggleData.sourceName, activeQueue.toggleName, false);
+                toggleFilter(currentActiveQueue.toggleCurrent.sourceName, currentActiveQueue.toggleCurrent.sourceName, false);
                 // Let toggle turn off before turning on
                 setTimeout(() => {
-                    toggleFilter(activeQueue.toggleData.sourceName, activeQueue.toggleName, true);
+                    toggleFilter(currentActiveQueue.toggleCurrent.sourceName, currentActiveQueue.toggleCurrent.sourceName, true);
                     setTimeout(() => {
-                        toggleFilter(activeQueue.toggleData.sourceName, activeQueue.toggleName, false)
+                        toggleFilter(currentActiveQueue.toggleCurrent.sourceName, currentActiveQueue.toggleCurrent.sourceName, false)
                         if (activeQueue.queueArray.length > 0) {
                             timeToggle(activeQueue);
                         } else {
                             activeQueue.queueFlag = false;
                         }
-                    }, activeQueue.toggleData.timed)
+                    }, currentActiveQueue.toggleCurrent.timed)
                 }, 500)
             }
 
         }
+    }
+
+    const timedToggleSource = (selectedToggleName, selectedToggleTime, activeQueue) => {
+        // Turn off source in case it was previously on and wait 500 milliseconds
+        toggleSource(selectedToggleName, false);
+        setTimeout(() => {
+            // Toggle source on and wait for the toggle time to turn off
+            toggleSource(selectedToggleName, true);
+            setTimeout(() => {
+                toggleSource(selectedToggleName, false)
+                if (activeQueue.queueArray.length > 0) {
+                    timeToggle(activeQueue);
+                } else {
+                    activeQueue.queueFlag = false;
+                }
+            }, selectedToggleTime)
+        }, 1000)
     }
 
     return (
@@ -711,7 +730,7 @@ export function ObsProvider ({children}) {
                     handleFilterSelection,
                     startRecording, stopRecording,
                     startStreaming, stopStreaming,
-                    toggleSource, changeScene,
+                    toggleSource,
                     obsTwitchMap, setObsTwitchMap, addChannelPoints,
                     tabIndex, handleTabChange,
                     handleSaveDisabled, setObsToggleData,
@@ -723,12 +742,9 @@ export function ObsProvider ({children}) {
             {children}
         </ObsContext.Provider>
     )
+    /**
+     * TODO:
+     * Stress test queue logic
+     * Add: edit and delete buttons to array
+     */
 }
-/**
- * TODO: 
- * ADD:Filter queue list with timed
- * Stress test queue logic
- * Add: random group 
- * Add: random queue with % randomness
- * Add: edit and delete buttons to array
- */
