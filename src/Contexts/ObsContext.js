@@ -553,13 +553,14 @@ export function ObsProvider ({children}) {
 
     /** @type handleObsToggling */
     const handleObsToggling = (toggle, user) => {
-        
+
         switch(toggle.type) {
             case "Scene":
                 toggleScene(toggle.sceneName)
                 break;
             case "Source":
-                if (toggle.timed == 0) {
+                // eslint-disable-next-line eqeqeq
+                if (toggle.timed == 0 && !toggle.isRandom) {
                     toggleSource(toggle.sourceName, !toggle.sourceRender)
                     toggle.sourceRender = !toggle.sourceRender;
                 } else {
