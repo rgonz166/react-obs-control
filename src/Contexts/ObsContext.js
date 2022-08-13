@@ -88,6 +88,12 @@ import { useEffect } from "react";
  * @param {obsToggling} toggle
  * @param {string} user
  * @returns obsToggling
+ * 
+ * @callback handleMapEditClickFunction
+ * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event
+ *
+ * @callback handleMapDeleteClickFunction
+ * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event
  *
  * 
  * @type {React.Context<{
@@ -115,6 +121,7 @@ import { useEffect } from "react";
  * tabIndex: number, handleTabChange: handleTabChange,
  * handleSaveDisabled: handleSaveDisabled, setObsToggleData: setObsToggleData,
  * getObsTogglingIndex: getObsTogglingIndex, handleObsToggling: handleObsToggling,
+ * handleMapEditClick: handleMapEditClickFunction, handleMapDeleteClick: handleMapDeleteClickFunction
  * }>}
  * 
  */
@@ -377,6 +384,22 @@ export function ObsProvider ({children}) {
         // CHeck if isRandomized is checked and totalPercent === 100
         disabled = (isRandomized && !(totalPercent === 100 || totalPercent === 0)) || disabled;
         return disabled;
+    }
+
+    /**
+     * 
+     * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event 
+     */
+    const handleMapEditClick = (event) => {
+        console.log('editClick', event['target']['parentNode']['parentNode']['dataset']);
+    }
+
+    /**
+     * 
+     * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event 
+     */
+    const handleMapDeleteClick = (event) => {
+        console.log('deleteClick', event['target']['parentNode']['parentNode']['dataset']);
     }
 
     // OBS Trigger Commands
@@ -735,7 +758,8 @@ export function ObsProvider ({children}) {
                     tabIndex, handleTabChange,
                     handleSaveDisabled, setObsToggleData,
                     getObsTogglingIndex, handleObsToggling,
-                    handleSetObsTwitchMapAndLocal
+                    handleSetObsTwitchMapAndLocal,
+                    handleMapEditClick, handleMapDeleteClick
                 }
             }
         >
