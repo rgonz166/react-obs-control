@@ -31,7 +31,7 @@ const DropDown = ({type}) => {
         const tempValues = randomRarity['data'] ? randomRarity['data'] : {}
         const percentSum = Object.values(tempValues).map(r => r.perc).reduce((prev, curr) => prev + curr, tempTotal)
         setTotalPercent(percentSum)
-    }, [randomRarity])
+    }, [randomRarity, setTotalPercent])
 
     useEffect(() => {
         let temp = {data: {}};
@@ -46,7 +46,7 @@ const DropDown = ({type}) => {
         } else {
             setRandomRarity({data: {}})
         }
-    }, [sourceSelectedComplete])
+    }, [setRandomRarity, sourceSelectedComplete])
     
 
     return(
