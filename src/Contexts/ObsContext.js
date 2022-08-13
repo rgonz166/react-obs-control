@@ -391,7 +391,13 @@ export function ObsProvider ({children}) {
      * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event 
      */
     const handleMapEditClick = (event) => {
-        console.log('editClick', event['target']['parentNode']['parentNode']['dataset']);
+        console.log('event', event);
+        const dataset = event['target']['dataset'];
+        const currentChannelId = dataset.channelid;
+        const currentToggle = JSON.parse(dataset.toggle);
+        console.log('channelId', currentChannelId);
+        console.log('toggle', currentToggle);
+        
     }
 
     /**
@@ -399,7 +405,7 @@ export function ObsProvider ({children}) {
      * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event 
      */
     const handleMapDeleteClick = (event) => {
-        console.log('deleteClick', event['target']['parentNode']['parentNode']['dataset']);
+        console.log('deleteClick', event['target']['dataset']);
     }
 
     // OBS Trigger Commands
