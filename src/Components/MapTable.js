@@ -100,9 +100,7 @@ const MapTable = () => {
                                 // Source Tab
                                 return (
                                     <Tr 
-                                        key={channelPoint.id+toggle.sourceName} 
-                                        data-channelid={channelPoint.id} 
-                                        data-sourcename={toggle.sourceName}
+                                        key={channelPoint.id+toggle.sourceName}
                                     >
                                         <Td>{channelPoint.name}</Td>
                                         <Td>{toggle.sceneName}</Td>
@@ -113,11 +111,13 @@ const MapTable = () => {
                                         <Td>
                                             <Tooltip hasArrow label='Connect OBS and Twitch to edit selection' isDisabled={obsConnected && twitchConnected} shouldWrapChildren >
                                                 <IconButton 
-                                                    icon={<EditIcon />} 
+                                                    icon={<EditIcon pointerEvents={'none'} />} 
                                                     backgroundColor={noBackgroundColor} 
                                                     aria-label={"edit button"} 
                                                     onClick={handleMapEditClick} 
                                                     disabled={!obsConnected || !twitchConnected}
+                                                    data-channelid={channelPoint.id} 
+                                                    data-toggle={JSON.stringify(toggle)}
                                                 />
                                             </Tooltip>
                                         </Td>
