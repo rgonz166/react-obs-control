@@ -40,7 +40,7 @@ const Navbar = () => {
                         <ButtonGroup gap='.03' variant='ghost' size='sm' mt={2} color='white'>
                         
                             <Link to='/'>
-                                <Button>
+                                <Button className="homebutton">
                                     Home
                                 </Button>
                             </Link>
@@ -61,7 +61,7 @@ const Navbar = () => {
                             </Link>
 
                             <Link to='/Settings'>
-                                <Button>
+                                <Button className="beforewebegin">
                                     Settings
                                 </Button>
                             </Link>
