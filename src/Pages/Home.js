@@ -1,9 +1,21 @@
 import React, { useContext } from "react"
-import { Button,Center, VStack, Heading, HStack, Text, Tooltip } from "@chakra-ui/react";
+
+import { Button,Center, VStack, Heading, HStack, Text, Tooltip, Box} from "@chakra-ui/react";
 import { ObsContext } from "Contexts/ObsContext";
 import { TwitchContext } from "Contexts/TwitchContext";
+import { TutorialContext } from "Contexts/TutorialContext";
+import { Steps, Hints } from "intro.js-react";
+import 'intro.js/introjs.css';
+import 'intro.js/themes/introjs-modern.css'
+import { useNavigate } from "react-router-dom";
+
+
+
 
 const Home = () => {
+
+   
+
     const {
         scenes,
         obsConnected, sourceSelectedComplete,
@@ -18,13 +30,39 @@ const Home = () => {
         twitchConnected
     } = useContext(TwitchContext);
 
+    const { 
+        enabled, setEnabled, 
+        initialStep, setInitialStep,
+        onExit, playAgain,
+        steps, introjsOptions  
+    } = useContext(TutorialContext)
+    
+    const navigate = useNavigate();
+
+    const onComplete = () => {
+        if(document.cookie === 'introjs-dontShowAgain=false') {
+            navigate('/Settings')
+        }
+    }
+
     return (
        <>
+        <Box paddingTop={3} paddingLeft={3}>
+                <Button onClick={playAgain}>Play Tutorial</Button>
+        </Box>
         <Center h="50vh">    
             <VStack spacing="3">
-                <Heading size="3xl">👋 Hello 👋</Heading> 
-                <Text>This app is used to toggle OBS sources using various Twitch services.</Text>
-                <Text>Created by: pintarider, rubbertoe64</Text>
+            <Steps 
+                enabled={enabled}
+                steps={steps}
+                options={introjsOptions}
+                initialStep={initialStep}
+                onExit={onExit}
+                onComplete={onComplete}
+             />
+                <Heading size="3xl" className="hello">👋 Hello 👋</Heading> 
+                <Text className="text">This app is used to toggle OBS sources using various Twitch services.</Text>
+                <Text className="created">Created by: pintarider, rubbertoe64</Text>
                 <HStack  spacing="10">
                     {obsConnected ? 
                         <Button onClick={() => { disconnectObs() }}>Disconnect OBS</Button>:

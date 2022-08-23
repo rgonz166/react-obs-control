@@ -1,8 +1,13 @@
 import React, { useState, useContext } from "react";
-import { Button, Center, Heading, Input, Text, VStack, Divider, Box, Tooltip, InputGroup, InputRightElement } from "@chakra-ui/react"
+import { useNavigate } from "react-router-dom";
+import { Button, Center, Heading, Input, Text, VStack, Divider, Box, Tooltip, InputGroup, InputRightElement, position } from "@chakra-ui/react"
 import { ObsContext } from "Contexts/ObsContext";
 import { useToast } from "@chakra-ui/toast";
 import { TwitchContext } from "Contexts/TwitchContext";
+import { TutorialContext } from "Contexts/TutorialContext";
+import { Link } from "react-router-dom";
+import { Steps } from "intro.js-react";
+
 
 const Settings = () => {
     const toast = useToast();
@@ -15,6 +20,14 @@ const Settings = () => {
     const {
         twitchUsername, setTwitchUsername, clientId
     } = useContext(TwitchContext)
+
+    const { 
+        initialStep,
+        onSettingsExit, 
+        enabledSettings, setEnabledSettings,
+        introjsOptions,
+        stepsSettings
+    } = useContext(TutorialContext)
 
    
     const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://rgonz166.github.io'
@@ -43,12 +56,40 @@ const Settings = () => {
             duration: 7000,
             isClosable: true
           })
+
+          
+
+    }
+    
+    
+    const navigate = useNavigate();
+    const onComplete = () => {
+        navigate('/')
     }
 
+    
+
+
+    
     return(
         <>
+            <Steps 
+            enabled={enabledSettings}
+            steps={stepsSettings}
+            options={introjsOptions}
+            initialStep={initialStep}
+            onExit={onSettingsExit}
+            onComplete={onComplete}
+            />
             <form>
-                <VStack paddingTop={'10vh'}>
+                <Box paddingTop={3} paddingLeft={3}>
+                    <Link to={'https://github.com/obsproject/obs-websocket/releases/download/5.0.1/obs-websocket-4.9.1-compat-Windows-Installer.exe'} target='_blank' download>
+                        <Button className="downloadthis"> Download OBS Websocket</Button>
+                    </Link>
+                </Box>
+                <Center>
+
+                <VStack paddingTop={'10vh'} className='settings1' w={"30%"}>
                         <Heading>OBS/Twitch Settings</Heading>
                     <VStack>
                         <Text  fontSize="2xl" style={{fontWeight: "bold"}}>Twitch Username</Text>
@@ -82,10 +123,11 @@ const Settings = () => {
                         </VStack>
                     </Center>
                     <Box paddingTop={6}>
-                        <Button onClick={()=>{settingsSaved()} }>Save Settings</Button>
+                        <Button className="settings2" onClick={()=>{settingsSaved()} }>Save Settings</Button>
                     </Box>
 
                 </VStack>
+                </Center>
             </form>
         </>
         
