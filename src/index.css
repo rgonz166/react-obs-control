@@ -17,3 +17,23 @@ code {
   right: 0;
   top: 0;
 }
+
+.introjs-tooltip {
+  background-color: rgba(0,0,0,0.9) !important;
+}
+
+.introjs-dontShowAgain label {
+  display: none !important;
+ 
+  
+}
+
+.introjs-dontShowAgain input {
+  display: none !important;
+  
+}
+
+.introjs-skipbutton {
+  display: none !important;
+}
+
