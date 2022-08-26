@@ -33,11 +33,21 @@ const Home = () => {
     const { 
         enabled, setEnabled, 
         initialStep, setInitialStep,
+        setEnabledSettings,
         onExit, playAgain,
         steps, introjsOptions  
     } = useContext(TutorialContext)
     
     const navigate = useNavigate();
+
+    const onStart = () => {
+        if(!document.cookie) {
+            document.cookie = "introjs-dontShowAgain=false; path=/;"
+            setEnabledSettings(true)
+            setInitialStep(0)
+            setEnabled(true)
+        }
+    }
 
     const onComplete = () => {
         if(document.cookie === 'introjs-dontShowAgain=false') {
@@ -57,6 +67,7 @@ const Home = () => {
                 steps={steps}
                 options={introjsOptions}
                 initialStep={initialStep}
+                onStart={onStart}
                 onExit={onExit}
                 onComplete={onComplete}
              />
