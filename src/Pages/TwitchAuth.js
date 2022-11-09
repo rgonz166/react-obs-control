@@ -18,10 +18,10 @@ const TwitchAuth = () => {
     useEffect(() => {
         console.log('token', token)
         if (error) {
-            localStorage.setItem('twitchToken', JSON.stringify(token));
+            // localStorage.setItem('twitchToken', JSON.stringify(null));
             navigate('/settings')
         } else if (!error && token && token !== undefined) {
-            localStorage.setItem('twitchToken', JSON.stringify(token));
+            // localStorage.setItem('twitchToken', JSON.stringify(token));
             navigate('/settings')
         }
     }, [token, error, navigate])
@@ -36,6 +36,7 @@ const TwitchAuth = () => {
             const currentToken = hash.split('&')[0].split('=')[1];
             console.log('currentToken', currentToken)
             setToken(currentToken)
+            localStorage.setItem('twitchToken', JSON.stringify(currentToken));
         }
     }
 
