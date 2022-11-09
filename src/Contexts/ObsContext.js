@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-fallthrough */
+// @ts-ignore
 import React, { useState, Dispatch } from "react";
+// @ts-ignore
 import OBSWebSocket, {SceneItem} from "obs-websocket-js";
 import { useToast } from "@chakra-ui/toast";
 import { useEffect } from "react";
@@ -474,14 +476,15 @@ export function ObsProvider ({children}) {
 
     const addChannelPoints = (selectedReward) => {
         const currentMap = obsTwitchMap;
-
+        const parsedReward = JSON.parse(selectedReward)
+        console.log('selectedReward', parsedReward)
         // Check if its the first time being added
         const rewardIndex = currentMap.obsTwitchMap.channelPoints.findIndex(f => f.id === selectedReward.id);
         if (rewardIndex === -1) {
             let initialMapItem = {
-                id: selectedReward.id,
-                name: selectedReward.title,
-                cost: selectedReward.cost,
+                id: parsedReward.id,
+                name: parsedReward.title,
+                cost: parsedReward.cost,
                 obsToggling: [setObsToggleData()]
             };
 

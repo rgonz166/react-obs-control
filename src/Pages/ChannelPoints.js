@@ -13,13 +13,17 @@ const ChannelPoints = () => {
     const { getPointRewards, twitchRewards, twitchConnected } = useContext(TwitchContext)
 
     const [selectedReward, setSelectedReward] = useState('');
+    const [selectedFullReward, setSelectedFullReward] = useState('');
+
 
     const handleRewardChange = (e) => {
         console.log(e.target.value)
         if (!e.target.value) {
             setSelectedReward('')
+            setSelectedFullReward('');
         }else {
             setSelectedReward(e.target.value)
+            setSelectedFullReward(e.target.selectedOptions[0].dataset.reward)
         }
     }
 
@@ -45,7 +49,7 @@ const ChannelPoints = () => {
             </VStack>
             <Center>
                 <HStack padding={'15px 0'}>
-                    <Button disabled={handleSaveDisabled() || selectedReward === null} onClick={() => addChannelPoints(selectedReward)}>Add to List</Button>
+                    <Button disabled={handleSaveDisabled() || selectedReward === null} onClick={() => addChannelPoints(selectedFullReward)}>Add to List</Button>
                     <Button onClick={ () => getPointRewards()}>Refresh Rewards</Button>
                 </HStack>
             </Center>
