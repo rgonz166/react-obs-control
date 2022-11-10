@@ -243,15 +243,27 @@ export function ObsProvider ({children}) {
             setObsConnected(true);
             obs.send('GetSceneList')
         .then( data => {
-            setScenes(data.scenes);
+            Promise.all(
+                data.scenes.map(async scene =>{
+                    return Promise.all(scene.sources.map(async source => handlePromiseMediaDuration(source))).then(asyncSrc => {
+                        return {
+                            name: scene.name,
+                            sources: asyncSrc
+                        };
+                    })
+                })
+            ).then(asyncData => {
+                setScenes(asyncData)
+                toast({
+                    title: `OBS Connected`,
+                    description: 'OBS Connection has been successfully established',
+                    status: 'success',
+                    duration: 7000,
+                    isClosable: true
+                })
+            })
         })
-        toast({
-            title: `OBS Connected`,
-            description: 'OBS Connection has been successfully established',
-            status: 'success',
-            duration: 7000,
-            isClosable: true
-        })
+        
         }).catch(rejected => {
             setObsConnected(false)
             setScenes([]);
@@ -305,9 +317,7 @@ export function ObsProvider ({children}) {
         } else {
             setSceneSelected(scene)
             const selectedScene =  scenes.find((s) => s.name === scene)
-            Promise.all(
-                selectedScene.sources.map(async source => handlePromiseMediaDuration(source))
-            ).then(asyncData => setSources(asyncData))
+            setSources(selectedScene.sources)
         }
     }
 
@@ -338,12 +348,16 @@ export function ObsProvider ({children}) {
     }
     
     const handleSourceSelection = (source) => {
-        setSourceSelected(source.value)
+        console.log('sourceSelected', source)
+        setSourceSelected(source)
         setRandomFieldsNull();
-        const sourceCompleteData = source.value ? JSON.parse(source.selectedOptions[0].dataset.source) : null;
-        setSourceSelectedComplete(sourceCompleteData);
-        setTimed(sourceCompleteData.time ? sourceCompleteData.time : 0);
-        getFilterBySource(source.value)
+        console.log('sources', sources)
+        const selectedSource = sources.find((s) => s.name === source)
+        console.log('selectedSource', selectedSource)
+        // const sourceCompleteData = source.value ? JSON.parse(source.selectedOptions[0].dataset.source) : null;
+        setSourceSelectedComplete(selectedSource);
+        setTimed(selectedSource?.time ? selectedSource.time : 0);
+        getFilterBySource(source)
     }
 
     const handleFilterSelection = (filter) => {
@@ -399,6 +413,14 @@ export function ObsProvider ({children}) {
         const currentToggle = JSON.parse(dataset.toggle);
         console.log('channelId', currentChannelId);
         console.log('toggle', currentToggle);
+        
+        handleSceneSelection(currentToggle.sceneName)
+        if (currentToggle.type === 'Source' || currentToggle.type === 'Filter') {
+            handleSourceSelection(currentToggle.sourceName)
+        }
+        if (currentToggle.type === 'Filter') {
+            handleFilterSelection(currentToggle.filterName)
+        }
         
     }
 
