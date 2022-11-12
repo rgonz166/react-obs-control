@@ -15,6 +15,7 @@ const DropDown = ({type}) => {
     const marginTest = 20;
 
     const onChangeInputPercentage = (val, index) => {
+        console.log('changeInput', val);
         let temp = {...randomRarity};
         temp['data'][index]['perc'] = val ? val : 0;
         setRandomRarity(temp)
@@ -70,10 +71,10 @@ const DropDown = ({type}) => {
                                 <Center>
                                     <Text fontSize='2xl'>OBS Sources</Text>
                                 </Center>
-                                <Select value={sourceSelected} onChange={(e) => handleSourceSelection(e.target)} placeholder={obsConnected ? 'Select a Source' : 'OBS Not Connected'}>
+                                <Select value={sourceSelected} onChange={(e) => handleSourceSelection(e.target.value)} placeholder={obsConnected ? 'Select a Source' : 'OBS Not Connected'}>
                                     {sources.map((source) => {
                                         return (
-                                            <option key={source.name} data-source={JSON.stringify(source)} value={source.name}>{source.time ? `${source.name} (${source.time/1000}s)` : source.name}</option>
+                                            <option key={source.name} value={source.name}>{source.time ? `${source.name} (${source.time/1000}s)` : source.name}</option>
                                         )
                                     })}
                                 </Select>
