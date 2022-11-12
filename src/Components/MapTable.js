@@ -19,7 +19,7 @@ import { TwitchContext } from "Contexts/TwitchContext";
 
 const MapTable = () => {
 
-    const { obsTwitchMap, tabIndex, obsConnected, handleMapEditClick } = useContext(ObsContext);
+    const { obsTwitchMap, tabIndex, obsConnected, handleMapEditClick, handleMapDeleteClick } = useContext(ObsContext);
     const {twitchConnected} = useContext(TwitchContext)
 
 
@@ -114,14 +114,26 @@ const MapTable = () => {
                                                     icon={<EditIcon pointerEvents={'none'} />} 
                                                     backgroundColor={noBackgroundColor} 
                                                     aria-label={"edit button"} 
-                                                    onClick={handleMapEditClick} 
+                                                    onClick={(e) => handleMapEditClick(e)} 
                                                     disabled={!obsConnected || !twitchConnected}
                                                     data-channelid={channelPoint.id} 
                                                     data-toggle={JSON.stringify(toggle)}
                                                 />
                                             </Tooltip>
                                         </Td>
-                                        <Td><IconButton icon={<DeleteIcon />} backgroundColor={noBackgroundColor}  aria-label={"delete button"} /></Td>
+                                        <Td>
+                                            <Tooltip hasArrow label='Connect OBS and Twitch to edit selection' isDisabled={obsConnected && twitchConnected} shouldWrapChildren >
+                                                <IconButton 
+                                                    icon={<DeleteIcon pointerEvents={'none'} />} 
+                                                    backgroundColor={noBackgroundColor} 
+                                                    aria-label={"delete button"} 
+                                                    onClick={(e) => handleMapDeleteClick(e)}
+                                                    disabled={!obsConnected || !twitchConnected}
+                                                    data-channelid={channelPoint.id}
+                                                    data-toggle={JSON.stringify(toggle)}
+                                                />
+                                            </Tooltip>
+                                        </Td>
                                     </Tr>
                                 )
                             } else {
