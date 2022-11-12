@@ -417,6 +417,9 @@ export function ObsProvider ({children}) {
         handleSceneSelection(currentToggle.sceneName)
         if (currentToggle.type === 'Source' || currentToggle.type === 'Filter') {
             handleSourceSelection(currentToggle.sourceName)
+            if (currentToggle.isRandom) {
+                setIsRandomized(currentToggle.isRandom)
+            }
         }
         if (currentToggle.type === 'Filter') {
             handleFilterSelection(currentToggle.filterName)
@@ -429,7 +432,29 @@ export function ObsProvider ({children}) {
      * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event 
      */
     const handleMapDeleteClick = (event) => {
-        console.log('deleteClick', event['target']['dataset']);
+        const currentMap = obsTwitchMap;
+        const dataset = event['target']['dataset'];
+        const currentChannelId = dataset.channelid;
+        const currentToggle = JSON.parse(dataset.toggle);
+        
+        // Find channelId
+        const rewardIndex = currentMap.obsTwitchMap.channelPoints.findIndex(f => f.id === currentChannelId);
+        const reward = currentMap.obsTwitchMap.channelPoints[rewardIndex];
+        if (reward.obsToggling.length === 1) {
+            // If there is only one then delete the whole reward
+            currentMap.obsTwitchMap.channelPoints.splice(rewardIndex, 1)
+        } else {
+            // If there is more than one obs toggle then just delete the toggle chosen
+            const toggleIndex = currentToggle.type === 'Scene' ? 
+                currentMap.obsTwitchMap.channelPoints[rewardIndex].obsToggling.findIndex(o => o.sceneName === currentToggle.sceneName) :
+                currentToggle.type === 'Source' ? currentMap.obsTwitchMap.channelPoints[rewardIndex].obsToggling.findIndex(o => o.sourceName === currentToggle.sourceName) :
+                currentMap.obsTwitchMap.channelPoints[rewardIndex].obsToggling.findIndex(o => o.filterName === currentToggle.filterName);
+            
+                currentMap.obsTwitchMap.channelPoints[rewardIndex].obsToggling.splice(toggleIndex, 1);
+            }
+
+        handleSetObsTwitchMapAndLocal(currentMap);
+
     }
 
     // OBS Trigger Commands
@@ -499,9 +524,8 @@ export function ObsProvider ({children}) {
     const addChannelPoints = (selectedReward) => {
         const currentMap = obsTwitchMap;
         const parsedReward = JSON.parse(selectedReward)
-        console.log('selectedReward', parsedReward)
         // Check if its the first time being added
-        const rewardIndex = currentMap.obsTwitchMap.channelPoints.findIndex(f => f.id === selectedReward.id);
+        const rewardIndex = currentMap.obsTwitchMap.channelPoints.findIndex(f => f.id === parsedReward.id);
         if (rewardIndex === -1) {
             let initialMapItem = {
                 id: parsedReward.id,
