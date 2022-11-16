@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-fallthrough */
+// @ts-ignore
 import React, { useState, Dispatch } from "react";
+// @ts-ignore
 import OBSWebSocket, {SceneItem} from "obs-websocket-js";
 import { useToast } from "@chakra-ui/toast";
 import { useEffect } from "react";
@@ -88,6 +90,12 @@ import { useEffect } from "react";
  * @param {obsToggling} toggle
  * @param {string} user
  * @returns obsToggling
+ * 
+ * @callback handleMapEditClickFunction
+ * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event
+ *
+ * @callback handleMapDeleteClickFunction
+ * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event
  *
  * 
  * @type {React.Context<{
@@ -115,6 +123,7 @@ import { useEffect } from "react";
  * tabIndex: number, handleTabChange: handleTabChange,
  * handleSaveDisabled: handleSaveDisabled, setObsToggleData: setObsToggleData,
  * getObsTogglingIndex: getObsTogglingIndex, handleObsToggling: handleObsToggling,
+ * handleMapEditClick: handleMapEditClickFunction, handleMapDeleteClick: handleMapDeleteClickFunction
  * }>}
  * 
  */
@@ -234,15 +243,27 @@ export function ObsProvider ({children}) {
             setObsConnected(true);
             obs.send('GetSceneList')
         .then( data => {
-            setScenes(data.scenes);
+            Promise.all(
+                data.scenes.map(async scene =>{
+                    return Promise.all(scene.sources.map(async source => handlePromiseMediaDuration(source))).then(asyncSrc => {
+                        return {
+                            name: scene.name,
+                            sources: asyncSrc
+                        };
+                    })
+                })
+            ).then(asyncData => {
+                setScenes(asyncData)
+                toast({
+                    title: `OBS Connected`,
+                    description: 'OBS Connection has been successfully established',
+                    status: 'success',
+                    duration: 7000,
+                    isClosable: true
+                })
+            })
         })
-        toast({
-            title: `OBS Connected`,
-            description: 'OBS Connection has been successfully established',
-            status: 'success',
-            duration: 7000,
-            isClosable: true
-        })
+        
         }).catch(rejected => {
             setObsConnected(false)
             setScenes([]);
@@ -296,9 +317,7 @@ export function ObsProvider ({children}) {
         } else {
             setSceneSelected(scene)
             const selectedScene =  scenes.find((s) => s.name === scene)
-            Promise.all(
-                selectedScene.sources.map(async source => handlePromiseMediaDuration(source))
-            ).then(asyncData => setSources(asyncData))
+            setSources(selectedScene.sources)
         }
     }
 
@@ -329,12 +348,16 @@ export function ObsProvider ({children}) {
     }
     
     const handleSourceSelection = (source) => {
-        setSourceSelected(source.value)
+        console.log('sourceSelected', source)
+        setSourceSelected(source)
         setRandomFieldsNull();
-        const sourceCompleteData = source.value ? JSON.parse(source.selectedOptions[0].dataset.source) : null;
-        setSourceSelectedComplete(sourceCompleteData);
-        setTimed(sourceCompleteData.time ? sourceCompleteData.time : 0);
-        getFilterBySource(source.value)
+        console.log('sources', sources)
+        const selectedSource = sources.find((s) => s.name === source)
+        console.log('selectedSource', selectedSource)
+        // const sourceCompleteData = source.value ? JSON.parse(source.selectedOptions[0].dataset.source) : null;
+        setSourceSelectedComplete(selectedSource);
+        setTimed(selectedSource?.time ? selectedSource.time : 0);
+        getFilterBySource(source)
     }
 
     const handleFilterSelection = (filter) => {
@@ -377,6 +400,61 @@ export function ObsProvider ({children}) {
         // CHeck if isRandomized is checked and totalPercent === 100
         disabled = (isRandomized && !(totalPercent === 100 || totalPercent === 0)) || disabled;
         return disabled;
+    }
+
+    /**
+     * 
+     * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event 
+     */
+    const handleMapEditClick = (event) => {
+        console.log('event', event);
+        const dataset = event['target']['dataset'];
+        const currentChannelId = dataset.channelid;
+        const currentToggle = JSON.parse(dataset.toggle);
+        console.log('channelId', currentChannelId);
+        console.log('toggle', currentToggle);
+        
+        handleSceneSelection(currentToggle.sceneName)
+        if (currentToggle.type === 'Source' || currentToggle.type === 'Filter') {
+            handleSourceSelection(currentToggle.sourceName)
+            if (currentToggle.isRandom) {
+                setIsRandomized(currentToggle.isRandom)
+            }
+        }
+        if (currentToggle.type === 'Filter') {
+            handleFilterSelection(currentToggle.filterName)
+        }
+        
+    }
+
+    /**
+     * 
+     * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event 
+     */
+    const handleMapDeleteClick = (event) => {
+        const currentMap = obsTwitchMap;
+        const dataset = event['target']['dataset'];
+        const currentChannelId = dataset.channelid;
+        const currentToggle = JSON.parse(dataset.toggle);
+        
+        // Find channelId
+        const rewardIndex = currentMap.obsTwitchMap.channelPoints.findIndex(f => f.id === currentChannelId);
+        const reward = currentMap.obsTwitchMap.channelPoints[rewardIndex];
+        if (reward.obsToggling.length === 1) {
+            // If there is only one then delete the whole reward
+            currentMap.obsTwitchMap.channelPoints.splice(rewardIndex, 1)
+        } else {
+            // If there is more than one obs toggle then just delete the toggle chosen
+            const toggleIndex = currentToggle.type === 'Scene' ? 
+                currentMap.obsTwitchMap.channelPoints[rewardIndex].obsToggling.findIndex(o => o.sceneName === currentToggle.sceneName) :
+                currentToggle.type === 'Source' ? currentMap.obsTwitchMap.channelPoints[rewardIndex].obsToggling.findIndex(o => o.sourceName === currentToggle.sourceName) :
+                currentMap.obsTwitchMap.channelPoints[rewardIndex].obsToggling.findIndex(o => o.filterName === currentToggle.filterName);
+            
+                currentMap.obsTwitchMap.channelPoints[rewardIndex].obsToggling.splice(toggleIndex, 1);
+            }
+
+        handleSetObsTwitchMapAndLocal(currentMap);
+
     }
 
     // OBS Trigger Commands
@@ -445,14 +523,14 @@ export function ObsProvider ({children}) {
 
     const addChannelPoints = (selectedReward) => {
         const currentMap = obsTwitchMap;
-
+        const parsedReward = JSON.parse(selectedReward)
         // Check if its the first time being added
-        const rewardIndex = currentMap.obsTwitchMap.channelPoints.findIndex(f => f.id === selectedReward.id);
+        const rewardIndex = currentMap.obsTwitchMap.channelPoints.findIndex(f => f.id === parsedReward.id);
         if (rewardIndex === -1) {
             let initialMapItem = {
-                id: selectedReward.id,
-                name: selectedReward.title,
-                cost: selectedReward.cost,
+                id: parsedReward.id,
+                name: parsedReward.title,
+                cost: parsedReward.cost,
                 obsToggling: [setObsToggleData()]
             };
 
@@ -735,7 +813,8 @@ export function ObsProvider ({children}) {
                     tabIndex, handleTabChange,
                     handleSaveDisabled, setObsToggleData,
                     getObsTogglingIndex, handleObsToggling,
-                    handleSetObsTwitchMapAndLocal
+                    handleSetObsTwitchMapAndLocal,
+                    handleMapEditClick, handleMapDeleteClick
                 }
             }
         >

@@ -8,14 +8,22 @@ import {
     Td,
     TableCaption,
     TableContainer,
-    Center
+    Center,
+    IconButton,
+    Tooltip
   } from '@chakra-ui/react'
 
   import { ObsContext } from "Contexts/ObsContext";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { TwitchContext } from "Contexts/TwitchContext";
 
 const MapTable = () => {
 
-    const { obsTwitchMap, tabIndex } = useContext(ObsContext)
+    const { obsTwitchMap, tabIndex, obsConnected, handleMapEditClick, handleMapDeleteClick } = useContext(ObsContext);
+    const {twitchConnected} = useContext(TwitchContext)
+
+
+    const noBackgroundColor = 'rgba(255,255,255,0.0)';
     
 
     const channelPoints = obsTwitchMap.obsTwitchMap.channelPoints
@@ -39,6 +47,8 @@ const MapTable = () => {
                         <Th>Cost</Th> 
                         <Th>Timed</Th> 
                         <Th>Random?</Th> 
+                        <Th></Th> 
+                        <Th></Th> 
                     </Tr>
                 )
             case 2: 
@@ -88,29 +98,44 @@ const MapTable = () => {
                         case 1: 
                             if(toggle.sourceName && !toggle.filterName) {
                                 // Source Tab
-                                if (toggle.sourceType === 'group' && toggle.isRandom) {
-                                    return (
-                                        <Tr key={channelPoint.id+toggle.sourceName}>
-                                            <Td>{channelPoint.name}</Td>
-                                            <Td>{toggle.sceneName}</Td>
-                                            <Td>{toggle.sourceName}</Td>
-                                            <Td>{channelPoint.cost}</Td>
-                                            <Td>{toggle.timed}</Td>
-                                            <Td>{toggle.isRandom ? 'Yes' : 'No'}</Td>
-                                        </Tr>
-                                    )
-                                } else {
-                                    return (
-                                        <Tr key={channelPoint.id+toggle.sourceName}>
-                                            <Td>{channelPoint.name}</Td>
-                                            <Td>{toggle.sceneName}</Td>
-                                            <Td>{toggle.sourceName}</Td>
-                                            <Td>{channelPoint.cost}</Td>
-                                            <Td>{toggle.timed}</Td>
-                                            <Td>{toggle.isRandom ? 'Yes' : 'No'}</Td>
-                                        </Tr>
-                                    )
-                                }
+                                return (
+                                    <Tr 
+                                        key={channelPoint.id+toggle.sourceName}
+                                    >
+                                        <Td>{channelPoint.name}</Td>
+                                        <Td>{toggle.sceneName}</Td>
+                                        <Td>{toggle.sourceName}</Td>
+                                        <Td>{channelPoint.cost}</Td>
+                                        <Td>{toggle.timed}</Td>
+                                        <Td>{toggle.isRandom ? 'Yes' : 'No'}</Td>
+                                        <Td>
+                                            <Tooltip hasArrow label='Connect OBS and Twitch to edit selection' isDisabled={obsConnected && twitchConnected} shouldWrapChildren >
+                                                <IconButton 
+                                                    icon={<EditIcon pointerEvents={'none'} />} 
+                                                    backgroundColor={noBackgroundColor} 
+                                                    aria-label={"edit button"} 
+                                                    onClick={(e) => handleMapEditClick(e)} 
+                                                    disabled={!obsConnected || !twitchConnected}
+                                                    data-channelid={channelPoint.id} 
+                                                    data-toggle={JSON.stringify(toggle)}
+                                                />
+                                            </Tooltip>
+                                        </Td>
+                                        <Td>
+                                            <Tooltip hasArrow label='Connect OBS and Twitch to edit selection' isDisabled={obsConnected && twitchConnected} shouldWrapChildren >
+                                                <IconButton 
+                                                    icon={<DeleteIcon pointerEvents={'none'} />} 
+                                                    backgroundColor={noBackgroundColor} 
+                                                    aria-label={"delete button"} 
+                                                    onClick={(e) => handleMapDeleteClick(e)}
+                                                    disabled={!obsConnected || !twitchConnected}
+                                                    data-channelid={channelPoint.id}
+                                                    data-toggle={JSON.stringify(toggle)}
+                                                />
+                                            </Tooltip>
+                                        </Td>
+                                    </Tr>
+                                )
                             } else {
                                 return ('')
                             }

@@ -12,13 +12,18 @@ const ChannelPoints = () => {
     const {handleSaveDisabled, addChannelPoints} = useContext(ObsContext)
     const { getPointRewards, twitchRewards, twitchConnected } = useContext(TwitchContext)
 
-    const [selectedReward, setSelectedReward] = useState(null);
+    const [selectedReward, setSelectedReward] = useState('');
+    const [selectedFullReward, setSelectedFullReward] = useState('');
+
 
     const handleRewardChange = (e) => {
-        if (e.target.value === '') {
-            setSelectedReward(null)
+        console.log(e.target.value)
+        if (!e.target.value) {
+            setSelectedReward('')
+            setSelectedFullReward('');
         }else {
-            setSelectedReward(JSON.parse(e.target.selectedOptions[0].dataset.reward))
+            setSelectedReward(e.target.value)
+            setSelectedFullReward(e.target.selectedOptions[0].dataset.reward)
         }
     }
 
@@ -32,7 +37,7 @@ const ChannelPoints = () => {
                     <Text fontSize='2xl'>Rewards List:</Text>
                     <Center>
 
-                    <Select placeholder={twitchConnected ? 'Select Reward' : 'Twitch Not Connected'} onChange={handleRewardChange}>
+                    <Select value={selectedReward} placeholder={twitchConnected ? 'Select Reward' : 'Twitch Not Connected'} onChange={handleRewardChange}>
                         {twitchRewards.map((reward) => {
                             return(
                                 <option data-reward={JSON.stringify(reward)} key={reward.id} value={reward.id}>{reward.title} ({reward.cost})</option>
@@ -44,7 +49,7 @@ const ChannelPoints = () => {
             </VStack>
             <Center>
                 <HStack padding={'15px 0'}>
-                    <Button disabled={handleSaveDisabled() || selectedReward === null} onClick={() => addChannelPoints(selectedReward)}>Add to List</Button>
+                    <Button disabled={handleSaveDisabled() || selectedReward === null} onClick={() => addChannelPoints(selectedFullReward)}>Add to List</Button>
                     <Button onClick={ () => getPointRewards()}>Refresh Rewards</Button>
                 </HStack>
             </Center>

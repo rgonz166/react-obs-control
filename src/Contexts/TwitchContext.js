@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useToast } from '@chakra-ui/toast';
+// eslint-disable-next-line no-unused-vars
 import ComfyJS, {ComfyJSInstance} from "comfy.js";
 
 /**
