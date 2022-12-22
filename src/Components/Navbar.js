@@ -37,14 +37,14 @@ const Navbar = () => {
                             </Link>
                             <Link to='/Bits'>
                                 <Tooltip hasArrow label="Page Under Construction" shouldWrapChildren>
-                                    <Button disabled>
+                                    <Button disabled={process.env.NODE_ENV !== "development"}>
                                         Bits
                                     </Button>
                                 </Tooltip>
                             </Link>
                             <Link to='/Subscriptions'>
                                 <Tooltip hasArrow label="Page Under Construction" shouldWrapChildren>
-                                    <Button disabled>
+                                    <Button disabled={process.env.NODE_ENV !== "development"}>
                                         Subscriptions
                                     </Button>
                                 </Tooltip>
