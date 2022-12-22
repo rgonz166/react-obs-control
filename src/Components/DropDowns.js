@@ -114,10 +114,7 @@ const DropDown = ({type}) => {
                     && (
                         <VStack>
                             <Text fontSize='2xl'>Timed?</Text>
-                            <InputNumber defaultVal={timed} min={0} handleValue={setTimed} value={timed} />
-                            {/* <Input type='number' placeholder='0' defaultValue={0}></Input> */}
-                            {/* <Text fontSize='2xl'>Group</Text>
-                            <Input placeholder='Text' type='text'></Input> */}
+                            {!isRandomized && <InputNumber defaultVal={timed} min={0} handleValue={setTimed} value={timed} />}
                             {sourceSelectedComplete && sourceSelectedComplete.type === 'group' && (
                                 <Checkbox isChecked={isRandomized} onChange={(e) => setIsRandomized(e.target.checked)} >Randomize Group?</Checkbox>
                             )}

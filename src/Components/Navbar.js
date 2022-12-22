@@ -1,15 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { ButtonGroup, Button, HStack, Box, Flex, Heading, Spacer, IconButton, Menu, MenuButton, MenuItem, MenuList, Tooltip } from "@chakra-ui/react"
 import { HamburgerIcon } from "@chakra-ui/icons";
-import { ObsContext } from "Contexts/ObsContext";
-import { TwitchContext } from "Contexts/TwitchContext";
+import ConnectionButtons from "./ConnectionButtons";
 
 
 const Navbar = () => {
-    
-    const {obsConnected, connectObs, disconnectObs} = useContext(ObsContext)
-    const {connectTwitchEvents, disconnectTwitchEvents, twitchConnected} = useContext(TwitchContext)
 
     return (
         <>
@@ -20,19 +16,9 @@ const Navbar = () => {
                             <Heading pl={21}>OBS Control</Heading>
                         </Link>
                         <Spacer></Spacer>
-                        {process.env.NODE_ENV === 'development' &&
-                            obsConnected ? 
-                            <Button onClick={() => { disconnectObs() }}>Disconnect OBS</Button>
-                            :
-                            <Tooltip hasArrow label=" Verify all proxy settings are correct and connect to your obs client">
-                                <Button onClick={async () => { connectObs() }}>Connect OBS</Button>
-                            </Tooltip>
-                        }
-                        {process.env.NODE_ENV === 'development' &&
-                            twitchConnected ? 
-                            <Button onClick={() => { disconnectTwitchEvents() }} bgColor={'#6441a5'}>Disconnect Twitch</Button>
-                            :
-                            <Button onClick={() => { connectTwitchEvents() }} bgColor={'#6441a5'}>Connect Twitch</Button>
+                        {
+                            process.env.NODE_ENV === 'development' &&
+                            <ConnectionButtons />
                         }
 
                         <Spacer></Spacer>
@@ -50,14 +36,18 @@ const Navbar = () => {
                                 </Button>
                             </Link>
                             <Link to='/Bits'>
-                                <Button>
-                                    Bits
-                                </Button>
+                                <Tooltip hasArrow label="Page Under Construction" shouldWrapChildren>
+                                    <Button disabled={process.env.NODE_ENV !== "development"}>
+                                        Bits
+                                    </Button>
+                                </Tooltip>
                             </Link>
                             <Link to='/Subscriptions'>
-                                <Button>
-                                    Subscriptions
-                                </Button>
+                                <Tooltip hasArrow label="Page Under Construction" shouldWrapChildren>
+                                    <Button disabled={process.env.NODE_ENV !== "development"}>
+                                        Subscriptions
+                                    </Button>
+                                </Tooltip>
                             </Link>
 
                             <Link to='/Settings'>
