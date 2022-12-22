@@ -1,6 +1,6 @@
 {
   "name": "websocket-testing",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "homepage": "https://rgonz166.github.io/react-obs-control",
   "private": true,
   "dependencies": {
