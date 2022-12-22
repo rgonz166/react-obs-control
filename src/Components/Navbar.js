@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ButtonGroup, Button, HStack, Box, Flex, Heading, Spacer, IconButton, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react"
+import { ButtonGroup, Button, HStack, Box, Flex, Heading, Spacer, IconButton, Menu, MenuButton, MenuItem, MenuList, Tooltip } from "@chakra-ui/react"
 import { HamburgerIcon } from "@chakra-ui/icons";
 import ConnectionButtons from "./ConnectionButtons";
 
@@ -36,14 +36,18 @@ const Navbar = () => {
                                 </Button>
                             </Link>
                             <Link to='/Bits'>
-                                <Button>
-                                    Bits
-                                </Button>
+                                <Tooltip hasArrow label="Page Under Construction" shouldWrapChildren>
+                                    <Button disabled>
+                                        Bits
+                                    </Button>
+                                </Tooltip>
                             </Link>
                             <Link to='/Subscriptions'>
-                                <Button>
-                                    Subscriptions
-                                </Button>
+                                <Tooltip hasArrow label="Page Under Construction" shouldWrapChildren>
+                                    <Button disabled>
+                                        Subscriptions
+                                    </Button>
+                                </Tooltip>
                             </Link>
 
                             <Link to='/Settings'>
