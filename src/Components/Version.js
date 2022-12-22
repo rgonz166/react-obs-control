@@ -9,11 +9,19 @@ const fixedStyle = {
 }
 
 const Version = () => {
-    return (
-        <div style={fixedStyle}>
-            Version: {packageJson.version}
-        </div>
-    )
+    if (process.env.NODE_ENV === 'development') {
+        return (
+            <div style={fixedStyle}>
+                (DEVELOPMENT MODE) Version: {packageJson.version}
+            </div>
+        )
+    } else {
+        return (
+            <div style={fixedStyle}>
+                Version: {packageJson.version}
+            </div>
+        )
+    }
 }
 
 export default Version;
