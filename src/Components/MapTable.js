@@ -115,7 +115,9 @@ const MapTable = () => {
                                                     backgroundColor={noBackgroundColor} 
                                                     aria-label={"edit button"} 
                                                     onClick={(e) => handleMapEditClick(e)} 
-                                                    disabled={!obsConnected || !twitchConnected}
+                                                    // TODO: remove disable when edit functionality works again
+                                                    disabled={true}
+                                                    // disabled={!obsConnected || !twitchConnected}
                                                     data-channelid={channelPoint.id} 
                                                     data-toggle={JSON.stringify(toggle)}
                                                 />
