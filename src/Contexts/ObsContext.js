@@ -6,6 +6,7 @@ import React, { useState, Dispatch } from "react";
 import OBSWebSocket, {SceneItem} from "obs-websocket-js";
 import { useToast } from "@chakra-ui/toast";
 import { useEffect } from "react";
+import md5 from "md5";
 
 /**
  * @typedef {'Scene' | 'Source' | 'Filter' | 'Start Streaming' | 'Stop Streaming' | 'Start Recording' | 'Stop Recording'} obsTogglingType
@@ -30,6 +31,7 @@ import { useEffect } from "react";
 
 /**
  * @typedef {Object} bits
+ * @property {string} id
  * @property {number} minBits
  * @property {number} maxBits
  * @property {Array<obsToggling>} obsToggling 
@@ -119,7 +121,7 @@ import { useEffect } from "react";
  * startStreaming: startStreaming, stopStreaming: function,
  * toggleSource: toggleSource,
  * obsTwitchMap: obsTwitchMap, setObsTwitchMap, handleSetObsTwitchMapAndLocal: handleSetObsTwitchMapAndLocal,
- * addChannelPoints,
+ * addChannelPoints, addBitsReward
  * tabIndex: number, handleTabChange: handleTabChange,
  * handleSaveDisabled: handleSaveDisabled, setObsToggleData: setObsToggleData,
  * getObsTogglingIndex: getObsTogglingIndex, handleObsToggling: handleObsToggling,
@@ -527,7 +529,7 @@ export function ObsProvider ({children}) {
         // Check if its the first time being added
         const rewardIndex = currentMap.obsTwitchMap.channelPoints.findIndex(f => f.id === parsedReward.id);
         if (rewardIndex === -1) {
-            let initialMapItem = {
+            const initialMapItem = {
                 id: parsedReward.id,
                 name: parsedReward.title,
                 cost: parsedReward.cost,
@@ -549,6 +551,46 @@ export function ObsProvider ({children}) {
             
         }
         handleSetObsTwitchMapAndLocal(currentMap);
+    }
+
+    const addBitsReward = (minBits, maxBits) => {
+        const currentMap = obsTwitchMap;
+        const hashedId = md5([minBits, maxBits]);
+        const bitRangeIndex = currentMap.obsTwitchMap.bits.findIndex(f => f.id === hashedId)
+        if (bitRangeIndex === -1) {
+            /**@type bits */
+            const initialMapItem = {
+                id: hashedId,
+                minBits,
+                maxBits,
+                obsToggling: [setObsToggleData()]
+            };
+            currentMap.obsTwitchMap.bits.push(initialMapItem);
+        } else {
+            // If rewardIndex id exists, add to things to toggle
+            const obsToggleIndex = getObsTogglingIndex(currentMap.obsTwitchMap.bits[bitRangeIndex].obsToggling);
+            if (obsToggleIndex === -1) {
+                // If none are found then add to array
+                currentMap.obsTwitchMap.channelPoints[bitRangeIndex].obsToggling.push(setObsToggleData())
+            } else {
+                // Update the data at the index
+                currentMap.obsTwitchMap.channelPoints[bitRangeIndex].obsToggling[obsToggleIndex] = setObsToggleData();
+            }
+        }
+        handleSetObsTwitchMapAndLocal(currentMap);
+
+    }
+
+    const getRangeOfBit = (bit) => {
+        //* Used to get specific bit 
+        const currentMap = obsTwitchMap;
+        // Filter array by min and max bits
+        const filteredBits = currentMap.obsTwitchMap.bits.filter((f) => bit >= f.minBits && bit <= f.maxBits);
+        // Sort filtered by the difference between max - min
+        const sortedfilteredBits = filteredBits.sort((a, b) => (a.maxBits - a.minBits) - (b.maxBits - b.minBits));
+        console.log('sortedFilteredbits', sortedfilteredBits);
+        // Then FindIndex to get the most focused reward
+        const bitsRewardIndex = sortedfilteredBits;
     }
 
     const setObsToggleData = () => {
@@ -810,6 +852,7 @@ export function ObsProvider ({children}) {
                     startStreaming, stopStreaming,
                     toggleSource,
                     obsTwitchMap, setObsTwitchMap, addChannelPoints,
+                    addBitsReward,
                     tabIndex, handleTabChange,
                     handleSaveDisabled, setObsToggleData,
                     getObsTogglingIndex, handleObsToggling,
