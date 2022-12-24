@@ -15,7 +15,6 @@ const DropDown = ({type}) => {
     const marginTest = 20;
 
     const onChangeInputPercentage = (val, index) => {
-        console.log('changeInput', val);
         let temp = {...randomRarity};
         temp['data'][index]['perc'] = val ? val : 0;
         setRandomRarity(temp)
@@ -171,7 +170,7 @@ const DropDown = ({type}) => {
                                                                 <InputNumber 
                                                                     defaultVal={0} 
                                                                     min={0} 
-                                                                    handleValue={(ds, dn) => onChangeInputPercentage(dn, idx)} 
+                                                                    handleValue={(dn) => onChangeInputPercentage(dn, idx)} 
                                                                     value={randomRarity['data'][idx] && randomRarity['data'][idx]['perc'] ? randomRarity['data'][idx]['perc'] : 0} 
                                                                 />
                                                             </ListItem>
@@ -189,7 +188,7 @@ const DropDown = ({type}) => {
                                                                 <InputNumber 
                                                                     defaultVal={t && t['time'] ? t['time'] : 0} 
                                                                     min={0} 
-                                                                    handleValue={(ds, dn) => onChangeInputTime(dn, idx)} 
+                                                                    handleValue={(dn) => onChangeInputTime(dn, idx)} 
                                                                     value={randomRarity['data'][idx] && randomRarity['data'][idx]['time'] ? randomRarity['data'][idx]['time'] : 0} 
                                                                 />
                                                             </ListItem>
