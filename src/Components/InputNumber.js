@@ -7,7 +7,7 @@ const InputNumber = ({ defaultVal, min, handleValue, value }) => {
         <NumberInput
             defaultValue={defaultVal}
             min={min}
-            onChange={handleValue}
+            onChange={(strVal, numVal) => handleValue(numVal)}
             value={value}
         >
             <NumberInputField />
