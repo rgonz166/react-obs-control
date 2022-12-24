@@ -1,5 +1,5 @@
 Version 0.1.10 (Raul Gonzalez - 12-22-22)
 
-- Add: Bits functionality
+- Add: Bits functionality (Raul Gonzalez 12-24-22)
     - Add bits to bit map
     - Add remove from bit map
