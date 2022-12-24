@@ -20,7 +20,7 @@ import md5 from "md5";
 
 const MapTable = () => {
 
-    const { obsTwitchMap, tabIndex, obsConnected, handleMapEditClick, handleMapDeleteClick } = useContext(ObsContext);
+    const { obsTwitchMap, tabIndex, obsConnected, handleMapEditClick, handleBitsMapDeleteClick } = useContext(ObsContext);
     const {twitchConnected} = useContext(TwitchContext)
 
 
@@ -119,7 +119,7 @@ const MapTable = () => {
                                                     // TODO: remove disable when edit functionality works again
                                                     disabled={true}
                                                     // disabled={!obsConnected || !twitchConnected}
-                                                    data-bits={bits} 
+                                                    data-bitsid={bits.id} 
                                                     data-toggle={JSON.stringify(toggle)}
                                                 />
                                             </Tooltip>
@@ -130,9 +130,9 @@ const MapTable = () => {
                                                     icon={<DeleteIcon pointerEvents={'none'} />} 
                                                     backgroundColor={noBackgroundColor} 
                                                     aria-label={"delete button"} 
-                                                    onClick={(e) => handleMapDeleteClick(e)}
+                                                    onClick={(e) => handleBitsMapDeleteClick(e)}
                                                     disabled={!obsConnected || !twitchConnected}
-                                                    data-bits={bits}
+                                                    data-bitsid={bits.id}
                                                     data-toggle={JSON.stringify(toggle)}
                                                 />
                                             </Tooltip>
