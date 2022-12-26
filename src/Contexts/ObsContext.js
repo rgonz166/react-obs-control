@@ -6,6 +6,7 @@ import React, { useState, Dispatch } from "react";
 import OBSWebSocket, {SceneItem} from "obs-websocket-js";
 import { useToast } from "@chakra-ui/toast";
 import { useEffect } from "react";
+import md5 from "md5";
 
 /**
  * @typedef {'Scene' | 'Source' | 'Filter' | 'Start Streaming' | 'Stop Streaming' | 'Start Recording' | 'Stop Recording'} obsTogglingType
@@ -30,6 +31,7 @@ import { useEffect } from "react";
 
 /**
  * @typedef {Object} bits
+ * @property {string} id
  * @property {number} minBits
  * @property {number} maxBits
  * @property {Array<obsToggling>} obsToggling 
@@ -93,9 +95,20 @@ import { useEffect } from "react";
  * 
  * @callback handleMapEditClickFunction
  * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event
+ * 
+ * @callback handleBitsMapEditClickFunction
+ * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event
  *
  * @callback handleMapDeleteClickFunction
  * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event
+ *
+ * @callback handleBitsMapDeleteClickFunction
+ * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event
+ * 
+ * @callback getRangeOfBit
+ * @param {number} bits
+ * @returns {bits | null}
+
  *
  * 
  * @type {React.Context<{
@@ -119,11 +132,13 @@ import { useEffect } from "react";
  * startStreaming: startStreaming, stopStreaming: function,
  * toggleSource: toggleSource,
  * obsTwitchMap: obsTwitchMap, setObsTwitchMap, handleSetObsTwitchMapAndLocal: handleSetObsTwitchMapAndLocal,
- * addChannelPoints,
+ * addChannelPoints, addBitsReward
  * tabIndex: number, handleTabChange: handleTabChange,
  * handleSaveDisabled: handleSaveDisabled, setObsToggleData: setObsToggleData,
  * getObsTogglingIndex: getObsTogglingIndex, handleObsToggling: handleObsToggling,
- * handleMapEditClick: handleMapEditClickFunction, handleMapDeleteClick: handleMapDeleteClickFunction
+ * handleMapEditClick: handleMapEditClickFunction, handleMapDeleteClick: handleMapDeleteClickFunction,
+ * handleBitsMapEditClick: handleBitsMapEditClickFunction, handleBitsMapDeleteClick: handleBitsMapDeleteClickFunction,
+ * getRangeOfBit: getRangeOfBit
  * }>}
  * 
  */
@@ -431,6 +446,31 @@ export function ObsProvider ({children}) {
      * 
      * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event 
      */
+    const handleBitsMapEditClick = (event) => {
+        // console.log('event', event);
+        // const dataset = event['target']['dataset'];
+        // const currentChannelId = dataset.channelid;
+        // const currentToggle = JSON.parse(dataset.toggle);
+        // console.log('channelId', currentChannelId);
+        // console.log('toggle', currentToggle);
+        
+        // handleSceneSelection(currentToggle.sceneName)
+        // if (currentToggle.type === 'Source' || currentToggle.type === 'Filter') {
+        //     handleSourceSelection(currentToggle.sourceName)
+        //     if (currentToggle.isRandom) {
+        //         setIsRandomized(currentToggle.isRandom)
+        //     }
+        // }
+        // if (currentToggle.type === 'Filter') {
+        //     handleFilterSelection(currentToggle.filterName)
+        // }
+        
+    }
+
+    /**
+     * 
+     * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event 
+     */
     const handleMapDeleteClick = (event) => {
         const currentMap = obsTwitchMap;
         const dataset = event['target']['dataset'];
@@ -451,6 +491,36 @@ export function ObsProvider ({children}) {
                 currentMap.obsTwitchMap.channelPoints[rewardIndex].obsToggling.findIndex(o => o.filterName === currentToggle.filterName);
             
                 currentMap.obsTwitchMap.channelPoints[rewardIndex].obsToggling.splice(toggleIndex, 1);
+            }
+
+        handleSetObsTwitchMapAndLocal(currentMap);
+
+    }
+
+    /**
+     * 
+     * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event 
+     */
+    const handleBitsMapDeleteClick = (event) => {
+        const currentMap = obsTwitchMap;
+        const dataset = event['target']['dataset'];
+        const currentBitsId = dataset.bitsid;
+        const currentToggle = JSON.parse(dataset.toggle);
+        
+        // Find channelId
+        const rewardIndex = currentMap.obsTwitchMap.bits.findIndex(f => f.id === currentBitsId);
+        const reward = currentMap.obsTwitchMap.bits[rewardIndex];
+        if (reward.obsToggling.length === 1) {
+            // If there is only one then delete the whole reward
+            currentMap.obsTwitchMap.bits.splice(rewardIndex, 1)
+        } else {
+            // If there is more than one obs toggle then just delete the toggle chosen
+            const toggleIndex = currentToggle.type === 'Scene' ? 
+                currentMap.obsTwitchMap.bits[rewardIndex].obsToggling.findIndex(o => o.sceneName === currentToggle.sceneName) :
+                currentToggle.type === 'Source' ? currentMap.obsTwitchMap.bits[rewardIndex].obsToggling.findIndex(o => o.sourceName === currentToggle.sourceName) :
+                currentMap.obsTwitchMap.bits[rewardIndex].obsToggling.findIndex(o => o.filterName === currentToggle.filterName);
+            
+                currentMap.obsTwitchMap.bits[rewardIndex].obsToggling.splice(toggleIndex, 1);
             }
 
         handleSetObsTwitchMapAndLocal(currentMap);
@@ -527,7 +597,7 @@ export function ObsProvider ({children}) {
         // Check if its the first time being added
         const rewardIndex = currentMap.obsTwitchMap.channelPoints.findIndex(f => f.id === parsedReward.id);
         if (rewardIndex === -1) {
-            let initialMapItem = {
+            const initialMapItem = {
                 id: parsedReward.id,
                 name: parsedReward.title,
                 cost: parsedReward.cost,
@@ -549,6 +619,49 @@ export function ObsProvider ({children}) {
             
         }
         handleSetObsTwitchMapAndLocal(currentMap);
+    }
+
+    const addBitsReward = (minBits, maxBits) => {
+        const currentMap = obsTwitchMap;
+        const hashedId = md5([minBits, maxBits]);
+        const bitRangeIndex = currentMap.obsTwitchMap.bits.findIndex(f => f.id === hashedId)
+        console.log('chosen', currentMap.obsTwitchMap.bits[bitRangeIndex])
+        if (bitRangeIndex === -1) {
+            /**@type bits */
+            const initialMapItem = {
+                id: hashedId,
+                minBits,
+                maxBits,
+                obsToggling: [setObsToggleData()]
+            };
+            currentMap.obsTwitchMap.bits.push(initialMapItem);
+        } else {
+            // If rewardIndex id exists, add to things to toggle
+            const obsToggleIndex = getObsTogglingIndex(currentMap.obsTwitchMap.bits[bitRangeIndex].obsToggling);
+            if (obsToggleIndex === -1) {
+                // If none are found then add to array
+                currentMap.obsTwitchMap.bits[bitRangeIndex].obsToggling.push(setObsToggleData())
+            } else {
+                // Update the data at the index
+                currentMap.obsTwitchMap.bits[bitRangeIndex].obsToggling[obsToggleIndex] = setObsToggleData();
+            }
+        }
+        handleSetObsTwitchMapAndLocal(currentMap);
+
+    }
+
+    const getRangeOfBit = (bit) => {
+        console.log('bit', bit)
+        //* Used to get specific bit 
+        const currentMap = obsTwitchMap;
+        // Filter array by min and max bits
+        const filteredBits = currentMap.obsTwitchMap.bits.filter((f) => bit >= f.minBits && bit <= f.maxBits);
+        console.log('filteredBits', filteredBits)
+        // Sort filtered by the difference between max - min
+        const sortedfilteredBits = filteredBits.sort((a, b) => (a.maxBits - a.minBits) - (b.maxBits - b.minBits));
+        // Then FindIndex to get the most focused reward
+        
+        return sortedfilteredBits.length > 0 ? sortedfilteredBits[0] : null;
     }
 
     const setObsToggleData = () => {
@@ -810,11 +923,14 @@ export function ObsProvider ({children}) {
                     startStreaming, stopStreaming,
                     toggleSource,
                     obsTwitchMap, setObsTwitchMap, addChannelPoints,
+                    addBitsReward,
                     tabIndex, handleTabChange,
                     handleSaveDisabled, setObsToggleData,
                     getObsTogglingIndex, handleObsToggling,
                     handleSetObsTwitchMapAndLocal,
-                    handleMapEditClick, handleMapDeleteClick
+                    handleMapEditClick, handleMapDeleteClick,
+                    handleBitsMapEditClick, handleBitsMapDeleteClick,
+                    getRangeOfBit
                 }
             }
         >
