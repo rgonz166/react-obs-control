@@ -5,7 +5,7 @@ const { useContext, useEffect } = require("react");
 
 const EventToggleHandler = () => {
     const {
-        startRecording, stopRecording, obsTwitchMap, handleObsToggling
+        startRecording, stopRecording, obsTwitchMap, handleObsToggling, getRangeOfBit
     } = useContext(ObsContext);
 
     const {
@@ -20,9 +20,22 @@ const EventToggleHandler = () => {
         }
       
         ComfyJS.onCheer = (user, message, bits, flags, extra) => {
-          console.log('user', user);
-          console.log('message', message);
-          console.log('bits', bits);
+          // console.log('bits data:', JSON.stringify({
+          //   user,
+          //   message,
+          //   bits,
+          //   flags, extra
+          // }))
+          
+          const currentReward = getRangeOfBit(bits);
+          if (currentReward) {
+            if (currentReward) {
+              currentReward.obsToggling.map(toggle => {
+                return handleObsToggling(toggle, user)
+              })
+            }
+          }
+
         }
     
         ComfyJS.onGiftSubContinue = (user, sender, extra) => {
@@ -45,15 +58,19 @@ const EventToggleHandler = () => {
         }
     
         ComfyJS.onReward = (user, reward, cost, message, extra) => {
-          // console.log('user', user);
-          // console.log('reward', reward);
-          // console.log('cost', cost)
-          // console.log('message', message);
-          // console.log('extra', extra);
+          // console.log('bits data:', JSON.stringify({
+          //   user,
+          //   reward,
+          //   cost,
+          //   message,
+          //   extra
+          // }))
           const currentReward = obsTwitchMap.obsTwitchMap.channelPoints.find(f => f.id === extra.reward.id);
-          currentReward.obsToggling.map(toggle => {
-            return handleObsToggling(toggle, user)
-          })
+          if (currentReward) {
+            currentReward.obsToggling.map(toggle => {
+              return handleObsToggling(toggle, user)
+            })
+          }
         }
     
         ComfyJS.onResub = (user, message, streakMonths, cumulativeMonths, subTierInfo, extra) => {
