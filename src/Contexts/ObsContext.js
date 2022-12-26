@@ -104,6 +104,11 @@ import md5 from "md5";
  *
  * @callback handleBitsMapDeleteClickFunction
  * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event
+ * 
+ * @callback getRangeOfBit
+ * @param {number} bits
+ * @returns {bits | null}
+
  *
  * 
  * @type {React.Context<{
@@ -131,8 +136,9 @@ import md5 from "md5";
  * tabIndex: number, handleTabChange: handleTabChange,
  * handleSaveDisabled: handleSaveDisabled, setObsToggleData: setObsToggleData,
  * getObsTogglingIndex: getObsTogglingIndex, handleObsToggling: handleObsToggling,
- * handleMapEditClick: handleMapEditClickFunction, handleMapDeleteClick: handleMapDeleteClickFunction
- * handleBitsMapEditClick: handleBitsMapEditClickFunction, handleBitsMapDeleteClick: handleBitsMapDeleteClickFunction
+ * handleMapEditClick: handleMapEditClickFunction, handleMapDeleteClick: handleMapDeleteClickFunction,
+ * handleBitsMapEditClick: handleBitsMapEditClickFunction, handleBitsMapDeleteClick: handleBitsMapDeleteClickFunction,
+ * getRangeOfBit: getRangeOfBit
  * }>}
  * 
  */
@@ -645,15 +651,17 @@ export function ObsProvider ({children}) {
     }
 
     const getRangeOfBit = (bit) => {
+        console.log('bit', bit)
         //* Used to get specific bit 
         const currentMap = obsTwitchMap;
         // Filter array by min and max bits
         const filteredBits = currentMap.obsTwitchMap.bits.filter((f) => bit >= f.minBits && bit <= f.maxBits);
+        console.log('filteredBits', filteredBits)
         // Sort filtered by the difference between max - min
         const sortedfilteredBits = filteredBits.sort((a, b) => (a.maxBits - a.minBits) - (b.maxBits - b.minBits));
-        console.log('sortedFilteredbits', sortedfilteredBits);
         // Then FindIndex to get the most focused reward
-        const bitsRewardIndex = sortedfilteredBits;
+        
+        return sortedfilteredBits.length > 0 ? sortedfilteredBits[0] : null;
     }
 
     const setObsToggleData = () => {
@@ -921,7 +929,8 @@ export function ObsProvider ({children}) {
                     getObsTogglingIndex, handleObsToggling,
                     handleSetObsTwitchMapAndLocal,
                     handleMapEditClick, handleMapDeleteClick,
-                    handleBitsMapEditClick, handleBitsMapDeleteClick
+                    handleBitsMapEditClick, handleBitsMapDeleteClick,
+                    getRangeOfBit
                 }
             }
         >
