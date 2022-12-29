@@ -16,7 +16,6 @@ import {
   import { ObsContext } from "Contexts/ObsContext";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { TwitchContext } from "Contexts/TwitchContext";
-import md5 from "md5";
 
 const MapTable = () => {
 
