@@ -113,7 +113,7 @@ const EventToggleHandler = () => {
           }))
         }
 
-    }, [ComfyJS, startRecording, stopRecording, handleObsToggling, obsTwitchMap.obsTwitchMap.channelPoints])
+    }, [ComfyJS, startRecording, stopRecording, handleObsToggling, obsTwitchMap.obsTwitchMap.channelPoints, getRangeOfBit])
 
     return (null)
 
